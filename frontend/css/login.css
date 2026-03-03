@@ -1,0 +1,90 @@
+/* --- CONFIGURACIÓN DEL FONDO --- */
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url("../imagenes/Login.jpg"); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    height: 100vh;
+    overflow: hidden; /* Evita scrolls innecesarios */
+}
+
+/* --- CONTENEDOR POSICIONADO AL EXTREMO DERECHO --- */
+.main-wrapper.flex-derecha {
+    display: flex;
+    align-items: center;      /* Centra verticalmente */
+    justify-content: flex-end; /* Empuja al extremo derecho */
+    height: 100vh;
+    padding-right: 3%;        /* Reducido para estar "un poco más a la derecha" */
+    width: 100%;
+}
+
+/* --- TARJETA DE LOGIN --- */
+#loginsection.container {
+    width: 100%;
+    max-width: 400px;         /* Ligeramente más esbelta */
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.94); 
+    border-radius: 12px;
+    
+    /* Diseño Institucional */
+    border-right: 10px solid #9f2626; /* Guinda resaltado a la derecha */
+    border-left: 1px solid #1b5e20;   /* Verde sutil */
+    border-top: 1px solid #1b5e20;
+    border-bottom: 1px solid #1b5e20;
+    
+    /* Sombra proyectada hacia la izquierda para dar peso visual */
+    box-shadow: -15px 0px 30px rgba(0, 0, 0, 0.3); 
+}
+
+/* Títulos y Etiquetas */
+.form-tittle {
+    color: #9f2626; 
+    font-family: Copperplate, Papyrus, fantasy;
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+}
+
+.input-box label {
+    color: #1b5e20; 
+    font-family: 'Graduate';
+    font-size: 0.85rem;
+}
+
+/* Campos de texto estilo Wireframe */
+.input-box input, .input-box select {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-bottom: 3px solid #9f2626; 
+    background: #fdfdfd;
+    font-family: 'Architects Daughter';
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-box input:focus {
+    border-bottom-color: #1b5e20; 
+    background: #ffffff;
+}
+
+/* Botón Login con tus colores */
+.submit-btn {
+    width: 100%;
+    background-color: #9f2626;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Graduate';
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: background 0.4s;
+}
+
+.submit-btn:hover {
+    background-color: #1b5e20; /* Cambio a Verde Institucional */
+}
