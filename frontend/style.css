@@ -1,0 +1,268 @@
+*/* --- Estilo de fondo dinámico --- */
+
+* {
+		padding: 0;
+		margin: 0;
+	}
+	svg {
+		position: fixed;
+		top: 0;
+		left: 0;
+    width: 100%;
+    height: 100%;
+		box-sizing: border-box;
+		display: block;
+		background-color: #E8FDF0;
+    background-image: linear-gradient(to bottom, rgba(232, 238, 243, 0.86), #04AA6D);
+     z-index: -1;
+      pointer-events: none; 
+	}
+
+
+
+/* ---  Estilo del menu principal--- */
+body {
+    background-color: #BEF8D5; 
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    margin: 0;
+}
+    
+    
+.canvas-principal {
+    position: relative;
+    z-index: 1; 
+    margin: 40px auto;
+    padding: 40px;
+    max-width: 1100px;
+    width: 100%;
+    
+
+    background: rgba(255, 255, 255, 0.85); 
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 5px solid #04AA6D;
+    background-color: #E8FDF0;
+}
+ 
+    
+   
+  
+    
+
+
+h1 { 
+    text-align: center; 
+    font-weight: 800; 
+    font-size: 2.5rem;
+    margin-top: 0;
+}
+
+
+/* --- Columnas Lista de salidas y el Calendaio --- */
+.grid-cuerpo {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 30px;
+    align-items: start;
+}
+
+.panel-bordeado {
+    border: 2px solid #00b06a; 
+    border-radius: 25px;
+    padding: 20px;
+    background-color: #fff;
+}
+
+
+
+/* --- Botones de estado --- */
+.contenedor-estados {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 40px;
+}
+
+.status-card {
+    text-decoration: none;
+    width: 150px;
+    padding: 20px;
+    text-align: center;
+    border-radius: 15px;
+    font-weight: bold;
+    color: black;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.status-card:hover { 
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.verde { background-color: #00b06a; color: white; }
+.amarillo { background-color: #ffff00; }
+.rojo { background-color: #ff0000; color: white; }
+
+
+
+/*  Lista de las Salidas  */
+.lista-permisos {
+    list-style: none;
+    padding: 0;
+}
+
+.lista-permisos li {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 10px solid transparent;
+    background: #f9f9f9;
+    font-size: 0.95rem;
+}
+
+.item-aprobado { border-left-color: #00b06a !important; }
+.item-pendiente { border-left-color: #ffff00 !important; }
+.item-rechazado { border-left-color: #ff0000 !important; }
+
+
+
+/*  Estilo del Calendario  */
+#calendar {
+    padding: 10px;
+    background: white;
+    border-radius: 15px;
+    font-size: 0.75em; 
+}
+
+.fc-header-toolbar {
+    margin-bottom: 1em !important;
+    text-transform: capitalize;
+}
+
+.fc-daygrid-day.fc-day-today {
+    background-color: #f0fff4 !important;
+}
+
+.fc-theme-standard td, .fc-theme-standard th {
+    border: 1px solid #eee !important;
+}
+
+.nota-calendario {
+    font-size: 0.8rem;
+    margin-top: 15px;
+    text-align: center;
+    color: #666;
+}
+
+
+
+/* --- Estilo para aprobados.html --- */
+.tabla-permisos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.tabla-permisos th, .tabla-permisos td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+
+
+
+/* --- ESTILOS PARA VISTAS DESDE RECURSOS HUMANOS --- */
+
+
+.grid-informacion {
+    
+    grid-template-columns: 1fr 1fr; 
+    gap: 30px;
+    align-items: start;
+    display: flex;
+    justify-content: center; 
+    padding: 20px;
+}
+
+.panel-bordeado {
+    max-width: 500px; /* Le damos un ancho máximo para que no se estire demasiado */
+    width: 100%;      /* Pero que sea responsivo */
+    text-align: center; /* Centra el texto y el título H3 */
+}
+
+/* Para centrar los puntitos de la lista si los tiene */
+.lista-informacion {
+    list-style: none;
+    padding: 0;
+}
+
+.lista-informacion li {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 10px solid transparent;
+    background: #f9f9f9;
+    font-size: 0.95rem;
+}
+
+/* Estilo para la barra de navegacion */
+.busqueda {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px; /* Espacio extra para que no pegue al borde en móviles */
+}
+
+.form {
+    background-color: white;
+    width: 90%;
+    max-width: 600px;
+    height: 60px;
+    border-radius: 40px; 
+    display: flex;
+    align-items: center;
+    padding: 0 5px 0 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Sombra para que resalte del fondo */
+}
+
+.form input {
+    font-size: 18px; 
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+   
+}
+
+.form button {
+    background-color: #04AA6D;
+    width: 50px;
+    height: 50px;
+    border: 0;
+    border-radius: 50%; 
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.3s ease;
+}
+
+.form button:hover {
+    background-color: #038d5a; 
+}
+
+.form button i {
+    color: white;
+    font-size: 20px; 
+}
