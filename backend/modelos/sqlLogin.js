@@ -23,12 +23,11 @@ const usersql = {
             throw error;
         }
     },
-    obtenerId: async (id) => {
+    buscarId: async (id) => {
         try {
-            console.log("🔍 Buscando en la BD el ID:", id);
             //consulta para obtener datos de sql condicionando por id
             const sql = `select id,nombre_completo, correo_institucional, rol, 
-            fecha_nacimiento from usuarios where id = ? `;
+            fecha_nacimiento, contraseña from usuarios where id = ? `;
             //ejecutar la consulta inyectando id
             const [datos] = await db.execute(sql, [id]);
             //regresa los datos de la primera fila
@@ -36,6 +35,15 @@ const usersql = {
             return user;
         } catch (error) {
             console.error("Error al obtenerID", error);
+            throw error;
+        }
+    },
+    actContraseña: async (password, id) => {
+        try {
+            const sql = 'update usuarios set contraseña = ? where id = ?';
+            const [datos] = await db.execute(sql, [password, id]);
+        } catch (error){
+            console.error("Error al actualziar db", error);
             throw error;
         }
     }
