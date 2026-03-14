@@ -8,10 +8,11 @@ const validarToken = require('../validacion/valLogin');
 //si ves, manda la solicitud ahora a loginControlador y usa la funcion verPerfil que esa dentro de ese archivo
 router.post('/login', loginControlador.iniciarLogin);
 //ruta para obtener los datos por medio del id, pero primero verificamos que este logueado
-router.get('/:id', validarToken, loginControlador.verPerfil);
+router.get('/perfil', validarToken, loginControlador.verPerfil);
 //ruta para actualizar contraseña pero primero verificamos que este logueado :v
 router.patch('/npassword', validarToken, loginControlador.acContraseña);
-
+//ruta para revalidar los tokem si es que bam a expirar
+router.get('/ntoken', validarToken, loginControlador.nuevoToken);
 
 
 module.exports = router;

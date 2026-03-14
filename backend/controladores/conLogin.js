@@ -7,8 +7,8 @@ const loginControlador = {
     //esta es la funcion que se menciona en rutasLogin.js
     verPerfil: async (req, res) => {
         try{
-        //se saca el id de la url para poder meterla en la consulta sql
-        const {id} = req.params;
+        //se saca el id de para poder meterla en la consulta sql
+        const {id} = req.usuario;
         //con este le hablamos al archivo sql y a la funcion que hay ahi adentro
         //le pasamos el id de la url para que lo meta como argumento en la consulta sql
         const usuario = await usersql.buscarId(id);
@@ -78,8 +78,8 @@ const loginControlador = {
     //funcion para actualizar la contraseña
     acContraseña: async (req, res) => {
         //sacamos parametros del body proporcionado por el front
-        const { id, password, npassword } = req.body;
-        console.log(req.body);
+        const { password, npassword } = req.body;
+        const { id } = req.usuario;
         try {
             //buscamos datos del usuario
             const usuario = await usersql.buscarId(id);
@@ -102,7 +102,19 @@ const loginControlador = {
         res.status(500).json({ok: false, msg: "Error en el server"});
     }
 },
-
+//nueva funcion para revalidar 
+    nuevoToken: async (req, res) => {
+        const { id, rol, nombre_completo } = req.usuario;
+        
+        const token = jwt.sign({id, rol, nombre_completo}, process.env.JWT_SECRET, {
+                expiresIn: '4h'
+            });
+            res.json({
+                ok: true,
+                usuario: {id, rol, nombre_completo},
+                token
+            });
+}
 }
 //con esto exportamos el objeto y sus funciones para que cualquier archivo pueda usarlo
 //se llamara "logincontrolador"

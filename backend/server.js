@@ -1,10 +1,11 @@
 require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
-
+const helmet = require('helmet');
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(helmet());
 
 //importamos el archivo de rutas para poder mandar ahi el resto de la url
 const rutasLogin = require('../backend/rutas/rutaLogin');
@@ -19,4 +20,4 @@ const connection = require('./bd/base');
 app.use('/api/login', rutasLogin);
 
 //levantamos el server en el puerto 3001
-app.listen(3001, () => {console.log("Servidor en puerto 3001")});
+app.listen(3000, () => {console.log("Servidor en puerto 3001")});
