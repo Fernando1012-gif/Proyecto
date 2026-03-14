@@ -1,7 +1,6 @@
 body {
     margin: 0;
     padding: 0;
-    /* Subimos un nivel para salir de 'css' y entrar a 'imagenes' */
     background-image: url("../imagenes/Login.jpg"); 
     background-size: cover;
     background-position: center;
