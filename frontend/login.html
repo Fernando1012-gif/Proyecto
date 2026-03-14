@@ -1,42 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Login Pases Y Salidas UTM</title>
+    <title>Login - Pases y Salidas</title>
     <link rel="stylesheet" href="css/login.css">
-
-    
 </head>
 <body>
-<div class="main-wrapper flex-derecha">
-    <section id="loginsection" class="container">
-        <h1 class="form-tittle">Login</h1>
 
-        <form id="loginform" class="form-group" method="get" action="" enctype="multipart/form-data" novalidate>
+    <div class="main-wrapper">
+        <section id="loginsection">
+            <h1 class="form-title">Login</h1>
             
-            <div class="input-box">
-                <label for="usuario">Usuario</label>
-                <input type="text" id="usuario" name="usuario" placeholder="Correo" required/>
-                <span class="error" id="usuarioerror">Por favor ingrese su correo</span>
-            </div>
+            <form id="loginform" novalidate>
+                <div class="input-box">
+                    <label>Correo Institucional</label>
+                    <input type="email" id="correo" placeholder="correo" required>
+                    <span class="error" id="correoerror"></span>
+                </div>
 
-            <div class="input-box">
-                <label for="contraseña">Password</label>
-                <input type="password" id="contraseña" name="password" placeholder="Contraseña" required />
-                <span class="error" id="contraseñaerror">Ingrese su contraseña</span>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="recordar" name="recordar" value="recordar">
-                <label for="recordar">Recordar datos</label>
-            </div>
+                <div class="input-box">
+                    <label>Contraseña</label>
+                    <input type="password" id="contraseña" placeholder="••••••••" required>
+                    <span class="error" id="contraseñaerror"></span>
+                </div>
 
-            <a href="principal.html">
-        <button  type="submit" class="submit-btn">Login</button>
-        </a>
-        </form>
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
         </section>
-</div>
-   <script src="js/login.js"></script>
+    </div>
+
+    <script src="js/login.js"></script>
 </body>
 </html>
