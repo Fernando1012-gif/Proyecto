@@ -61,6 +61,7 @@ function mostrarExito(rol) {
         zIndex: "1000"
     });
 
+///Pendiente para el rol de cada pagina!!!!!!!!!!
     document.body.appendChild(aviso);
     setTimeout(() => {
         if (rol === "docente") {
