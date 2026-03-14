@@ -1,0 +1,128 @@
+/* ========== VISTA DEL PROFESOR (ADAPTADA) ========== */
+
+/* Contenedor principal estilo "Glassmorphism" como tus secciones */
+.dashboard-profesor {
+    display: grid;
+    grid-template-columns: 1fr 350px; /* Calendario grande y lateral fijo */
+    gap: 25px;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.9); /* Fondo blanco con opacidad */
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 2px solid var(--verde-oscuro, #1b5e20);
+}
+
+/* Encabezado del Dashboard */
+.profesor-header {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid #9f2626; /* Tu color Guinda */
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.profesor-header h2 {
+    margin: 0;
+    border-bottom: none; /* Quitamos el borde predeterminado de tu h2 */
+    color: #1b5e20; /* Verde Institucional */
+}
+
+/* Área del Calendario */
+.calendario-wrapper {
+    background: #ffffff;
+    border: 3px solid #1b5e20;
+    border-radius: 10px;
+    min-height: 450px;
+    overflow: hidden;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+.calendario-titulo {
+    background: #1b5e20;
+    color: #ffffff;
+    padding: 10px;
+    text-align: center;
+    font-family: 'Graduate';
+}
+
+/* Panel Lateral de Controles */
+.panel-controles {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Botones con tu estilo de animación */
+.btn-guinda {
+    background-color: #9f2626; /* Guinda */
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Graduate';
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.btn-guinda:hover {
+    background-color: #721c1c;
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(159, 38, 38, 0.4);
+}
+
+/* Leyendas de Colores (Cuadritos del Wireframe) */
+.leyenda-item {
+    display: flex;
+    align-items: center;
+    background: rgba(27, 94, 32, 0.1); /* Verde muy claro */
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    border: 1px solid #1b5e20;
+}
+
+.color-muestra {
+    width: 25px;
+    height: 25px;
+    margin-right: 15px;
+    border-radius: 4px;
+    border: 1px solid #000;
+}
+
+/* Colores específicos para la leyenda */
+.bg-laboral { background-color: #4caf50; } /* Verde */
+.bg-festivo { background-color: #9f2626; } /* Guinda */
+.bg-cumple   { background-color: #efa81a; } /* Tu dorado h3 */
+
+/* Formulario Inferior (Solicitud de Pase) */
+.seccion-pases {
+    grid-column: 1 / -1;
+    margin-top: 20px;
+    background: #f9f9f9;
+    border: 2px solid #9f2626;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.form-grid input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: sans-serif; /* Más legible para datos */
+}
+
+/* Responsive para el Dashboard */
+@media screen and (max-width: 900px) {
+    .dashboard-profesor {
+        grid-template-columns: 1fr;
+    }
+}
