@@ -9,15 +9,16 @@ app.use(helmet());
 
 //importamos el archivo de rutas para poder mandar ahi el resto de la url
 const rutasLogin = require('../backend/rutas/rutaLogin');
+const rutasPermisos = require('../backend/rutas/rutaPermiso');
 const connection = require('./bd/base');
 
 
 
-//lanzamos la ruta de usuarios, el segundo argumento es a que archivo mandaremos el resto de la url
-//por ejemplo es localhost:3000/api/login/2
-//este archivo se queda con /api/login/ y el "2" que es el id lo manda al siguiente archivo 
-//que nombramos como "router", mira arriba ahi esta definido
+
+//ruta para login js
 app.use('/api/login', rutasLogin);
+//ruta para permisos js :V
+app.use('/api/permisos', rutasPermisos);
 
 //levantamos el server en el puerto 3001
 app.listen(3000, () => {console.log("Servidor en puerto 3001")});

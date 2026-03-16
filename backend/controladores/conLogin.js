@@ -46,10 +46,6 @@ const loginControlador = {
             if(!passwordCorrecto) {
                 return res.status(401).json({ok: false, msg: "Datos incorrectos"});
             }
-            //borramos datos sensibles del json proporcionado por la db
-            delete usuario.contraseña;
-            delete usuario.fecha_nacimiento;
-
             //creamos el payload para hacer nuestro token de sesion :v
             const payload = {
                 id: usuario.id,
