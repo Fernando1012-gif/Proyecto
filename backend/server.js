@@ -21,4 +21,4 @@ app.use('/api/login', rutasLogin);
 app.use('/api/permisos', rutasPermisos);
 
 //levantamos el server en el puerto 3001
-app.listen(3000, () => {console.log("Servidor en puerto 3001")});
+app.listen(3000, () => {console.log("Servidor en puerto 3000")});

@@ -12,6 +12,7 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
+    "dayjs": "^1.11.20",
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "mysql2": "^3.19.0"

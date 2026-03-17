@@ -55,7 +55,7 @@ const permisosControlador = {
         //sacamos del body los datos que nos interesan
         const {us, tipo, fI, fF, cD, motivo} = req.body;
         try {
-            const permisos = usersql.crearPermiso(us, tipo, fI, fF, cD, motivo);
+            const permisos = await usersql.crearPermiso(us, tipo, fI, fF, cD, motivo);
             if (!permisos) {
                 console.log(permisos);
                 return res.status(404).json({
@@ -67,9 +67,16 @@ const permisosControlador = {
                 msg: "se ha creado correctamente el permiso!"
         }); 
     } catch(error) {
-            console.log(error);
-            res.status(500).json({ok: false, msg: "Error de serverp"});
-    }},
+            if (error.errno === 1644 || error.sqlState === '45000') {
+                return res.status(400).json({
+                    ok: false,
+                    msg: error.sqlMessage
+                })}
+            console.error();
+            res.status(500).json({ 
+                ok: false, 
+                mensaje: "hay un problema en el server" 
+        });}},
     //funcion para cancelar un permiso mediante el valor 1
     cancelarPermiso: async (req, res) => {
         const {id, cancelar} = req.body;

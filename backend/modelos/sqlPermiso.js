@@ -40,9 +40,9 @@ const usersql = {
             const [datos] = await db.execute(sql, [us, tipo, fI, fF, cD, motivo]);
             return datos;
         } catch (error){
-            console.error("Error al añadir un nuevo permiso");
+            console.error("Error al crear");
             throw error;
-     }
+}
     },
     //funcion para cancelar un permiso mediante el valor de 1
     cancelarPermiso: async (cancelar, id) => {
