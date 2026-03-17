@@ -40,13 +40,14 @@ formulario.addEventListener("submit", async (e) => {
 
         const data = await response.json();
         console.log("Respuesta del servidor:", data);
+        const { rol }  = data;
 
         // CORREGIDO: Verificamos si es true (booleano) o si la respuesta fue exitosa
         if (data.ok === true || data.ok === "true") {
-            const rol = data.rol;
+            
 
             // Redirección según rol
-            if (rol === "administrador") {
+            if (rol === "Administrador") {
                 window.location.href = "admin.html";
             } 
             else if (rol === "docente") {
@@ -55,9 +56,6 @@ formulario.addEventListener("submit", async (e) => {
             else if (rol === "RRHH") {
                 window.location.href = "rrhh.html";
             } 
-            else {
-                window.location.href = "principal.html";
-            }
 
         } else {
             alert(data.mensaje || "Credenciales incorrectas");
