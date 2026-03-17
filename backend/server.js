@@ -6,6 +6,10 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
+app.use(express.static(path.join(__dirname, "frontend")));
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "frontend", "login.html"));
+});
 
 //importamos el archivo de rutas para poder mandar ahi el resto de la url
 const rutasLogin = require('../backend/rutas/rutaLogin');
