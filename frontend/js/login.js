@@ -1,6 +1,8 @@
+const API_URL='http://localhost:3000/api/login/login';
+
 const formulario = document.getElementById("loginform");
 const correoInput = document.getElementById("correo");
-const contraseñaInput = document.getElementById("contraseña");
+const contraseñaInput = document.getElementById("contsraeña");
 const errorCorreo = document.getElementById("correoerror");
 const errorContraseña = document.getElementById("contraseñaerror");
 
@@ -26,12 +28,12 @@ formulario.addEventListener("submit", async (e) => {
     }
 
     try {
-        const response = await fetch("/login", {
+        const response = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                correo_institucional: correo,
-                contraseña: contraseña
+               correo: correo,
+                password: contraseña
             })
         });
 

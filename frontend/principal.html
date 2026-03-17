@@ -25,7 +25,7 @@
 <body>
 <section class="dashboard-profesor">
     <header class="profesor-header">
-        <h2>Hola, "Nombre del Profesor"</h2>
+        <h2>Hola,   Nombre del Profesor"</h2>
         <div class="imagenCentrada">
             <div style="width: 50px; height: 50px; background: #9f2626; border-radius: 50%;"></div>
         </div>
@@ -33,12 +33,12 @@
 
     <div class="calendario-wrapper">
         <div class="calendario-titulo">CALENDARIO DE ACTIVIDADES</div>
-        <div style="padding: 90px; text-align: center; color: #ccc;">
+        <div style="padding: 50000 px; text-align: center; color: #ccc;">
               <!--Tablas-->
     <div class="container">
         <div class="row">
         <div class="col"></div>
-        <div class="col-7"><div id="calendario"></div></div> 
+        <div class="col-10"><div id="calendario"></div></div> 
         <div class="col"></div>
         </div>
     </div>
@@ -64,8 +64,51 @@
                         alert('Vista actual: '+view.name);
                         $(this).css('background-color','red');
                         $("#exampleModal").modal();
-                    }
+                    },
 
+                    eventSources:[{ //Inicio events
+                    
+                        events:[
+                        //Para solo un dia
+                        {
+                            title:'Evento uno',
+                            descripcion:'Pase por enfermedad',
+                            start: '2026/03/20',
+                            color:'#4caf50',
+                            textColor:'black'
+
+                        },
+
+                        //Cierto periodo de dias
+                        {
+                            title:'Evento dos, Periodo Vacacional',
+                            start:'2026-03-27',
+                            descripcion:'Dias no laborales',
+                            end:'2026-04-13',
+                            color:'#9f2626',
+                            textColor:'yellow'
+                        },
+
+                        //Solo un dia con sus horas
+                        {
+                            title:'Evento3,Salida',
+                            descripcion:'Salida por situacion personal',
+                            start: '2026-04-20T11:30:00',
+                            allday:false,
+                            color:'#efa81a',
+                            textColor:'black'
+                        }
+                    ]
+
+
+                    }], //Fin events
+
+        //Informacion sobre los eventos seleccionados ya sea la descripcion o el evento dado
+                    eventClick:function(calEvent, jsEvent, view){
+                        $('#tituloEvento').html(calEvent.title);
+                       $('#descripcionEvento').html(calEvent.descripcion);
+                        $('#exampleModal').modal();
+                    }
 
                 });
             })
@@ -77,15 +120,15 @@
     <aside class="panel-controles">
         <div class="leyenda-item">
             <div class="color-muestra bg-laboral"></div>
-            <span>Días Laborales (Verde)</span>
+            <span>Pase (Verde)</span>
         </div>
         <div class="leyenda-item">
             <div class="color-muestra bg-festivo"></div>
-            <span>Días Festivos (Guinda)</span>
+            <span>Cumpleaños (Guinda)</span>
         </div>
         <div class="leyenda-item">
             <div class="color-muestra bg-cumple"></div>
-            <span>Cumpleaños (Dorado)</span>
+            <span>Salida (Dorado)</span>
         </div>
 
         <a href="historial.html"><button class="btn-guinda" style="margin-top: 20px;">Ver Historial</button></a>
@@ -98,12 +141,15 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Agrega Motivo</h5>
+        <h5 class="modal-title" id="tituloEvento"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
+
+        <div id="descripcionEvento"></div>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success">Agregar</button>
