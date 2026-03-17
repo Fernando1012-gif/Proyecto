@@ -1,28 +1,35 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path'); // <-- ¡No olvides esto!
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
+
 const app = express();
+
+// Middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
-app.use(express.static(path.join(__dirname, "frontend")));
+
+// CONFIGURACIÓN DE RUTAS ESTÁTICAS
+// Usamos ".." para subir un nivel (salir de backend) y entrar a frontend
+app.use(express.static(path.join(__dirname, "..", "frontend")));
+
+// RUTA PRINCIPAL (localhost:3000)
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "frontend", "login.html"));
+    res.sendFile(path.join(__dirname, "..", "frontend", "login.html"));
 });
 
-//importamos el archivo de rutas para poder mandar ahi el resto de la url
-const rutasLogin = require('../backend/rutas/rutaLogin');
-const rutasPermisos = require('../backend/rutas/rutaPermiso');
-const connection = require('./bd/base');
+// IMPORTACIÓN DE RUTAS DE API (Están en la misma carpeta o subcarpetas)
+// Si rutaLogin.js está en backend/rutas/ :
+const rutasLogin = require('./rutas/rutaLogin'); 
+const rutasPermisos = require('./rutas/rutaPermiso');
 
-
-
-
-//ruta para login js
 app.use('/api/login', rutasLogin);
-//ruta para permisos js :V
 app.use('/api/permisos', rutasPermisos);
 
-//levantamos el server en el puerto 3001
-app.listen(3000, () => {console.log("Servidor en puerto 3000")});
+// PUERTO
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor listo en http://localhost:${PORT}`);
+});
