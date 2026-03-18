@@ -1,6 +1,7 @@
-// Usar ruta relativa es mejor práctica
+//ruta api login
 const API_URL = 'http://localhost:3000/api/login/login'; 
 
+//se seleccionan los elementps del dom
 const formulario = document.getElementById("loginform");
 const correoInput = document.getElementById("correo");
 const contraseñaInput = document.getElementById("password");
@@ -10,18 +11,21 @@ const errorContraseña = document.getElementById("contraseñaerror");
 formulario.addEventListener("submit", async (e) => {
     e.preventDefault();
     
+    //limpiar pantalla
     errorCorreo.style.display = "none";
     errorContraseña.style.display = "none";
 
+    //limpiar inputs
     const correo = correoInput.value.trim();
-    const contraseña = contraseñaInput.value.trim(); // <--- Variable definida
+    const contraseña = contraseñaInput.value.trim();
 
+    //validacion de correo
     if (correo === "") {
         errorCorreo.textContent = "Ingrese su correo institucional";
         errorCorreo.style.display = "block";
         return;
     }
-
+    //validacion de password
     if (contraseña === "") {
         errorContraseña.textContent = "Ingrese su contraseña";
         errorContraseña.style.display = "block";
@@ -29,39 +33,47 @@ formulario.addEventListener("submit", async (e) => {
     }
 
     try {
+        //se llama al backend
         const response = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 correo: correo,
-                password: contraseña // <--- CORREGIDO: Usamos 'contraseña'
+                password: contraseña
             })
         });
-
+        //esperamos la respuesta
         const data = await response.json();
-        console.log("Respuesta del servidor:", data);
-        const { rol }  = data;
 
-        // CORREGIDO: Verificamos si es true (booleano) o si la respuesta fue exitosa
-        if (data.ok === true || data.ok === "true") {
-            
+        if (data.ok) {
+            //guardamos el token)
+            localStorage.setItem('token', data.token);
+            //guardamos usuario
+            localStorage.setItem('usuario', JSON.stringify(data.usuario));
 
-            // Redirección según rol
+            const rol = data.usuario.rol;
             if (rol === "Administrador") {
-                window.location.href = "admin.html";
+                window.location.href = "vista_jefe_inmediato.html";
             } 
-            else if (rol === "docente") {
+            else if (rol === "Docente") {
                 window.location.href = "principal.html";
             } 
             else if (rol === "RRHH") {
-                window.location.href = "rrhh.html";
+                window.location.href = "vistaRH.html";
             } 
+            else {
+                // Si el rol existe pero no está mapeado aquí
+                console.warn("Rol detectado pero no configurado para redirección:", rol);
+                alert("Acceso correcto, pero no tienes una vista asignada para el rol: " + rol);
+            }
 
         } else {
-            alert(data.mensaje || "Credenciales incorrectas");
+            //si ok es false
+            alert(data.msg || data.mensaje || "Credenciales incorrectas");
         }
     } catch (error) {
-        console.error("Error en la petición:", error);
-        alert("No se pudo conectar con el servidor. Verifica que el backend esté corriendo.");
+        //errir 
+                console.error("Error fatal en el fetch:", error);
+        alert("Error crítico: No se pudo conectar con el servidor. ¿Está encendido el Backend?");
     }
 });
