@@ -195,9 +195,9 @@ h1 {
 }
 
 .panel-bordeado {
-    max-width: 500px; /* Le damos un ancho máximo para que no se estire demasiado */
-    width: 100%;      /* Pero que sea responsivo */
-    text-align: center; /* Centra el texto y el título H3 */
+    max-width: 500px; 
+    width: 100%;      
+    text-align: center; 
 }
 
 /* Para centrar los puntitos de la lista si los tiene */
