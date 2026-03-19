@@ -1,166 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Principal</title>
+    <title>Panel Docente - UTM</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="js/jquery.min.js"></script>
-    <script src="js/moment.min.js"></script>
-
-    <!---Full calendar-->
-    <link rel="stylesheet" href="css/fullcalendar.min.css">
-    <script src="js/fullcalendar.min.js"></script>
-    <script src="js/es.js"></script>
-
-    <!--Estilo-->
-   <link rel="stylesheet" href="css/profesores.css">"
-
-   <!--Modal-->
-   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css">
+    <link rel="stylesheet" href="css/profesores.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/locale/es.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
 </head>
-
-<!--COMIENZO DEL BODY-->
 <body>
 <section class="dashboard-profesor">
     <header class="profesor-header">
-        <h2>Hola,   Nombre del Profesor"</h2>
-        <div class="imagenCentrada">
-            <div style="width: 50px; height: 50px; background: #9f2626; border-radius: 50%;"></div>
-        </div>
+        <h2 id="nombreDocente">Cargando...</h2>
+        <button onclick="localStorage.clear(); location.href='login.html'" class="btn btn-sm btn-danger">Cerrar Sesión</button>
     </header>
 
     <div class="calendario-wrapper">
-        <div class="calendario-titulo">CALENDARIO DE ACTIVIDADES</div>
-        <div style="padding: 50000 px; text-align: center; color: #ccc;">
-              <!--Tablas-->
-    <div class="container">
-        <div class="row">
-        <div class="col"></div>
-        <div class="col-10"><div id="calendario"></div></div> 
-        <div class="col"></div>
-        </div>
-    </div>
-        <script>
-            $(document).ready(function(){
-                $('#calendario').fullCalendar({
-                    header:{
-                        left:'today,prev,next, MiBoton',
-                        center:'title',
-                        right: 'month, basicWeek basicDay, agendaWeek, agendaDay'
-                    },
-                    customButtons:{
-                        MiBoton:{
-                            text:'Boton ',
-                            click:function(){
-                                alert('Luego veremos')
-                            }
-                        }
-                    },
-
-                    dayClick:function(date,jsEvent,view){
-                        alert('Valor seleccionado: '+date.format());
-                        alert('Vista actual: '+view.name);
-                        $(this).css('background-color','red');
-                        $("#exampleModal").modal();
-                    },
-
-                    eventSources:[{ //Inicio events
-                    
-                        events:[
-                        //Para solo un dia
-                        {
-                            title:'Evento uno',
-                            descripcion:'Pase por enfermedad',
-                            start: '2026/03/20',
-                            color:'#4caf50',
-                            textColor:'black'
-
-                        },
-
-                        //Cierto periodo de dias
-                        {
-                            title:'Evento dos, Periodo Vacacional',
-                            start:'2026-03-27',
-                            descripcion:'Dias no laborales',
-                            end:'2026-04-13',
-                            color:'#9f2626',
-                            textColor:'yellow'
-                        },
-
-                        //Solo un dia con sus horas
-                        {
-                            title:'Evento3,Salida',
-                            descripcion:'Salida por situacion personal',
-                            start: '2026-04-20T11:30:00',
-                            allday:false,
-                            color:'#efa81a',
-                            textColor:'black'
-                        }
-                    ]
-
-
-                    }], //Fin events
-
-        //Informacion sobre los eventos seleccionados ya sea la descripcion o el evento dado
-                    eventClick:function(calEvent, jsEvent, view){
-                        $('#tituloEvento').html(calEvent.title);
-                       $('#descripcionEvento').html(calEvent.descripcion);
-                        $('#exampleModal').modal();
-                    }
-
-                });
-            })
-        </script>
+        <div class="calendario-titulo">CALENDARIO DE SOLICITUDES</div>
+        <div class="container-fluid">
+            <div id="calendario"></div>
         </div>
     </div>
 
-    <!--Apartado de botones-->
     <aside class="panel-controles">
-        <div class="leyenda-item">
-            <div class="color-muestra bg-laboral"></div>
-            <span>Pase (Verde)</span>
+        <div class="leyenda-item"><div class="color-muestra" style="background: #4caf50;"></div><span>Pase Aprobado</span></div>
+        <div class="leyenda-item"><div class="color-muestra" style="background: #efa81a;"></div><span>Pase Pendiente</span></div>
+        <div class="leyenda-item"><div class="color-muestra" style="background: #9f2626;"></div><span>Permiso (Días)</span></div>
+        <div class="p-3 text-center mt-4" style="background: #f8f9fa; border-radius: 8px; border: 1px dashed #ccc;">
+            <small>Haz clic en un día del calendario para realizar una solicitud</small>
         </div>
-        <div class="leyenda-item">
-            <div class="color-muestra bg-festivo"></div>
-            <span>Cumpleaños (Guinda)</span>
-        </div>
-        <div class="leyenda-item">
-            <div class="color-muestra bg-cumple"></div>
-            <span>Salida (Dorado)</span>
-        </div>
-
-        <a href="historial.html"><button class="btn-guinda" style="margin-top: 20px;">Ver Historial</button></a>
-        <button class="btn-guinda" style="background-color: #1b5e20;">Solicitar Salida</button> 
-       <a href="js/pase.js"></a> <button class="btn-guinda" style="background-color: #01a417;">Pedir Pase</button>
     </aside>
 
-    <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="tituloEvento"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
+    <div class="modal fade" id="modalFormulario" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background: #9f2626; color: white;">
+                    <h5 class="modal-title" id="tituloFormulario">Nueva Solicitud</h5>
+                    <button type="button" class="close" data-dismiss="modal" style="color: white;"><span>&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formSolicitud">
+                        <div class="form-group">
+                            <label>¿Qué deseas solicitar?</label>
+                            <select id="tipoSolicitud" class="form-control">
+                                <option value="">Selecciona una opción</option>
+                                <option value="pase">Pase de Salida (Horas)</option>
+                                <option value="permiso">Permiso con Goce (Días)</option>
+                            </select>
+                        </div>
 
-        <div id="descripcionEvento"></div>
+                        <div id="camposDinamicos"></div>
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success">Agregar</button>
-        <button type="button" class="btn btn-success">Modificar</button>
-         <button type="button" class="btn btn-danger">Borrar</button>
-          <button type="button" class="btn btn-default"  data-dismiss="modal">Cancelar</button>
-      </div>
+                        <div class="form-group">
+                            <label>Motivo</label>
+                            <textarea id="motivo" class="form-control" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="text-right">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Enviar Solicitud</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
-
+</section>
+<script src="js/principal.js"></script>
 </body>
 </html>

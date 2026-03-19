@@ -3,42 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Permisos</title>
-    <link rel="icon" type="image/png" href="recursos/images/logoUTM.png">
-    <script src="https://kit.fontawesome.com/35660cdf83.js" crossorigin="anonymous"></script>
+    <title>Recursos Humanos - UTM</title>
     <link rel="stylesheet" href="recursos/css/style.css">
+    <script src="https://kit.fontawesome.com/35660cdf83.js" crossorigin="anonymous"></script>
 </head>
 <body>
+    <div class="canvas-principal">
+        <header style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Reporte General de Movimientos</h1>
+            <button onclick="localStorage.clear(); location.href='login.html'" class="item-rechazado" style="border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Salir</button>
+        </header>
 
-        <div class="canvas-principal">
-            <h1>Vista para Recursos Humanos</h1>
-
-            <div class="busqueda">
-    <form class="form">
-        <input type="text" placeholder="Busqueda">
-        <button type="submit">
-            <i class="fa-solid fa-magnifying-glass"></i> </button>
-    </form>
-</div>
-
-                    <div class="grid-informacion">
-            
-                        <div class="panel-bordeado">
-                            <h3>Tabla de información de los trabajadores</h3>
-                
-                            <ul class="lista-informacion" >
-                                <li class="item-aprobado">Salida Museos - 12 Feb (Aprobado)</li>
-                                <li class="item-pendiente">Salida Deportiva - 15 Feb (Pendiente)</li>
-                                <li class="item-rechazado">Excursión Río - 10 Feb (Rechazado)</li>
-                            
-                            </ul>
-                
-                    </div>
-                </div>
+        <div class="busqueda">
+            <div class="form">
+                <input type="text" id="inputBusqueda" placeholder="Buscar por docente o motivo...">
+                <button type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
-            
-        </div> 
-        
-        
-    </body>
+        </div>
+
+        <div class="grid-informacion">
+            <div class="panel-bordeado">
+                <h3>Historial Consolidado</h3>
+                <ul class="lista-informacion" id="listaRH">
+                    <p>Cargando información del personal...</p>
+                </ul>
+            </div>
+        </div>
+    </div> 
+    <script src="js/rh.js"></script>
+</body>
 </html>

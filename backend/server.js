@@ -9,7 +9,7 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(helmet());
+//app.use(helmet());
 
 // CONFIGURACIÓN DE RUTAS ESTÁTICAS
 // Usamos ".." para subir un nivel (salir de backend) y entrar a frontend
