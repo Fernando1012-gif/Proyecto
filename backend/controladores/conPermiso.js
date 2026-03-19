@@ -76,7 +76,7 @@ const permisosControlador = {
             res.status(500).json({ 
                 ok: false, 
                 mensaje: "hay un problema en el server" 
-        });}},
+        });}},  
     //funcion para cancelar un permiso mediante el valor 1
     cancelarPermiso: async (req, res) => {
         const {id, cancelar} = req.body;
