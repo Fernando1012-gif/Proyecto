@@ -19,6 +19,18 @@ const pasesql = {
         }
     },
 
+    // Nueva función para el límite de 3 pases
+    contarPasesMensuales: async (usuario_id) => {
+        try {
+            const sql = `SELECT COUNT(*) as total FROM pases_salida 
+                         WHERE usuario_id = ? AND MONTH(fecha_uso) = MONTH(CURRENT_DATE())`;
+            const [rows] = await db.execute(sql, [usuario_id]);
+            return rows[0].total;
+        } catch (error) {
+            throw error;
+        }
+    },
+
     // esta funcion sirve para modificar los datos de un pase de salida específico
     modPase: async (fU, hI, motivo, id) => {
         try {

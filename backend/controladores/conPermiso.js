@@ -81,7 +81,7 @@ const permisosControlador = {
     cancelarPermiso: async (req, res) => {
         const {id, cancelar} = req.body;
         try {
-            const permisos = usersql.cancelarPermiso(cancelar, id);
+            const permisos = await usersql.cancelarPermiso(cancelar, id);
             if (!permisos) {
                 console.log(permisos);
                 return res.status(404).json({

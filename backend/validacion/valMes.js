@@ -2,14 +2,16 @@ const dayjs = require('dayjs');
 
 const validaciones = {
     vDia: async (req, res, next) => {
-        const { fI } = req.body; 
-        if (!fI) {
+        const { fI, fecha_uso } = req.body; // <-- Ahora acepta ambos
+        const fechaEvaluar = fI || fecha_uso; // <-- Lógica para elegir la que venga
+
+        if (!fechaEvaluar) {
             return res.status(400).json({
                 ok: false,
                 msg: "se ocupa una fecha de inicio"
             });}
         try {
-            const dia = dayjs(fI).day();
+            const dia = dayjs(fechaEvaluar).day();
 
             if (dia === 0 || dia === 6) {
                 return res.status(400).json({

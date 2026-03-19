@@ -10,9 +10,9 @@ const validarToken = (req, res, next) => {
     }
         try{
             //verificamos que el token del header coincida con el secreto 
-            const {id, rol, nombre} = jwt.verify(token, process.env.JWT_SECRET);
+            const {id, rol, nombre_completo} = jwt.verify(token, process.env.JWT_SECRET); // <-- Ajustado
             //metemos los datos en usuario para usarlos
-            req.usuario = {id, rol, nombre};
+            req.usuario = {id, rol, nombre_completo}; // <-- Ajustado
             //le damos el pase a la siguiente ruta
             next();
             //si algo sale mal avisamos
