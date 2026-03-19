@@ -7,7 +7,11 @@
     <link rel="icon" type="image/png" href="recursos/imagenes/logoUTM.png">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
     <link rel="stylesheet" href="recursos/css/style.css">
-</head>
+    <!-- Fuentes -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+    </head>
 <body>
 
 <!--FONDO DINAMICO-->
@@ -74,7 +78,7 @@
         <h1>Vista para el Jefe Inmediato</h1><br>
 
         <div class="contenedor-estados">
-            <a href="aprobados.html" class="status-card verde">Aprobados</a>
+            <a href="aprobados.html" class="status-card verde" >Aprobados</a>
             <a href="pendientes.html" class="status-card amarillo">Pendientes</a>
             <a href="rechazados.html" id="btn-rechazar" class="status-card rojo">Rechazados</a>
             <audio id="sonido-rechazo" src="error.mp3" preload="auto"></audio>
@@ -84,12 +88,10 @@
         <div class="grid-cuerpo">
             <!--Aqui va la lista de salidas-->
             <div class="panel-bordeado">
-                <h3>Lista de salidas (General)</h3>
-                <ul class="lista-permisos">
-                    <li class="item-aprobado">Salida Museos - 12 Feb (Aprobado)</li>
-                    <li class="item-pendiente">Salida Deportiva - 15 Feb (Pendiente)</li>
-                    <li class="item-rechazado">Excursión Río - 10 Feb (Rechazado)</li>
-                    </ul>
+    <h3>Resumen de Solicitudes Recientes</h3>
+    <ul id="lista-general" class="lista-permisos">
+        </ul>
+</div>
             </div>
 <!--Aqui va el contenedor del calendario-->
             <div class="columna-derecha">
@@ -108,46 +110,67 @@
         
 
       <!-- Calendario -->
-        <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
         
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          locale: 'es', 
-          height: 450,
-          headerToolbar: {
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'es', 
+        height: 450,
+        headerToolbar: {
             left: 'prev,next',
             center: 'title',
             right: '' 
-          },
-
-
-          // Aquí van los días rojos
-          events: [
-            {
-              title: 'OCUPADO',
-              start: '2026-02-10', 
-              backgroundColor: '#ff0000', 
-              borderColor: '#ff0000',
-              allDay: true
-            },
-            {
-              title: 'OCUPADO',
-              start: '2026-02-18',
-              backgroundColor: '#ff0000',
-              borderColor: '#ff0000',
-              allDay: true
+        },
+        // Carga los días rojos directamente de tu servidor
+        events: async function(info, successCallback, failureCallback) {
+            try {
+                const res = await fetch('/api/permisos/Aceptado');
+                const datos = await res.json();
+                
+                // Mapeamos los datos de tu tabla permisos_goce
+                const eventos = datos.map(p => ({
+                    title: 'OCUPADO',
+                    start: p.fecha_inicio || p.fecha_salida, // Ajusta al nombre de tu columna
+                    backgroundColor: '#ff0000',
+                    borderColor: '#ff0000',
+                    allDay: true
+                }));
+                successCallback(eventos);
+            } catch (error) {
+                console.error("Error cargando eventos:", error);
+                failureCallback(error);
             }
-          ]
-        });
+        }
+    });
+    
+    calendar.render();
+
+    // También cargamos la lista de texto de la izquierda
+    cargarResumenGeneral();
+});
+
+async function cargarResumenGeneral() {
+    try {
+        const res = await fetch('/api/permisos/Aprobado');
+        const datos = await res.json();
+        const lista = document.getElementById('lista-general');
         
-        calendar.render();
-      });
-
-
-    </script>
+        lista.innerHTML = datos.slice(0, 5).map(p => `
+            <li class="item-aprobado">${p.tipo_permiso} - ${p.fecha_inicio || p.fecha_salida} (Aprobado)</li>
+        `).join('');
+    } catch (e) {
+        console.error("Error en resumen:", e);
+    }
+}
+      </script>
    
 
+
 </body>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
 </html>

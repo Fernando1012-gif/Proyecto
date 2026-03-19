@@ -47,18 +47,26 @@ body {
     background-color: #E8FDF0;
 }
  
+
+h1 {
+  text-align: center;  
+  font-family: "Fjalla One", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+  font-size: 2.5em;
+  margin-top: 0;
+}
+
+
+
+
     
    
   
     
 
 
-h1 { 
-    text-align: center; 
-    font-weight: 800; 
-    font-size: 2.5rem;
-    margin-top: 0;
-}
+
 
 
 /* --- Columnas Lista de salidas y el Calendaio --- */
@@ -90,7 +98,7 @@ h1 {
     width: 150px;
     padding: 20px;
     text-align: center;
-    border-radius: 15px;
+    border-radius: 50px;
     font-weight: bold;
     color: black;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -102,8 +110,8 @@ h1 {
 }
 
 .verde { background-color: #00b06a; color: white; }
-.amarillo { background-color: #ffff00; }
-.rojo { background-color: #ff0000; color: white; }
+.amarillo { background-color: #FFD700; }
+.rojo { background-color: #CD5C5C; color: white; }
 
 
 
@@ -123,8 +131,8 @@ h1 {
 }
 
 .item-aprobado { border-left-color: #00b06a !important; }
-.item-pendiente { border-left-color: #ffff00 !important; }
-.item-rechazado { border-left-color: #ff0000 !important; }
+.item-pendiente { border-left-color: #FFD700 !important; }
+.item-rechazado { border-left-color: #CD5C5C !important; }
 
 
 
