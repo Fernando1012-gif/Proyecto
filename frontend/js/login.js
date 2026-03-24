@@ -5,10 +5,8 @@ const correoInput = document.getElementById("correo");
 const contraseñaInput = document.getElementById("password");
 const errorCorreo = document.getElementById("correoerror");
 const errorContraseña = document.getElementById("contraseñaerror");
-
-// Crear contenedor para mensaje de error global
 const errorGlobal = document.createElement("div");
-errorGlobal.style.color = "#dc3545"; // Rojo Bootstrap
+errorGlobal.style.color = "#dc3545"; 
 errorGlobal.style.marginTop = "15px";
 errorGlobal.style.textAlign = "center";
 errorGlobal.style.fontWeight = "bold";
@@ -17,8 +15,6 @@ formulario.appendChild(errorGlobal);
 
 formulario.addEventListener("submit", async (e) => {
     e.preventDefault();
-    
-    // Limpiar pantalla
     errorCorreo.style.display = "none";
     errorContraseña.style.display = "none";
     errorGlobal.style.display = "none";
