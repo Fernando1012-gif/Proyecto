@@ -39,7 +39,6 @@ formulario.addEventListener("submit", async (e) => {
     }
 
     try {
-        // Cambiar texto del botón para feedback visual
         const btnSubmit = formulario.querySelector('.submit-btn');
         const textoOriginal = btnSubmit.textContent;
         btnSubmit.textContent = "Verificando...";
