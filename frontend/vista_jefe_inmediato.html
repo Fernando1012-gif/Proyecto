@@ -14,22 +14,18 @@
             --primary-color: #034a33;
             --text-dark: #102e22;
         }
-
-        /* RESETEO TOTAL PARA QUE EL AGUA CUBRA TODO */
         html, body {
             margin: 0;
             padding: 0;
             width: 100vw;
             height: 100vh;
-            background-color: #d4f1f9; /* Base cyan claro */
+            background-color: #d4f1f9; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-dark);
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
-
-        /* FONDO ANIMADO (PANTALLA COMPLETA REAL) */
         .fondo-animado {
             position: fixed;
             top: 0;
@@ -39,10 +35,6 @@
             z-index: -1; 
             transform: scale(1.05); 
         }
-
-        /* ---------------------------------------------------
-           CRISTAL FRUTIGER AERO LITERAL (AERO GLASS)
-           --------------------------------------------------- */
         .aero-glass {
             background: linear-gradient(180deg, 
                 rgba(255, 255, 255, 0.65) 0%, 
@@ -81,15 +73,12 @@
             flex-direction: column;
         }
 
-        /* LAYOUT DIVIDIDO PARA EL JEFE */
         .sidebar { width: 380px; flex-shrink: 0; }
         .scroll-interno { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
         .content-area { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; overflow: hidden; }
         .panel-estadisticas { height: 35%; flex-shrink: 0; }
         .panel-calendario { flex-grow: 1; overflow: hidden; }
         #calendario-jefe { height: 100%; }
-
-        /* TARJETAS DE SOLICITUD (Las que inyecta JS) ESTILO CRISTAL */
         .solicitud-card {
             background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 100%);
             border: 1px solid rgba(255, 255, 255, 0.8);
@@ -99,8 +88,6 @@
             box-shadow: inset 0 2px 5px rgba(255,255,255,0.5), 0 4px 6px rgba(0,0,0,0.05);
             text-shadow: 0 1px 1px white;
         }
-
-        /* BOTONES APROBAR Y RECHAZAR (GLOSSY AERO) */
         .btn-success {
             background: linear-gradient(180deg, #bcf5d3 0%, #68d697 49%, #3eb674 50%, #5ad18c 100%) !important;
             border: 1px solid rgba(255,255,255,0.8) !important;
@@ -121,7 +108,6 @@
         }
         .btn-danger:hover { background: linear-gradient(180deg, #ffd6d6 0%, #ff8a8a 49%, #ff3333 50%, #ff6666 100%) !important; }
 
-        /* Ajustes FullCalendar y Tablas para cristal */
         .table { background-color: transparent !important; }
         .table th, .table td { 
             background: transparent !important; 
@@ -140,7 +126,6 @@
         }
         .fc-daygrid-day:hover { background-color: rgba(255, 255, 255, 0.5); cursor: pointer; }
 
-        /* Scrollbar suave para los paneles */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.6); border-radius: 4px; border: 1px solid rgba(255,255,255,0.8); }

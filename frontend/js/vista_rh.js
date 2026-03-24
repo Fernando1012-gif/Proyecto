@@ -8,8 +8,6 @@ if (!token || !usuarioStr) {
     window.location.href = "login.html";
 }
 const usuario = JSON.parse(usuarioStr);
-
-// Inyectar contenedor de Toasts dinámicamente para no ensuciar tu HTML
 document.body.insertAdjacentHTML('beforeend', `
     <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
         <div id="toastRH" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -38,11 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     cargarDatosGenerales();
-
-    // Evento para el botón de filtros
     document.getElementById('btn-aplicar-filtros').addEventListener('click', aplicarFiltros);
     document.getElementById('form-filtros').addEventListener('reset', () => {
-        setTimeout(pintarTabla, 100); // Repinta todo después de limpiar el form
+        setTimeout(pintarTabla, 100);
     });
 });
 
@@ -53,14 +49,10 @@ async function cargarDatosGenerales() {
         
         const dataPases = respPases.ok ? await respPases.json() : { data: [] };
         const dataPermisos = respPermisos.ok ? await respPermisos.json() : { data: [] };
-
-        // Estandarizamos los datos en un solo formato para la tabla
         const pasesMapeados = (dataPases.data || []).map(p => ({ ...p, tipoTramite: 'Pase', fechaClave: p.fecha_uso }));
         const permisosMapeados = (dataPermisos.data || []).map(p => ({ ...p, tipoTramite: 'Permiso', fechaClave: p.fecha_inicio }));
 
         registrosGlobales = [...pasesMapeados, ...permisosMapeados];
-        
-        // Ordenar por fecha más reciente
         registrosGlobales.sort((a, b) => new Date(b.fechaClave) - new Date(a.fechaClave));
         
         pintarTabla(registrosGlobales);
@@ -112,13 +104,9 @@ function aplicarFiltros() {
     const filtrados = registrosGlobales.filter(reg => {
         let cumple = true;
         const fechaObj = new Date(reg.fechaClave);
-
-        // Como tu BD ahorita trae usuario_id en lugar del nombre_completo, este filtro de texto se puede ajustar luego
         if (fDocente && !reg.usuario_id.toString().includes(fDocente)) cumple = false; 
         if (fEstado !== 'Todos' && reg.estado !== fEstado) cumple = false;
         if (fTipo !== 'Ambos' && reg.tipoTramite !== fTipo) cumple = false;
-        
-        // Cuidado con los meses de JS (0-11)
         if (fMes && (fechaObj.getMonth() + 1).toString().padStart(2, '0') !== fMes) cumple = false;
         if (fAño && fechaObj.getFullYear().toString() !== fAño) cumple = false;
 

@@ -1,8 +1,6 @@
 const URL_BASE = 'http://localhost:3000/api';
 let calendarioJefe;
 let solicitudesGlobales = []; 
-
-// 1. VALIDAR SESIÓN
 const token = localStorage.getItem('token');
 const usuarioStr = localStorage.getItem('usuario');
 
@@ -23,8 +21,6 @@ function mostrarToast(mensaje, tipo = 'success') {
     const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
     toast.show();
 }
-
-// 2. INICIALIZAR LA VISTA
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('saludo-jefe').textContent = usuario.nombre_completo || "Jefe Inmediato";
     
@@ -47,8 +43,6 @@ function inicializarCalendario() {
     });
     calendarioJefe.render();
 }
-
-// 3. OBTENER DATOS DEL BACKEND
 async function cargarTodasLasSolicitudes() {
     try {
         const respPases = await fetch(`${URL_BASE}/pases/todos`, { headers: { 'x-token': token } });
@@ -68,8 +62,6 @@ async function cargarTodasLasSolicitudes() {
         mostrarToast("Error de conexión. Revisa que el servidor Node esté corriendo.", "error");
     }
 }
-
-// 4. DIBUJAR PANTALLA
 function actualizarPantallaJefe() {
     const listaPendientes = document.getElementById('lista-pendientes');
     const tablaEstadisticas = document.getElementById('tabla-estadisticas');
@@ -86,8 +78,6 @@ function actualizarPantallaJefe() {
     solicitudesGlobales.forEach(sol => {
         const esPase = sol.hora_inicio !== undefined; 
         const tipoText = esPase ? 'Pase de Salida' : 'Permiso';
-        
-        // Blindaje contra fechas nulas
         let fechaRaw = esPase ? sol.fecha_uso : sol.fecha_inicio;
         const fechaMostrar = fechaRaw ? fechaRaw.split('T')[0] : 'Sin fecha definida';
 
@@ -100,8 +90,6 @@ function actualizarPantallaJefe() {
                 borderColor: '#198754'
             });
         }
-
-        // Llenar Sidebar con Pendientes y botones
         if (sol.estado === 'Pendiente') {
             listaPendientes.innerHTML += `
                 <div class="solicitud-card">
@@ -118,8 +106,6 @@ function actualizarPantallaJefe() {
                 </div>
             `;
         }
-
-        // Llenar Tabla Central de Resumen
         let badgeColor = 'bg-warning text-dark';
         if(sol.estado === 'Aprobado') badgeColor = 'bg-success';
         if(sol.estado === 'Rechazado' || sol.estado === 'Cancelado') badgeColor = 'bg-danger';
@@ -140,8 +126,6 @@ function actualizarPantallaJefe() {
     calendarioJefe.removeAllEventSources();
     calendarioJefe.addEventSource(eventosAprobados);
 }
-
-// 5. APROBAR O RECHAZAR
 async function cambiarEstado(id, tipo, nuevoEstado) {
     try {
         const endpoint = tipo === 'pase' ? '/pases/can' : '/permisos/can';
@@ -155,7 +139,7 @@ async function cambiarEstado(id, tipo, nuevoEstado) {
         const result = await response.json();
         if (result.ok) {
             mostrarToast(`Solicitud marcada como ${nuevoEstado}`, 'success');
-            cargarTodasLasSolicitudes(); // Recarga la lista para quitarla de "Pendientes"
+            cargarTodasLasSolicitudes();
         } else {
             mostrarToast(result.msg, 'error');
         }

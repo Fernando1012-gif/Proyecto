@@ -6,17 +6,12 @@ $(document).ready(function() {
             right: 'month,basicWeek,basicDay'
         },
         dayClick: function(date, jsEvent, view) {
-            // Limpiar inputs y preparar fecha
             $('#txtTitulo').val("");
             $('#txtDescripcion').val("");
-            $('#txtFecha').val(date.format()); // Guardamos la fecha en el input oculto
-            
-            // Abrir el modal
+            $('#txtFecha').val(date.format());
             $("#exampleModal").modal('show');
         }
     });
-
-    // Acción del botón "Agregar" dentro del modal
     $('#btnAgregar').click(function() {
         var nuevoEvento = {
             title: $('#txtTitulo').val(),
@@ -27,10 +22,7 @@ $(document).ready(function() {
         };
 
         if (nuevoEvento.title) {
-            // Agrega el evento visualmente al calendario
             $('#calendario').fullCalendar('renderEvent', nuevoEvento, true);
-            
-            // Cerrar modal
             $("#exampleModal").modal('hide');
             alert("Pase solicitado correctamente para el día: " + nuevoEvento.start);
         } else {

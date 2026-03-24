@@ -11,7 +11,7 @@ body {
 
 .main-wrapper {
     display: flex;
-    justify-content: flex-end; /* Esto lo mueve a la derecha */
+    justify-content: flex-end; 
     align-items: center;
     height: 100vh;
     padding-right: 120px;
@@ -46,7 +46,7 @@ body {
 }
 
 .input-box input:focus {
-    border-bottom: 3px solid #1b5e20; /* Cambio a verde al escribir */
+    border-bottom: 3px solid #1b5e20; 
 }
 
 .submit-btn {

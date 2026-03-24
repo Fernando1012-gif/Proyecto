@@ -17,7 +17,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 4px solid #9f2626; /* Tu color Guinda */
+    border-bottom: 4px solid #9f2626;
     padding-bottom: 1rem;
     margin-bottom: 1.5rem;
 }
@@ -54,7 +54,7 @@
 
 /* Botones con tu estilo de animación */
 .btn-guinda {
-    background-color: #9f2626; /* Guinda */
+    background-color: #9f2626;
     color: white;
     padding: 15px;
     border: none;
@@ -70,8 +70,6 @@
     transform: scale(1.02);
     box-shadow: 0 5px 15px rgba(159, 38, 38, 0.4);
 }
-
-/* Leyendas de Colores (Cuadritos del Wireframe) */
 .leyenda-item {
     display: flex;
     align-items: center;
@@ -91,9 +89,9 @@
 }
 
 /* Colores específicos para la leyenda */
-.bg-laboral { background-color: #4caf50; } /* Verde */
-.bg-festivo { background-color: #9f2626; } /* Guinda */
-.bg-cumple   { background-color: #efa81a; } /* Tu dorado h3 */
+.bg-laboral { background-color: #4caf50; } 
+.bg-festivo { background-color: #9f2626; } 
+.bg-cumple   { background-color: #efa81a; } 
 
 /* Formulario Inferior (Solicitud de Pase) */
 .seccion-pases {
