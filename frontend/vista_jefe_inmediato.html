@@ -3,151 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Permisos</title>
-    <link rel="icon" type="image/png" href="recursos/images/logoUTM.png">
+    <title>Panel Jefe Inmediato | Aprobaciones</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/35660cdf83.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
-    <link rel="stylesheet" href="recursos/css/style.css">
+    
+    <style>
+        :root {
+            --primary-color: #034a33;
+            --text-dark: #102e22;
+        }
+
+        /* RESETEO TOTAL PARA QUE EL AGUA CUBRA TODO */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #d4f1f9; /* Base cyan claro */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* FONDO ANIMADO (PANTALLA COMPLETA REAL) */
+        .fondo-animado {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1; 
+            transform: scale(1.05); 
+        }
+
+        /* ---------------------------------------------------
+           CRISTAL FRUTIGER AERO LITERAL (AERO GLASS)
+           --------------------------------------------------- */
+        .aero-glass {
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.65) 0%, 
+                rgba(255, 255, 255, 0.25) 49%, 
+                rgba(255, 255, 255, 0.05) 50%, 
+                rgba(255, 255, 255, 0.35) 100%);
+            backdrop-filter: blur(12px) saturate(130%);
+            -webkit-backdrop-filter: blur(12px) saturate(130%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-top: 2px solid rgba(255, 255, 255, 0.95);
+            border-left: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 12px 30px rgba(0, 70, 40, 0.2), inset 0 1px 3px rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+        }
+
+        .top-navbar {
+            background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.4) 100%);
+            backdrop-filter: blur(15px) saturate(120%);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            height: 70px;
+            flex-shrink: 0;
+        }
+
+        .main-workspace {
+            flex-grow: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            height: calc(100vh - 70px);
+        }
+
+        .corp-panel {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* LAYOUT DIVIDIDO PARA EL JEFE */
+        .sidebar { width: 380px; flex-shrink: 0; }
+        .scroll-interno { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
+        .content-area { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; overflow: hidden; }
+        .panel-estadisticas { height: 35%; flex-shrink: 0; }
+        .panel-calendario { flex-grow: 1; overflow: hidden; }
+        #calendario-jefe { height: 100%; }
+
+        /* TARJETAS DE SOLICITUD (Las que inyecta JS) ESTILO CRISTAL */
+        .solicitud-card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.5), 0 4px 6px rgba(0,0,0,0.05);
+            text-shadow: 0 1px 1px white;
+        }
+
+        /* BOTONES APROBAR Y RECHAZAR (GLOSSY AERO) */
+        .btn-success {
+            background: linear-gradient(180deg, #bcf5d3 0%, #68d697 49%, #3eb674 50%, #5ad18c 100%) !important;
+            border: 1px solid rgba(255,255,255,0.8) !important;
+            color: #033622 !important;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 2px 4px rgba(0,0,0,0.1) !important;
+            font-weight: bold;
+        }
+        .btn-success:hover { background: linear-gradient(180deg, #caffdf 0%, #7ee0a8 49%, #52c585 50%, #6fdf9e 100%) !important; }
+
+        .btn-danger {
+            background: linear-gradient(180deg, #ffb8b8 0%, #ff6b6b 49%, #e63946 50%, #ff4d4d 100%) !important;
+            border: 1px solid rgba(255,255,255,0.8) !important;
+            color: #5a0000 !important;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.5);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 2px 4px rgba(0,0,0,0.1) !important;
+            font-weight: bold;
+        }
+        .btn-danger:hover { background: linear-gradient(180deg, #ffd6d6 0%, #ff8a8a 49%, #ff3333 50%, #ff6666 100%) !important; }
+
+        /* Ajustes FullCalendar y Tablas para cristal */
+        .table { background-color: transparent !important; }
+        .table th, .table td { 
+            background: transparent !important; 
+            border-color: rgba(255,255,255,0.4) !important; 
+            text-shadow: 0 1px 1px white; 
+            font-weight: 500;
+        }
+        .fc-theme-standard td, .fc-theme-standard th { border-color: rgba(255, 255, 255, 0.4) !important; }
+        .fc .fc-toolbar-title { color: #034229 !important; font-weight: bold; text-shadow: 0px 2px 3px rgba(255,255,255,1); }
+        .fc .fc-button-primary { 
+            background: linear-gradient(180deg, #ffffff 0%, #e0f2e9 49%, #cceadd 50%, #e0f2e9 100%) !important;
+            border: 1px solid rgba(255,255,255,0.9) !important; 
+            color: var(--primary-color) !important;
+            font-weight: bold;
+            box-shadow: inset 0 2px 3px rgba(255,255,255,0.9), 0 2px 4px rgba(0,0,0,0.1) !important;
+        }
+        .fc-daygrid-day:hover { background-color: rgba(255, 255, 255, 0.5); cursor: pointer; }
+
+        /* Scrollbar suave para los paneles */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.6); border-radius: 4px; border: 1px solid rgba(255,255,255,0.8); }
+    </style>
 </head>
 <body>
 
-<!--FONDO DINAMICO-->
+    <svg class="fondo-animado" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">
+        <defs>
+            <linearGradient id="bg">
+                <stop offset="0%" style="stop-color:rgba(255, 255, 255, 0.06)"></stop>
+                <stop offset="50%" style="stop-color:rgba(216, 236, 248, 0.6)"></stop>
+                <stop offset="100%" style="stop-color:rgba(115, 209, 72, 0.2)"></stop>
+            </linearGradient>
+            <path id="wave" fill="url(#bg)" d="M-363.852,502.589c0,0,236.988-41.997,505.475,0 s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z" />
+        </defs>
+        <g>
+            <use xlink:href='#wave' opacity=".3">
+                <animateTransform attributeName="transform" type="translate" dur="10s" values="270 230; -334 180; 270 230" repeatCount="indefinite" />
+            </use>
+            <use xlink:href='#wave' opacity=".6">
+                <animateTransform attributeName="transform" type="translate" dur="8s" values="-270 230;243 220;-270 230" repeatCount="indefinite" />
+            </use>
+            <use xlink:href='#wave' opacity=".9">
+                <animateTransform attributeName="transform" type="translate" dur="6s" values="0 230;-140 200;0 230" repeatCount="indefinite" />
+            </use>
+        </g>
+    </svg>
 
- <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-		xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100%" height="100%" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
-		<defs>
-			<linearGradient id="bg">
-				<stop offset="0%" style="stop-color:rgba(255, 255, 255, 0.06)"></stop>
-				<stop offset="50%" style="stop-color:rgba(216, 236, 248, 0.6)"></stop>
-				<stop offset="100%" style="stop-color:rgba(115, 209, 72, 0.2)"></stop>
-			</linearGradient>
-			<path id="wave" fill="url(#bg)" d="M-363.852,502.589c0,0,236.988-41.997,505.475,0
-	s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z" />
-		</defs>
-		<g>
-			<use xlink:href='#wave' opacity=".3">
-				<animateTransform
-          attributeName="transform"
-          attributeType="XML"
-          type="translate"
-          dur="10s"
-          calcMode="spline"
-          values="270 230; -334 180; 270 230"
-          keyTimes="0; .5; 1"
-          keySplines="0.42, 0, 0.58, 1.0;0.42, 0, 0.58, 1.0"
-          repeatCount="indefinite" />
-			</use>
-			<use xlink:href='#wave' opacity=".6">
-				<animateTransform
-          attributeName="transform"
-          attributeType="XML"
-          type="translate"
-          dur="8s"
-          calcMode="spline"
-          values="-270 230;243 220;-270 230"
-          keyTimes="0; .6; 1"
-          keySplines="0.42, 0, 0.58, 1.0;0.42, 0, 0.58, 1.0"
-          repeatCount="indefinite" />
-			</use>
-			<use xlink:href='#wave' opacty=".9">
-				<animateTransform
-          attributeName="transform"
-          attributeType="XML"
-          type="translate"
-          dur="6s"
-          calcMode="spline"
-          values="0 230;-140 200;0 230"
-          keyTimes="0; .4; 1"
-          keySplines="0.42, 0, 0.58, 1.0;0.42, 0, 0.58, 1.0"
-          repeatCount="indefinite" />
-			</use>
-		</g>
-	</svg>
+    <div class="top-navbar d-flex justify-content-between align-items-center px-4">
+        <h4 class="m-0 fw-bold" style="color: var(--primary-color); text-shadow: 0px 2px 3px white;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Windows_Logo_2006.svg" width="24" class="me-2" style="opacity: 0.8;" alt="logo">
+            Portal Jefe Inmediato
+        </h4>
+        <div class="d-flex align-items-center">
+            <span class="me-4 fw-bold" id="saludo-jefe" style="text-shadow: 0px 2px 3px white;">Cargando usuario...</span>
+            <button id="btn-logout" class="btn btn-sm rounded-pill fw-bold shadow-sm" style="background: linear-gradient(180deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); border: 1px solid white; color: #a10000;">
+                <i class="fa-solid fa-power-off me-1"></i> Cerrar Sesión
+            </button>
+        </div>
+    </div>
 
-
-
-
-
-    <!-- APARTADO Vista para el Jefe Inmediato -->
-    
-
-    <div class="canvas-principal">
-        <h1>Vista para el Jefe Inmediato</h1>
-
-        <div class="contenedor-estados">
-            <a href="aprobados.html" class="status-card verde">Aprobados</a>
-            <a href="pendientes.html" class="status-card amarillo">Pendientes</a>
-            <a href="rechazados.html" id="btn-rechazar" class="status-card rojo">Rechazados</a>
-            <audio id="sonido-rechazo" src="error.mp3" preload="auto"></audio>
-
+    <div class="main-workspace">
+        
+        <div class="corp-panel aero-glass sidebar">
+            <h5 class="text-primary border-bottom border-light pb-2 mb-3 fw-bold" style="color: var(--primary-color) !important; text-shadow: 0px 1px 2px white;">
+                <i class="fa-solid fa-list-check me-2"></i> Solicitudes Pendientes
+            </h5>
+            <div class="scroll-interno" id="lista-pendientes">
+                <p class="text-muted text-center mt-4 fw-bold" style="text-shadow: 0 1px 1px white;">Cargando...</p>
+            </div>
         </div>
 
-        <div class="grid-cuerpo">
+        <div class="content-area">
             
-            <div class="panel-bordeado">
-                <h3>Lista de salidas (General)</h3>
-                <ul class="lista-permisos">
-                    <li class="item-aprobado">Salida Museos - 12 Feb (Aprobado)</li>
-                    <li class="item-pendiente">Salida Deportiva - 15 Feb (Pendiente)</li>
-                    <li class="item-rechazado">Excursión Río - 10 Feb (Rechazado)</li>
-                    </ul>
-            </div>
-
-            <div class="columna-derecha">
-                <div class="panel-bordeado">
-                    <h3>Calendario de Solicitudes</h3>
-                    
-                    <div id="calendar"></div>
-                    
-                    <p class="nota-calendario">
-                        Los días en <strong style="color: red;">ROJO</strong> indican una solicitud aprobada.
-                    </p>
+            <div class="corp-panel aero-glass panel-estadisticas">
+                <h6 class="text-primary border-bottom border-light pb-2 mb-3 fw-bold" style="color: var(--primary-color) !important; text-shadow: 0px 1px 2px white;">
+                    <i class="fa-solid fa-chart-bar me-2"></i> Resumen de Aprobaciones
+                </h6>
+                <div class="scroll-interno">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr style="border-bottom: 2px solid rgba(255,255,255,0.8);">
+                                <th>Docente</th>
+                                <th>Tipo</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-estadisticas"></tbody>
+                    </table>
                 </div>
             </div>
 
-        </div> </div> 
-        
+            <div class="corp-panel aero-glass panel-calendario">
+                <div id="calendario-jefe"></div>
+            </div>
+            
+        </div>
+    </div>
 
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+        <div id="toastNotificacion" class="toast border-0 shadow-lg aero-glass" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header border-bottom border-light" id="toast-header-bg" style="background: rgba(255,255,255,0.4); border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                <i class="fa-solid fa-bell me-2 text-dark"></i>
+                <strong class="me-auto text-dark" style="text-shadow: 0px 1px 2px white;">Notificación</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body fw-bold text-dark" id="toast-mensaje" style="background: rgba(255,255,255,0.2); border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;"></div>
+        </div>
+    </div>
 
-        <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          locale: 'es', 
-          height: 450,
-          headerToolbar: {
-            left: 'prev,next',
-            center: 'title',
-            right: '' 
-          },
-
-
-          // Aquí van los días rojos
-          events: [
-            {
-              title: 'OCUPADO',
-              start: '2026-02-10', 
-              backgroundColor: '#ff0000', 
-              borderColor: '#ff0000',
-              allDay: true
-            },
-            {
-              title: 'OCUPADO',
-              start: '2026-02-18',
-              backgroundColor: '#ff0000',
-              borderColor: '#ff0000',
-              allDay: true
-            }
-          ]
-        });
-        
-        calendar.render();
-      });
-
-
-    </script>
-   
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/vista_jefe.js"></script>
 </body>
 </html>
