@@ -60,8 +60,6 @@ formulario.addEventListener("submit", async (e) => {
             localStorage.setItem('usuario', JSON.stringify(data.usuario));
 
             const rol = data.usuario.rol;
-            
-            // Redirección corporativa
             if (rol === "Administrador") {
                 window.location.href = "vista_jefe_inmediato.html";
             } else if (rol === "Docente") {
@@ -81,7 +79,6 @@ formulario.addEventListener("submit", async (e) => {
         errorGlobal.textContent = "Error de red. Asegúrate de que el servidor Node esté encendido.";
         errorGlobal.style.display = "block";
         
-        // Restaurar botón en caso de error
         const btnSubmit = formulario.querySelector('.submit-btn');
         btnSubmit.textContent = "Login";
         btnSubmit.disabled = false;
