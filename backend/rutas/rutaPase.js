@@ -14,5 +14,6 @@ router.post('/crear', validarToken, validaciones.vDia, pasesControlador.crearPas
 router.patch('/mod', validarToken, pasesControlador.modificarPase);
 // Ruta para cancelar un pase mediante el método patchhh
 router.patch('/can', validarToken, pasesControlador.cancelarPase);
+router.get('/todos', validarToken, pasesControlador.verTodos);
 
 module.exports = router;

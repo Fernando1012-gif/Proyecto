@@ -15,5 +15,6 @@ router.patch('/mod', validarToken, permisosControlador.modPermisos);
 router.post('/crear', validarToken, validaciones.vDia, permisosControlador.crearPermiso);
 //ruta para cancelar un permiso mediante el metodo patchhh
 router.patch('/can', validarToken, permisosControlador.cancelarPermiso);
+router.get('/todos', validarToken, permisosControlador.verTodosPermisos);
 
 module.exports = router;

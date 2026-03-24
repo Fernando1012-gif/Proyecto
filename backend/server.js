@@ -9,7 +9,9 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false // Apagamos temporalmente el bloqueo estricto en desarrollo
+}));
 
 // CONFIGURACIÓN DE RUTAS ESTÁTICAS
 // Usamos ".." para subir un nivel (salir de backend) y entrar a frontend
@@ -24,9 +26,11 @@ app.get("/", (req, res) => {
 // Si rutaLogin.js está en backend/rutas/ :
 const rutasLogin = require('./rutas/rutaLogin'); 
 const rutasPermisos = require('./rutas/rutaPermiso');
+const rutasPases = require('./rutas/rutaPase'); // <-- ¡Agregado!
 
 app.use('/api/login', rutasLogin);
 app.use('/api/permisos', rutasPermisos);
+app.use('/api/pases', rutasPases); // <-- ¡Agregado!
 
 // PUERTO
 const PORT = 3000;

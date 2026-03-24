@@ -68,6 +68,7 @@ const loginControlador = {
                 token});
         //si algo sale mal avisamos :v
         } catch (error) {
+        console.log(error);
         res.status(500).json({ ok: false, msg: "Error interno" });
     }},
 

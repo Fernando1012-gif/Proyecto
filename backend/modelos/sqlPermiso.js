@@ -47,13 +47,40 @@ const usersql = {
     //funcion para cancelar un permiso mediante el valor de 1
     cancelarPermiso: async (cancelar, id) => {
         try {
-            const sql = 'update permisos_goce set cancelado = ? where id = ?';
+            const sql = 'update permisos_goce set estado = ? where id = ?';
             const [datos] = await db.execute(sql, [cancelar, id]);
             return datos;
     } catch (error){
             console.error("Error al editar cancelar");
             throw error;
-}}
+}},
+// esta funcion sirve para obtener absolutamente todos los permisos (Para Jefe y RRHH)
+    obtenerTodos: async () => {
+        try {
+            // creamos la consulta donde obtendremos todos los permisos completos
+            const sql = 'select * from permisos_goce';
+            // ejecutamos la consulta mysql
+            const [datos] = await db.execute(sql);
+            // regresamos todos los datos encontrados
+            return datos;
+        } catch (error) {
+            console.error("Error al obtener todos los permisos generales", error);
+            throw error;
+        }
+    },
+    obtenerTodos: async () => {
+        try {
+            // Usamos JOIN para traer también el nombre_completo
+            const sql = `SELECT permisos_goce.*, usuarios.nombre_completo 
+                         FROM permisos_goce 
+                         INNER JOIN usuarios ON permisos_goce.usuario_id = usuarios.id`;
+            const [datos] = await db.execute(sql);
+            return datos;
+        } catch (error) {
+            console.error("Error al obtener todos los permisos generales", error);
+            throw error;
+        }
+    },
 }
 //exporamos usersql para que el controlador pueda acceder al objeto de este archivo
 module.exports = usersql;
