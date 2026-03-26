@@ -1,9 +1,9 @@
-// URL base de tu backend
+//url base del backend
 const URL_BASE = 'http://localhost:3000/api';
 let calendarioOficial;
 let modalInstancia;
 
-// 1. VALIDAR SESIÓN
+//para validar la sesion
 const token = localStorage.getItem('token');
 const usuarioStr = localStorage.getItem('usuario');
 
@@ -13,7 +13,7 @@ if (!token || !usuarioStr) {
 
 const usuario = JSON.parse(usuarioStr);
 
-// FUNCIÓN PARA MOSTRAR TOASTS (Reemplaza a los alert)
+//funcion para mostrar los avisos
 function mostrarToast(mensaje, tipo = 'success') {
     const toastEl = document.getElementById('toastNotificacion');
     const toastHeader = document.getElementById('toast-header-bg');
@@ -33,7 +33,7 @@ function mostrarToast(mensaje, tipo = 'success') {
     toast.show();
 }
 
-// LÓGICA DEL MODAL DINÁMICO
+//logica del modal
 function volverPaso1() {
     document.getElementById('step-1-choice').style.display = 'block';
     document.getElementById('form-pedir-pase').style.display = 'none';
@@ -51,61 +51,57 @@ document.getElementById('btn-elegir-permiso').addEventListener('click', () => {
 });
 
 
-// 2. CUANDO EL HTML ESTÉ LISTO
+//para cuando el html este lista
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar variable del modal
+    //iniciamos la variable del modal
     modalInstancia = new bootstrap.Modal(document.getElementById('modalSolicitud'));
-
-    // Pintar nombre del profe modo corporativo
-    const nombre = usuario.nombre || usuario.nombre_completo || "Usuario Desconocido";
+    //colocamos el nombre del docente
+    const nombre = usuario.nombre || usuario.nombre_completo || "usuario desconocido";
     document.getElementById('saludo-profesor').textContent = nombre;
     
-    // Botón logout
+    //boton para salir de la sesion
     document.getElementById('btn-logout').addEventListener('click', () => {
         localStorage.clear();
         window.location.href = "login.html";
     });
-
-    // PINTAR CALENDARIO VACÍO PRIMERO (Para que no se quede la pantalla muerta si hay error)
+    //imprimimos el calendario
     pintarCalendario([]);
-
-    // LUEGO INTENTAR LLENARLO CON DATOS REALES
+    //imprimimos el calendario ya con sus datos
     cargarDatosYActualizarCalendario();
 });
 
 
-// 3. OBTENER DATOS DE LA BD
+//pedimos a la base de datos 
 async function cargarDatosYActualizarCalendario() {
     try {
         const respuesta = await fetch(`${URL_BASE}/pases/ver`, {
             method: 'GET',
             headers: { 'x-token': token }
         });
-
+        //obtenemos la respuesta y la formateamos en json
         const data = await respuesta.json();
-
+        //si la rrespuesta es valida "ok" ejecutamos
         if (data.ok) {
             let cantAprobados = 0;
             let cantPendientes = 0;
             let cantRechazados = 0;
 
-            // Mapeamos los datos de MySQL
+            //con sql organizamos el calendario
             const eventosCalendario = data.data.map(pase => {
                 const fecha = pase.fecha_uso.split('T')[0]; 
                 
-                // Colores corporativos Bootstrap
-                let colorEvento = '#ffc107'; // Warning
+                //colores
+                let colorEvento = '#ffc107';
                 
                 if(pase.estado === 'Aprobado') {
-                    colorEvento = '#198754'; // Success
+                    colorEvento = '#198754';
                     cantAprobados++;
                 } else if(pase.estado === 'Rechazado' || pase.estado === 'Cancelado') {
-                    colorEvento = '#dc3545'; // Danger
+                    colorEvento = '#dc3545';
                     cantRechazados++;
                 } else {
                     cantPendientes++;
                 }
-
                 return {
                     id: pase.id,
                     title: `Pase: ${pase.estado}`,
@@ -121,46 +117,45 @@ async function cargarDatosYActualizarCalendario() {
                 };
             });
 
-            // Actualizamos los badges del sidebar
+            //actualizamos los datos
             document.getElementById('badge-aprobados').textContent = cantAprobados;
             document.getElementById('badge-pendientes').textContent = cantPendientes;
             document.getElementById('badge-rechazados').textContent = cantRechazados;
 
-            // Actualizamos la fuente de datos del calendario que ya existe
+            //actualizamos el calendario
             calendarioOficial.removeAllEventSources();
             calendarioOficial.addEventSource(eventosCalendario);
-            
         } else {
             mostrarToast(data.msg, 'error');
         }
     } catch (error) {
-        mostrarToast("Error de conexión con el servidor", 'error');
+        mostrarToast("error al conectar con el server", 'error');
     }
 }
 
-// 4. LA FUNCIÓN QUE DIBUJA EL CALENDARIO FULLCALENDAR V6
+//funcion para imprimir el calendario
 function pintarCalendario(eventos) {
     const calendarEl = document.getElementById('calendario');
     
     calendarioOficial = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         locale: 'es',
-        height: '100%', // Ajuste para el bspwm
+        height: '100%',
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek'
         },
         events: eventos,
-        // Al hacer clic en un día vacío
+        //si hacemos click en un dia vacio
         dateClick: function(info) {
-            volverPaso1(); // Resetea el modal al paso 1
-            // Precarga la fecha seleccionada en ambos formularios
+            volverPaso1(); //modal para volver al paso 1
+            //carga la fecha seleccionada en los dos formularios
             document.getElementById('fecha_uso').value = info.dateStr;
             document.getElementById('fecha_inicio').value = info.dateStr;
             modalInstancia.show();
         },
-        // Al hacer clic en un evento que ya existe
+        //si se hace click en un evento que ya exista se muestra informacion
         eventClick: function(info) {
             mostrarToast(`${info.event.extendedProps.tipo} ${info.event.title} - Motivo: ${info.event.extendedProps.motivo}`, 'info');
         }
@@ -169,7 +164,7 @@ function pintarCalendario(eventos) {
     calendarioOficial.render();
 }
 
-// 5. ENVIAR FORMULARIO PARA CREAR PASE
+//enviamos el formulario para crear el pase
 const formPedirPase = document.getElementById('form-pedir-pase');
 
 formPedirPase.addEventListener('submit', async (e) => {
@@ -179,7 +174,7 @@ formPedirPase.addEventListener('submit', async (e) => {
     const hora_inicio = document.getElementById('hora_inicio').value;
     const hora_fin = document.getElementById('hora_fin').value;
     const motivo = document.getElementById('motivo_pase').value;
-
+    //intentamos crear el pase
     try {
         const response = await fetch(`${URL_BASE}/pases/crear`, {
             method: 'POST',
@@ -187,25 +182,25 @@ formPedirPase.addEventListener('submit', async (e) => {
                 'Content-Type': 'application/json',
                 'x-token': token
             },
-            // El backend recibe 'motivo', así se lo mandamos correctamente
+            //mandamos el body al backend para que lo pueda usar
             body: JSON.stringify({ fecha_uso, hora_inicio, hora_fin, motivo })
         });
 
         const result = await response.json();
-
+        //si la respuesta es buena ejecutamos
         if (result.ok) {
             modalInstancia.hide();
             formPedirPase.reset(); 
             cargarDatosYActualizarCalendario(); 
-            mostrarToast('Solicitud enviada correctamente', 'success');
+            mostrarToast('solicitud enviada correctamente', 'success');
         } else {
             mostrarToast(result.msg, 'error');
         }
     } catch (error) {
-        mostrarToast("Fallo crítico de red", 'error');
+        mostrarToast("error al conectar con el server", 'error');
     }
 });
-// 6. ENVIAR FORMULARIO PARA CREAR PERMISO
+//enviamos el formulario para pedir el permiso
 const formPedirPermiso = document.getElementById('form-pedir-permiso');
 
 formPedirPermiso.addEventListener('submit', async (e) => {
@@ -217,7 +212,7 @@ formPedirPermiso.addEventListener('submit', async (e) => {
     const fecha_fin = document.getElementById('fecha_fin').value;
     const cantidad_dias = document.getElementById('cantidad_dias').value;
     const motivo = document.getElementById('motivo').value;
-
+    //intentamos para crear un permiso
     try {
         const response = await fetch(`${URL_BASE}/permisos/crear`, {
             method: 'POST',
@@ -225,20 +220,21 @@ formPedirPermiso.addEventListener('submit', async (e) => {
                 'Content-Type': 'application/json',
                 'x-token': token
             },
+            //mandamos el body para que el backend pueda usarlo
             body: JSON.stringify({ tipo_permiso, fecha_inicio, fecha_fin, cantidad_dias, motivo })
         });
 
         const result = await response.json();
-
+        //si la respuesta es buena ejecutamos
         if (result.ok) {
             modalInstancia.hide();
             formPedirPermiso.reset(); 
             cargarDatosYActualizarCalendario(); 
-            mostrarToast('Permiso solicitado correctamente', 'success');
+            mostrarToast('permiso solicitado correctamente', 'success');
         } else {
             mostrarToast(result.msg, 'error');
         }
     } catch (error) {
-        mostrarToast("Error de conexión al solicitar permiso", 'error');
+        mostrarToast("error al conectar con el server", 'error');
     }
 });

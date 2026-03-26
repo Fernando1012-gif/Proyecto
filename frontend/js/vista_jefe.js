@@ -2,7 +2,7 @@ const URL_BASE = 'http://localhost:3000/api';
 let calendarioJefe;
 let solicitudesGlobales = []; 
 
-// 1. VALIDAR SESIÓN
+//para validar sesion con tokens
 const token = localStorage.getItem('token');
 const usuarioStr = localStorage.getItem('usuario');
 
@@ -24,9 +24,9 @@ function mostrarToast(mensaje, tipo = 'success') {
     toast.show();
 }
 
-// 2. INICIALIZAR LA VISTA
+//iniciamos la vista
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('saludo-jefe').textContent = usuario.nombre_completo || "Jefe Inmediato";
+    document.getElementById('saludo-jefe').textContent = usuario.nombre_completo || "Subdirector";
     
     document.getElementById('btn-logout').addEventListener('click', () => {
         localStorage.clear();
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inicializarCalendario();
     cargarTodasLasSolicitudes();
 });
-
+//iniciamos el calendario
 function inicializarCalendario() {
     const calendarEl = document.getElementById('calendario-jefe');
     calendarioJefe = new FullCalendar.Calendar(calendarEl, {
@@ -48,28 +48,29 @@ function inicializarCalendario() {
     calendarioJefe.render();
 }
 
-// 3. OBTENER DATOS DEL BACKEND
+//hacemos peticiones a backend
 async function cargarTodasLasSolicitudes() {
     try {
+        //se consume api para obtener los pases(mandamos el token para autenticas)
         const respPases = await fetch(`${URL_BASE}/pases/todos`, { headers: { 'x-token': token } });
+        //se consume api para obtener los permisos y se manda el token para autenticar
         const respPermisos = await fetch(`${URL_BASE}/permisos/todos`, { headers: { 'x-token': token } });
         
         let dataPases = { data: [] };
         let dataPermisos = { data: [] };
-
+        //se formatea a json
         if(respPases.ok) dataPases = await respPases.json();
         if(respPermisos.ok) dataPermisos = await respPermisos.json();
 
         solicitudesGlobales = [...(dataPases.data || []), ...(dataPermisos.data || [])];
-        
+        //damos los datos que hemos obtenido para la pantalla
         actualizarPantallaJefe();
     } catch (error) {
-        console.error("Error al traer datos:", error);
-        mostrarToast("Error de conexión. Revisa que el servidor Node esté corriendo.", "error");
+        console.error("error al mostrar los datos", error);
+        mostrarToast("error al conectar al server", "error");
     }
 }
-
-// 4. DIBUJAR PANTALLA
+//mostramos en pantalla los datos finales
 function actualizarPantallaJefe() {
     const listaPendientes = document.getElementById('lista-pendientes');
     const tablaEstadisticas = document.getElementById('tabla-estadisticas');
@@ -87,11 +88,11 @@ function actualizarPantallaJefe() {
         const esPase = sol.hora_inicio !== undefined; 
         const tipoText = esPase ? 'Pase de Salida' : 'Permiso';
         
-        // Blindaje contra fechas nulas
+        //proteccion si hay fechas nulas
         let fechaRaw = esPase ? sol.fecha_uso : sol.fecha_inicio;
         const fechaMostrar = fechaRaw ? fechaRaw.split('T')[0] : 'Sin fecha definida';
 
-        // Llenar Calendario
+        //llenamos el calendario
         if (sol.estado === 'Aprobado') {
             eventosAprobados.push({
                 title: `${tipoText} - Aprobado`,
@@ -101,7 +102,7 @@ function actualizarPantallaJefe() {
             });
         }
 
-        // Llenar Sidebar con Pendientes y botones
+        //llenamos con botones para la funcion del subdirector
         if (sol.estado === 'Pendiente') {
             listaPendientes.innerHTML += `
                 <div class="solicitud-card">
@@ -119,7 +120,7 @@ function actualizarPantallaJefe() {
             `;
         }
 
-        // Llenar Tabla Central de Resumen
+        //llenamos la tabla central
         let badgeColor = 'bg-warning text-dark';
         if(sol.estado === 'Aprobado') badgeColor = 'bg-success';
         if(sol.estado === 'Rechazado' || sol.estado === 'Cancelado') badgeColor = 'bg-danger';
@@ -141,25 +142,28 @@ function actualizarPantallaJefe() {
     calendarioJefe.addEventSource(eventosAprobados);
 }
 
-// 5. APROBAR O RECHAZAR
+//aprobamos y rechazamos
 async function cambiarEstado(id, tipo, nuevoEstado) {
     try {
+        //vemos que solicitud aprobaremos 
         const endpoint = tipo === 'pase' ? '/pases/can' : '/permisos/can';
-        
+        //mandamos la solicitud para actualizar el pase con la decision del subdirector
         const response = await fetch(`${URL_BASE}${endpoint}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', 'x-token': token },
             body: JSON.stringify({ id: id, cancelar: nuevoEstado }) 
         });
-
+        //checamos que obtuvimos
         const result = await response.json();
+        //si la respuesta es satisfactoria "ok" mostramos mensaje
         if (result.ok) {
             mostrarToast(`Solicitud marcada como ${nuevoEstado}`, 'success');
-            cargarTodasLasSolicitudes(); // Recarga la lista para quitarla de "Pendientes"
+           //cargamos las solicitudes
+            cargarTodasLasSolicitudes(); 
         } else {
             mostrarToast(result.msg, 'error');
         }
     } catch (error) {
-        mostrarToast("Error al procesar la solicitud", 'error');
+        mostrarToast("error al procesar la solicitud", 'error');
     }
 }

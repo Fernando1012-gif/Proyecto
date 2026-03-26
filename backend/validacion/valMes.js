@@ -2,7 +2,7 @@ const dayjs = require('dayjs');
 
 const validaciones = {
     vDia: async (req, res, next) => {
-        // CORREGIDO: Empatado con la variable enviada desde el front y la DB
+        //extraemos algun dato de req body
         const { fecha_inicio } = req.body; 
         
         if (!fecha_inicio) {

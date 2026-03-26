@@ -1,9 +1,8 @@
-
-// Importamos el modelo SQL para pases 
+//importamos el modelo sql de pases
 const pasesSql = require('../modelos/sqlPase'); 
 
 const pasesControlador = {
-    // 1. Crear una nueva solicitud de pase
+    //para crearpases
     crearPase: async (req, res) => {
         try {
             const { fecha_uso, hora_inicio, hora_fin, motivo } = req.body;
@@ -16,47 +15,45 @@ const pasesControlador = {
             const pasesEsteMes = await pasesSql.contarPasesMensuales(usuario_id);
             if (pasesEsteMes >= 3) {
 
-                return res.status(403).json({ ok: false, msg: "Límite alcanzado: Solo puedes pedir 3 pases por mes :P" });
+                return res.status(403).json({ ok: false, msg: "limite alcanzado: solo puedes pedir 3 pases por mes :P" });
             }
 
             const resultado = await pasesSql.crearPase(usuario_id, fecha_uso, hora_inicio, hora_fin, motivo);
-            res.json({ ok: true, msg: "Pase creado con éxito" });
+            res.json({ ok: true, msg: "Pase creado con éeito" });
 
         } catch (error) {
-            res.status(500).json({ ok: false, msg: "Error de servidor al crear pase" });
+            res.status(500).json({ ok: false, msg: "error de servidor al crear pase" });
         }
     },
 
-    // 2. Ver pases del usuario logueado (Para el Docente)
+    //ver pases
     verMisPases: async (req, res) => {
         try {
             const { id } = req.usuario;
             const pases = await pasesSql.obtenerPases(id);
             res.json({ ok: true, data: pases });
         } catch (error) {
-            res.status(500).json({ ok: false, msg: "Error al obtener pases" });
+            res.status(500).json({ ok: false, msg: "error al obtener pases" });
         }
     },
 
-    // 3. NUEVA FUNCIÓN: Ver TODOS los pases (Para RH y Jefe Inmediato)
+    //ver todos
     verTodos: async (req, res) => {
         try {
-            // Mandamos llamar una función SQL sin el filtro WHERE usuario_id
-            // Asegúrate de tener: obtenerTodosPases: async () => { ... const sql = 'select * from pases_salida'; ... } en sqlPase.js
-            const pases = await pasesSql.obtenerTodosPases(); 
+
             res.json({ ok: true, data: pases });
         } catch (error) {
-            res.status(500).json({ ok: false, msg: "Error al obtener todos los pases" });
+            res.status(500).json({ ok: false, msg: "error al obtener todos los pases" });
         }
     },
 
-    // 4. Cancelar un pase (y Aprobar/Rechazar reciclando esta función)
+    //cancelar un pase
     cancelarPase: async (req, res) => {
         const { id, cancelar } = req.body;
         try {
             const paseActualizado = await pasesSql.cancelarPase(cancelar, id);
             if (!paseActualizado) {
-                return res.status(404).json({ ok: false, msg: "Algo salio mal" });
+                return res.status(404).json({ ok: false, msg: "algo no salio bien" });
             }
             res.json({ ok: true, msg: "Estado de pase actualizado correctamente" });
         } catch (error) {
@@ -64,7 +61,7 @@ const pasesControlador = {
         }
     },
 
-    // 5. Modificar un pase
+    //modificar un pase
     modificarPase: async (req, res) => {
         try {
             const { id, fecha_uso, hora_inicio, motivo } = req.body;
