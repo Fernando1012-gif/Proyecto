@@ -7,7 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node backend/server.js",
     "dev": "nodemon backend/server.js"
-
   },
   "keywords": [],
   "author": "",
@@ -20,7 +19,8 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "helmet": "^8.1.0",
-    "mysql2": "^3.19.0"
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.20.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
