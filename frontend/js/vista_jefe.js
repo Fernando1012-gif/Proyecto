@@ -126,7 +126,7 @@ function actualizarPantallaJefe() {
 
         tablaEstadisticas.innerHTML += `
             <tr>
-                <td class="fw-bold">Docente ${sol.usuario_id}</td>
+                <td class="fw-bold">${sol.nombre_completo}</td>
                 <td>${tipoText}</td>
                 <td>${fechaMostrar} <span class="badge ${badgeColor} ms-1">${sol.estado}</span></td>
             </tr>
