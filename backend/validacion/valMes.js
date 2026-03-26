@@ -2,16 +2,18 @@ const dayjs = require('dayjs');
 
 const validaciones = {
     vDia: async (req, res, next) => {
-        const { fI, fecha_uso } = req.body; // <-- Ahora acepta ambos
-        const fechaEvaluar = fI || fecha_uso; // <-- Lógica para elegir la que venga
-
-        if (!fechaEvaluar) {
+        // CORREGIDO: Empatado con la variable enviada desde el front y la DB
+        const { fecha_inicio } = req.body; 
+        
+        if (!fecha_inicio) {
             return res.status(400).json({
                 ok: false,
                 msg: "se ocupa una fecha de inicio"
-            });}
+            });
+        }
+        
         try {
-            const dia = dayjs(fechaEvaluar).day();
+            const dia = dayjs(fecha_inicio).day();
 
             if (dia === 0 || dia === 6) {
                 return res.status(400).json({
@@ -22,11 +24,13 @@ const validaciones = {
             next();
         
         } catch (error) {
-            console.error();
+            console.error(error);
             res.status(500).json({
                 ok: false, 
                 msg: "error al validar la fecha en el servidor"
-            });} }
+            });
+        } 
+    }
 }
 
 module.exports = validaciones;
