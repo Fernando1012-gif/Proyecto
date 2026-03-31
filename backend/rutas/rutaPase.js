@@ -13,7 +13,7 @@ router.post('/crear', validarToken, pasesControlador.crearPase);
 // Ruta para modificar un pase mediante el método patch 
 router.patch('/mod', validarToken, pasesControlador.modificarPase);
 // Ruta para cancelar un pase mediante el método patchhh
-router.patch('/can', validarToken, pasesControlador.cancelarPase);
+router.patch('/cancelar', validarToken, pasesControlador.cancelarPase);
 router.get('/todos', validarToken, pasesControlador.verTodos);
 
 module.exports = router;

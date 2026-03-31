@@ -69,7 +69,7 @@ const permisosControlador = {
         
     //funcion para cancelar un permiso mediante el valor (Reciclada para Aprobar/Rechazar)
     cancelarPermiso: async (req, res) => {
-        const {id, cancelar} = req.body;
+        const {cancelar, id} = req.body;
         try {
             const permisos = await usersql.cancelarPermiso(cancelar, id);
             if (!permisos) {

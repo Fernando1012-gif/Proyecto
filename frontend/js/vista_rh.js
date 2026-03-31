@@ -88,15 +88,11 @@ function pintarTabla(datos = registrosGlobales) {
             <tr>
                 <td class="fw-bold text-muted">#${reg.id}</td>
                 <td><span class="badge bg-secondary">${reg.tipoTramite}</span></td>
-                <td>ID Usuario: ${reg.usuario_id}</td>
+                <td>Nombre: ${reg.nombre_completo}</td>
                 <td>${fechaFormat}</td>
                 <td class="text-truncate" style="max-width: 200px;" title="${reg.motivo}">${reg.motivo}</td>
                 <td><span class="badge ${badgeColor}">${reg.estado}</span></td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="mostrarToast('Detalles no implementados en BD aún', 'success')">
-                        <i class="fa-solid fa-eye"></i>
-                    </button>
-                </td>
+
             </tr>
         `;
     });
@@ -113,7 +109,9 @@ function aplicarFiltros() {
         let cumple = true;
         const fechaObj = new Date(reg.fechaClave);
 
-        if (fDocente && !reg.usuario_id.toString().includes(fDocente)) cumple = false; 
+        if (fDocente && !reg.nombre_completo.toString().toLowerCase().includes(fDocente.toLowerCase().trim())) {
+            cumple = false;
+        }
         if (fEstado !== 'Todos' && reg.estado !== fEstado) cumple = false;
         if (fTipo !== 'Ambos' && reg.tipoTramite !== fTipo) cumple = false;
         
