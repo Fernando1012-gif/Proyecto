@@ -40,7 +40,7 @@ const pasesControlador = {
     //ver todos
     verTodos: async (req, res) => {
         try {
-
+            const pases = await pasesSql.obtenerTodos();
             res.json({ ok: true, data: pases });
         } catch (error) {
             res.status(500).json({ ok: false, msg: "error al obtener todos los pases" });

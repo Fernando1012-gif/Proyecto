@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Subdirector</title>
+    <title>Subdirector - Gestión UTM</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/35660cdf83.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
-    <link rel="apple-touch-icon" sizes="180x180" href="/imagenes/favicon_io/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/imagenes/favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/imagenes/favicon_io/favicon-16x16.png">
-    <link rel="manifest" href="/imagenes/favicon_io/site.webmanifest">
     
 <style>
     :root {
@@ -24,7 +20,6 @@
         --text-dark: #333;
     }
 
-    /* --- ESTRUCTURA BASE --- */
     html, body {
         height: 100vh;
         margin: 0;
@@ -32,8 +27,6 @@
         background-color: var(--bg-gray);
         font-family: 'Segoe UI', Roboto, sans-serif;
     }
-
-    .fondo-animado { display: none; } /* Quitamos las olas para limpiar la vista */
 
     .top-navbar {
         background-color: var(--utm-teal) !important;
@@ -50,11 +43,10 @@
         display: flex;
         height: calc(100vh - 60px);
         width: 100%;
-        padding: 15px; /* Espacio alrededor de los paneles */
+        padding: 15px;
         gap: 15px;
     }
 
-    /* --- SIDEBAR DE SOLICITUDES --- */
     .sidebar {
         width: 380px;
         background-color: white !important;
@@ -64,8 +56,6 @@
         flex-shrink: 0;
         border-radius: 4px;
         padding: 20px;
-        backdrop-filter: none !important;
-        box-shadow: none !important;
     }
 
     .scroll-interno {
@@ -74,7 +64,6 @@
         margin-top: 10px;
     }
 
-    /* --- ÁREA DE CONTENIDO (ESTADÍSTICAS + CALENDARIO) --- */
     .content-area {
         flex-grow: 1;
         display: flex;
@@ -83,20 +72,28 @@
         overflow: hidden;
     }
 
-    /* Paneles individuales */
+    .mini-filter-bar {
+        background-color: white;
+        border: 1px solid var(--border-color);
+        padding: 10px 20px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
     .panel-estadisticas {
-        height: 30%; /* Tamaño fijo para la tabla de arriba */
+        height: 35%;
         background-color: white !important;
         border: 1px solid var(--border-color) !important;
         padding: 15px;
         border-radius: 4px;
-        overflow: hidden;
         display: flex;
         flex-direction: column;
     }
 
     .panel-calendario {
-        flex-grow: 1; /* El calendario toma el resto del espacio */
+        flex-grow: 1;
         background-color: white !important;
         border: 1px solid var(--border-color) !important;
         padding: 15px;
@@ -104,99 +101,71 @@
         overflow: hidden;
     }
 
-    /* --- TARJETAS DE SOLICITUD --- */
     .solicitud-card {
         background: #fff !important;
         border: 1px solid var(--border-color) !important;
-        border-left: 4px solid var(--utm-teal) !important; /* Acento visual */
+        border-left: 4px solid var(--utm-teal) !important;
         border-radius: 4px;
         padding: 15px;
         margin-bottom: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
-        text-shadow: none !important;
     }
 
-    /* --- BOTONES ESTILO SIGO --- */
-    .btn-success {
-        background-color: var(--utm-teal) !important;
-        border: none !important;
-        font-weight: bold;
-    }
+    .btn-success { background-color: var(--utm-teal) !important; border: none !important; font-weight: bold; }
+    .btn-danger { background-color: var(--utm-red) !important; border: none !important; font-weight: bold; }
 
-    .btn-danger {
-        background-color: var(--utm-red) !important;
-        border: none !important;
-        font-weight: bold;
-    }
-
-    /* --- LIMPIEZA DE FULLCALENDAR --- */
-    #calendario-jefe {
-        height: 100%;
-    }
-
-    .fc a, .fc-daygrid-day-number, .fc-col-header-cell-cushion {
-        color: var(--text-dark) !important;
-        text-decoration: none !important;
-    }
-
-    .fc .fc-toolbar-title {
-        color: var(--utm-teal) !important;
-        font-weight: bold;
-        text-transform: lowercase;
-    }
-
-    .fc .fc-button-primary {
-        background-color: var(--utm-teal) !important;
-        border: none !important;
-    }
-
-    /* Tablas limpias */
-    .table th {
-        color: var(--utm-teal);
-        border-bottom: 2px solid var(--utm-teal) !important;
-    }
+    #calendario-jefe { height: 100%; }
+    .fc a, .fc-daygrid-day-number { color: var(--text-dark) !important; text-decoration: none !important; }
+    .fc .fc-toolbar-title { color: var(--utm-teal) !important; font-weight: bold; }
 </style>
 </head>
 <body>
 
-    <div class="top-navbar d-flex justify-content-between align-items-center px-4">
-        <h4 class="m-0 fw-bold" style="color: var(--primary-color);">
-                <img src="recursos/imagenes/isologo_UTM_white.svg" width="59" class="me-2" alt="logo">
+    <div class="top-navbar d-flex justify-content-between align-items-center">
+        <h4 class="m-0 fw-bold">
+            <img src="recursos/imagenes/isologo_UTM_white.svg" width="50" class="me-2" alt="logo">
             Subdirector
         </h4>
         <div class="d-flex align-items-center">
-            <span class="me-4 fw-bold" id="saludo-jefe" style="text-shadow: 0px 2px 3px white;">Cargando usuario...</span>
-            <button id="btn-logout" class="btn btn-sm fw-bold px-3" 
-            style="background-color: transparent; color: #d9534f; border: 2px solid #d9534f; border-radius: 4px;">
-            <i class="fa-solid fa-power-off me-1"></i>
-        </button>
+            <span class="me-4 fw-bold" id="saludo-jefe">Cargando...</span>
+            <button id="btn-logout" class="btn btn-sm btn-danger"><i class="fa-solid fa-power-off"></i></button>
         </div>
     </div>
 
     <div class="main-workspace">
-        
-        <div class="corp-panel aero-glass sidebar">
-            <h5 class="text-primary border-bottom border-light pb-2 mb-3 fw-bold" style="color: var(--primary-color) !important; text-shadow: 0px 1px 2px white;">
-                <i class="fa-solid fa-list-check me-2"></i> Solicitudes Pendientes
+        <div class="sidebar">
+            <h5 class="fw-bold" style="color: var(--utm-teal); border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                <i class="fa-solid fa-list-check me-2"></i>Pendientes
             </h5>
-            <div class="scroll-interno" id="lista-pendientes">
-                <p class="text-muted text-center mt-4 fw-bold" style="text-shadow: 0 1px 1px white;">Cargando...</p>
-            </div>
+            <div class="scroll-interno" id="lista-pendientes"></div>
         </div>
 
         <div class="content-area">
-            
-            <div class="corp-panel aero-glass panel-estadisticas">
-                <h6 class="text-primary border-bottom border-light pb-2 mb-3 fw-bold" style="color: var(--primary-color) !important; text-shadow: 0px 1px 2px white;">
-                    <i class="fa-solid fa-chart-bar me-2"></i> Resumen de Aprobaciones
-                </h6>
+            <div class="mini-filter-bar shadow-sm">
+                <input type="text" id="mini-docente" class="form-control form-control-sm w-25" placeholder="Buscar docente..." onkeyup="ejecutarMiniFiltro()">
+                
+                <div class="btn-group btn-group-sm">
+                    <input type="radio" class="btn-check" name="btn-tipo" id="t-todos" value="Ambos" checked onchange="ejecutarMiniFiltro()">
+                    <label class="btn btn-outline-secondary" for="t-todos">Todos</label>
+                    <input type="radio" class="btn-check" name="btn-tipo" id="t-pases" value="Pase" onchange="ejecutarMiniFiltro()">
+                    <label class="btn btn-outline-secondary" for="t-pases">Pases</label>
+                </div>
+
+                <div class="form-check form-switch small ms-auto">
+                    <input class="form-check-input" type="checkbox" id="check-solo-pendientes" onchange="ejecutarMiniFiltro()">
+                    <label class="form-check-label fw-bold text-muted" for="check-solo-pendientes">Solo Pendientes</label>
+                </div>
+            </div>
+
+            <div class="panel-estadisticas">
+                <h6 class="fw-bold" style="color: var(--utm-teal);"><i class="fa-solid fa-chart-bar me-2"></i>Historial de Aprobaciones</h6>
                 <div class="scroll-interno">
-                    <table class="table table-sm align-middle">
+                    <table class="table table-sm table-hover align-middle">
                         <thead>
-                            <tr style="border-bottom: 2px solid rgba(255,255,255,0.8);">
+                            <tr>
                                 <th>Docente</th>
                                 <th>Tipo</th>
                                 <th>Fecha</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-estadisticas"></tbody>
@@ -204,26 +173,55 @@
                 </div>
             </div>
 
-            <div class="corp-panel aero-glass panel-calendario">
+            <div class="panel-calendario">
                 <div id="calendario-jefe"></div>
             </div>
-            
         </div>
     </div>
 
-    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
-        <div id="toastNotificacion" class="toast border-0 shadow-lg aero-glass" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header border-bottom border-light" id="toast-header-bg" style="background: rgba(255,255,255,0.4); border-top-left-radius: 12px; border-top-right-radius: 12px;">
-                <i class="fa-solid fa-bell me-2 text-dark"></i>
-                <strong class="me-auto text-dark" style="text-shadow: 0px 1px 2px white;">Notificación</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+    <div class="modal fade" id="modalDetalleSolicitud" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" style="color: var(--utm-teal);"><i class="fa-solid fa-circle-info me-2"></i>Detalles</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="text-muted small fw-bold text-uppercase">Docente</label>
+                        <p id="det-nombre" class="fs-5 fw-bold text-dark"></p>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="text-muted small fw-bold text-uppercase">Fecha</label>
+                            <p id="det-fecha" class="fw-semibold"></p>
+                        </div>
+                        <div class="col-6" id="det-contenedor-horas">
+                            <label class="text-muted small fw-bold text-uppercase">Horario</label>
+                            <p id="det-horas" class="fw-semibold"></p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small fw-bold text-uppercase">Motivo</label>
+                        <div class="p-3 bg-light rounded border"><p id="det-motivo" class="mb-0 italic text-secondary"></p></div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <span id="det-tipo-badge" class="badge rounded-pill px-3 py-2"></span>
+                        <span id="det-estado-badge" class="badge"></span>
+                    </div>
+                </div>
             </div>
-            <div class="toast-body fw-bold text-dark" id="toast-mensaje" style="background: rgba(255,255,255,0.2); border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;"></div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toastNotificacion" class="toast" role="alert">
+            <div class="toast-header text-white" id="toast-header-bg"><strong class="me-auto">Aviso</strong></div>
+            <div class="toast-body fw-bold" id="toast-mensaje"></div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/vista_jefe.js"></script>
-
 </body>
 </html>
