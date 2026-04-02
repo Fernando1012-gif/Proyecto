@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RRHH</title>
+    <title>Recursos Humanos - UTM</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/35660cdf83.js" crossorigin="anonymous"></script>
-    <link rel="apple-touch-icon" sizes="180x180" href="/imagenes/favicon_io/apple-touch-icon.png">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
     <link rel="icon" type="image/png" sizes="32x32" href="/imagenes/favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/imagenes/favicon_io/favicon-16x16.png">
-    <link rel="manifest" href="/imagenes/favicon_io/site.webmanifest">
     
 <style>
     :root {
@@ -22,240 +20,230 @@
         --text-dark: #333;
     }
 
-    /* --- ESTRUCTURA BASE --- */
     html, body {
         height: 100vh;
         margin: 0;
-        overflow: hidden; /* Evita doble scroll */
+        overflow: hidden; 
         background-color: var(--bg-gray);
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-family: 'Segoe UI', Roboto, sans-serif;
     }
-
-    .fondo-animado { display: none; }
 
     .top-navbar {
         background-color: var(--utm-teal) !important;
         height: 60px;
         color: white;
+        display: flex;
+        align-items: center;
+        padding: 0 25px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         z-index: 1000;
-        position: relative;
     }
 
     .main-workspace {
         display: flex;
-        height: calc(100vh - 60px); /* El resto de la pantalla */
+        height: calc(100vh - 60px);
         width: 100%;
     }
 
-    /* --- SIDEBAR IZQUIERDO --- */
     .sidebar {
-        width: 300px;
+        width: 320px;
         background-color: white !important;
         border-right: 1px solid var(--border-color);
         padding: 20px;
-        flex-shrink: 0; /* No deja que se encoja */
+        flex-shrink: 0;
         overflow-y: auto;
-        backdrop-filter: none !important; /* Quita el efecto aero */
-        box-shadow: none !important;
     }
 
     .content-area {
-        flex-grow: 1; /* Ocupa todo el espacio sobrante */
-        background-color: white !important;
+        flex-grow: 1;
+        background-color: white;
         padding: 20px;
-        overflow: hidden; /* Importante para FullCalendar */
-        display: flex;
-        flex-direction: column;
-        backdrop-filter: none !important;
-        box-shadow: none !important;
-    }
-
-    #calendario {
-        height: 100%;
-        width: 100%;
-    }
-
-    /* --- ESTILO DE LAS TARJETAS (CORP-PANEL) --- */
-    .corp-panel {
-        background: white !important;
-        border: 1px solid var(--border-color) !important;
-        border-radius: 0px !important; /* Estilo SIGO es más cuadrado */
-    }
-    
-    /* Quitar azul de los números y días */
-    .fc a, .fc-daygrid-day-number, .fc-col-header-cell-cushion {
-        color: var(--text-dark) !important;
-        text-decoration: none !important;
-        font-weight: 600;
-    }
-
-    /* Encabezado del Mes */
-    .fc .fc-toolbar-title {
-        color: var(--utm-teal) !important;
-        font-size: 1.5rem !important;
-        text-transform: lowercase;
-    }
-
-    /* Botones del Calendario */
-    .fc .fc-button-primary {
-        background-color: var(--utm-teal) !important;
-        border: none !important;
-        text-transform: lowercase;
-        font-weight: bold;
-    }
-
-    .fc .fc-button-active {
-        background-color: var(--utm-dark-teal) !important;
-    }
-
-    /* Líneas del calendario más suaves */
-    .fc-theme-standard td, .fc-theme-standard th {
-        border: 1px solid #eee !important;
-    }
-
-    /* --- BOTONES Y COMPONENTES --- */
-    #btn-logout {
-        background: var(--utm-red) !important;
-        color: white !important;
-        border: none !important;
-        padding: 5px 15px !important;
+        overflow-y: auto;
     }
 
     .btn-aero {
         background: var(--utm-teal) !important;
         color: white !important;
-        border-radius: 4px !important;
         border: none !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-        text-shadow: none !important;
+        font-weight: bold;
     }
 
-    .list-group-item {
-        background: white !important;
-        color: var(--text-dark) !important;
-        font-weight: 500;
-        border-color: #f0f0f0 !important;
-    }
+    .table-hover tbody tr { cursor: pointer; }
+    
+    /* Estilo para el dropdown de usuario */
+    .dropdown-toggle::after { vertical-align: middle; }
 </style>
 </head>
 <body>
 
-    <svg class="fondo-animado" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">
-        <defs>
-            <linearGradient id="bg">
-                <stop offset="0%" style="stop-color:rgba(255, 255, 255, 0.06)"></stop>
-                <stop offset="50%" style="stop-color:rgba(216, 236, 248, 0.6)"></stop>
-                <stop offset="100%" style="stop-color:rgba(115, 209, 72, 0.2)"></stop>
-            </linearGradient>
-            <path id="wave" fill="url(#bg)" d="M-363.852,502.589c0,0,236.988-41.997,505.475,0 s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z" />
-        </defs>
-        <g>
-            <use xlink:href='#wave' opacity=".3">
-                <animateTransform attributeName="transform" type="translate" dur="10s" values="270 230; -334 180; 270 230" repeatCount="indefinite" />
-            </use>
-            <use xlink:href='#wave' opacity=".6">
-                <animateTransform attributeName="transform" type="translate" dur="8s" values="-270 230;243 220;-270 230" repeatCount="indefinite" />
-            </use>
-            <use xlink:href='#wave' opacity=".9">
-                <animateTransform attributeName="transform" type="translate" dur="6s" values="0 230;-140 200;0 230" repeatCount="indefinite" />
-            </use>
-        </g>
-    </svg>
-
-    <div class="top-navbar d-flex justify-content-between align-items-center px-4">
-        <h4 class="m-0 fw-bold" style="color: var(--primary-color); text-shadow: 0px 2px 3px white;">
-            <img src="recursos/imagenes/isologo_UTM_white.svg" width="59" class="me-2" alt="logo">
-            RRHH
+    <div class="top-navbar d-flex justify-content-between align-items-center">
+        <h4 class="m-0 fw-bold">
+            <img src="recursos/imagenes/isologo_UTM_white.svg" width="50" class="me-2" alt="logo">
+            Recursos Humanos
         </h4>
-        <div class="d-flex align-items-center">
-            <span class="me-4 fw-bold" id="saludo-rh" style="text-shadow: 0px 2px 3px white;">Cargando usuario...</span>
-           <button id="btn-logout" class="btn btn-sm fw-bold px-3" 
-    style="background-color: transparent; color: #d9534f; border: 2px solid #d9534f; border-radius: 4px;">
-    <i class="fa-solid fa-power-off me-1"></i>
-</button>
+
+        <div class="dropdown">
+            <button class="btn dropdown-toggle text-white fw-bold border-0 d-flex align-items-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" style="text-shadow: 0px 1px 2px rgba(0,0,0,0.5);">
+                <i class="fa-solid fa-circle-user fa-2xl me-2"></i>
+                <span id="saludo-rh">Cargando...</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userMenu">
+                <li class="px-3 py-2 small text-muted border-bottom">Opciones de cuenta</li>
+                <li>
+                    <a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalCambiarPass">
+                        <i class="fa-solid fa-key me-2 text-warning"></i> Cambiar Contraseña
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item py-2 text-danger fw-bold" href="#" id="btn-logout">
+                        <i class="fa-solid fa-power-off me-2"></i> Cerrar Sesión
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 
     <div class="main-workspace">
-        
-        <div class="corp-panel aero-glass sidebar">
-            <h5 class="text-primary border-bottom border-light pb-2 mb-3 fw-bold" style="color: var(--primary-color) !important; text-shadow: 0px 1px 2px white;">
-                <i class="fa-solid fa-filter me-2"></i> Filtros de Búsqueda
-            </h5>
+        <div class="sidebar">
+            <h5 class="fw-bold text-primary mb-3"><i class="fa-solid fa-filter me-2"></i>Filtros</h5>
             <form id="form-filtros">
                 <div class="mb-3">
-                    <label class="form-label text-dark fw-bold small" style="text-shadow: 0 1px 1px white;">Nombre Docente</label>
-                    <input type="text" class="form-control" id="filtro-docente" placeholder="Ej. Pepe">
+                    <label class="form-label small fw-bold">Docente</label>
+                    <input type="text" class="form-control" id="filtro-docente" placeholder="Buscar por nombre...">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label text-dark fw-bold small" style="text-shadow: 0 1px 1px white;">Estado</label>
+                    <label class="form-label small fw-bold">Estado</label>
                     <select class="form-select" id="filtro-estado">
-                        <option value="Todos">Todos los estados</option>
+                        <option value="Todos">Todos</option>
                         <option value="Aprobado">Aprobados</option>
-                        <option value="Rechazado">Rechazados</option>
                         <option value="Pendiente">Pendientes</option>
+                        <option value="Rechazado">Rechazados</option>
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label text-dark fw-bold small" style="text-shadow: 0 1px 1px white;">Tipo de Solicitud</label>
+                    <label class="form-label small fw-bold">Tipo</label>
                     <select class="form-select" id="filtro-tipo">
-                        <option value="Ambos">Pases y Permisos</option>
-                        <option value="Pase">Solo Pases</option>
-                        <option value="Permiso">Solo Permisos</option>
+                        <option value="Ambos">Todos</option>
+                        <option value="Pase">Pases</option>
+                        <option value="Permiso">Permisos</option>
                     </select>
                 </div>
-                <div class="row mb-3">
+                <div class="row g-2 mb-3">
                     <div class="col-6">
-                        <label class="form-label text-dark fw-bold small" style="text-shadow: 0 1px 1px white;">Mes</label>
+                        <label class="form-label small fw-bold">Mes</label>
                         <select class="form-select" id="filtro-mes">
-                            <option value="">Todos</option>
-                            <option value="01">Enero</option>
-                            <option value="02">Febrero</option>
-                            <option value="03">Marzo</option>
-                            <option value="04">Abril</option>
-                            <option value="05">Mayo</option>
-                            <option value="06">Junio</option>
-                            <option value="07">Julio</option>
-                            <option value="08">Agosto</option>
-                            <option value="09">Septiembre</option>
-                            <option value="10">Octubre</option>
-                            <option value="11">Noviembre</option>
-                            <option value="12">Diciembre</option>
+                            <option value="">Cualquiera</option>
+                            <option value="01">Enero</option><option value="02">Febrero</option>
+                            <option value="03">Marzo</option><option value="04">Abril</option>
+                            <option value="05">Mayo</option><option value="06">Junio</option>
+                            <option value="07">Julio</option><option value="08">Agosto</option>
+                            <option value="09">Septiembre</option><option value="10">Octubre</option>
+                            <option value="11">Noviembre</option><option value="12">Diciembre</option>
                         </select>
                     </div>
                     <div class="col-6">
-                        <label class="form-label text-dark fw-bold small" style="text-shadow: 0 1px 1px white;">Año</label>
+                        <label class="form-label small fw-bold">Año</label>
                         <input type="number" class="form-control" id="filtro-año" placeholder="2026">
                     </div>
                 </div>
-                <div class="d-grid mt-4 gap-2">
-                    <button type="button" class="btn btn-aero" id="btn-aplicar-filtros"><i class="fa-solid fa-magnifying-glass me-2"></i> Buscar</button>
-                    <button type="reset" class="btn btn-aero-light">Limpiar Filtros</button>
-                </div>
+                <button type="button" class="btn btn-aero w-100 mb-2" id="btn-aplicar-filtros">
+                    <i class="fa-solid fa-magnifying-glass me-2"></i>Buscar
+                </button>
+                <button type="reset" class="btn btn-light w-100 border">Limpiar</button>
             </form>
         </div>
 
-        <div class="corp-panel aero-glass content-area">
-            <h5 class="text-primary border-bottom border-light pb-2 mb-3 fw-bold" style="color: var(--primary-color) !important; text-shadow: 0px 1px 2px white;">
-                <i class="fa-solid fa-table me-2"></i> Registros de Pases y Permisos
-            </h5>
+        <div class="content-area">
+            <h5 class="fw-bold border-bottom pb-2 mb-4"><i class="fa-solid fa-table me-2"></i>Registros Generales</h5>
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
-                    <thead class="sticky-top">
+                    <thead class="table-light">
                         <tr>
-                            <th>ID</th>
-                            <th>Tipo</th>
-                            <th>ID Docente</th>
-                            <th>Fecha</th>
-                            <th>Motivo</th>
-                            <th>Estado</th>
+                            <th>ID</th><th>Tipo</th><th>Docente</th><th>Fecha</th><th>Motivo</th><th>Estado</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-general">
-                        <tr><td colspan="6" class="text-center py-4 fw-bold" style="color: #102e22; text-shadow: 0 1px 1px white;">Cargando registros...</td></tr>
+                        <tr><td colspan="6" class="text-center py-4">Cargando...</td></tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-aero position-fixed bottom-0 start-0 m-4 shadow-lg rounded-pill px-4 py-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCalendario">
+        <i class="fa-solid fa-calendar-days me-2"></i>Ver Calendario
+    </button>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasCalendario" style="width: 550px;">
+        <div class="offcanvas-header border-bottom bg-light">
+            <h5 class="offcanvas-title fw-bold text-primary">Calendario Global</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="calendario-rh" style="height: 100%;"></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalDetalleRH" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" style="color: var(--utm-teal);">Detalle del Trámite</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <label class="text-muted small fw-bold">Docente</label>
+                    <p id="det-rh-nombre" class="fs-5 fw-bold text-dark"></p>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label id="det-rh-label-fecha" class="text-muted small fw-bold">Fecha</label>
+                            <p id="det-rh-fecha" class="fw-semibold mb-0"></p>
+                        </div>
+                        <div class="col-6" id="det-rh-cont-fin" style="display:none;">
+                            <label class="text-muted small fw-bold">Fecha Fin</label>
+                            <p id="det-rh-fecha-fin" class="fw-semibold mb-0"></p>
+                        </div>
+                        <div class="col-6" id="det-rh-cont-horas" style="display:none;">
+                            <label class="text-muted small fw-bold">Horario</label>
+                            <p id="det-rh-horas" class="fw-semibold mb-0 text-primary"></p>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="det-rh-cont-dias" style="display:none;">
+                        <label class="text-muted small fw-bold">Días Solicitados</label>
+                        <p id="det-rh-dias" class="fw-bold fs-4" style="color: var(--utm-teal);"></p>
+                    </div>
+                    <label class="text-muted small fw-bold">Motivo</label>
+                    <div class="p-3 bg-light rounded border"><p id="det-rh-motivo" class="mb-0 small italic text-secondary"></p></div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <span id="det-rh-tipo-badge" class="badge rounded-pill px-3 py-2"></span>
+                        <span id="det-rh-estado-badge" class="badge fs-6"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCambiarPass" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-light">
+                    <h6 class="modal-title fw-bold"><i class="fa-solid fa-lock me-2"></i>Seguridad</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-cambiar-pass">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Contraseña Actual</label>
+                            <input type="password" class="form-control form-control-sm" id="pass-actual" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Nueva Contraseña</label>
+                            <input type="password" class="form-control form-control-sm" id="pass-nueva" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">Actualizar</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

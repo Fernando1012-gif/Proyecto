@@ -26,11 +26,10 @@
     html, body {
         height: 100vh;
         margin: 0;
-        overflow: hidden; /* Evita doble scroll */
+        overflow: hidden; 
         background-color: var(--bg-gray);
         font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
-
 
     .fondo-animado { display: none; }
 
@@ -45,7 +44,7 @@
 
     .main-workspace {
         display: flex;
-        height: calc(100vh - 60px); /* El resto de la pantalla */
+        height: calc(100vh - 60px); 
         width: 100%;
     }
 
@@ -55,22 +54,19 @@
         background-color: white !important;
         border-right: 1px solid var(--border-color);
         padding: 20px;
-        flex-shrink: 0; /* No deja que se encoja */
+        flex-shrink: 0; 
         overflow-y: auto;
-        backdrop-filter: none !important; /* Quita el efecto aero */
         box-shadow: none !important;
     }
 
-    /* --- ÁREA DEL CALENDARIO (CONTENIDO) --- */
+    /* --- ÁREA DEL CALENDARIO --- */
     .content-area {
-        flex-grow: 1; /* Ocupa todo el espacio sobrante */
+        flex-grow: 1; 
         background-color: white !important;
         padding: 20px;
-        overflow: hidden; /* Importante para FullCalendar */
+        overflow: hidden; 
         display: flex;
         flex-direction: column;
-        backdrop-filter: none !important;
-        box-shadow: none !important;
     }
 
     #calendario {
@@ -84,21 +80,18 @@
         border-radius: 0px !important; 
     }
     
-    /* Quitar azul de los números y días */
     .fc a, .fc-daygrid-day-number, .fc-col-header-cell-cushion {
         color: var(--text-dark) !important;
         text-decoration: none !important;
         font-weight: 600;
     }
 
-    /* Encabezado del Mes */
     .fc .fc-toolbar-title {
         color: var(--utm-teal) !important;
         font-size: 1.5rem !important;
         text-transform: lowercase;
     }
 
-    /* Botones del Calendario (Igualar a la captura) */
     .fc .fc-button-primary {
         background-color: var(--utm-teal) !important;
         border: none !important;
@@ -110,16 +103,11 @@
         background-color: var(--utm-dark-teal) !important;
     }
 
-    /* Líneas del calendario más suaves */
-    .fc-theme-standard td, .fc-theme-standard th {
-        border: 1px solid #eee !important;
-    }
-
     /* --- BOTONES Y COMPONENTES --- */
     #btn-logout {
-        background: var(--utm-red) !important;
-        color: white !important;
-        border: none !important;
+        background: var !important;
+        color: var(--utm-red) !important;
+        border: 2px solid var(--utm-red) !important;
         padding: 5px 15px !important;
     }
 
@@ -128,8 +116,18 @@
         color: white !important;
         border-radius: 4px !important;
         border: none !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-        text-shadow: none !important;
+        font-weight: bold;
+        padding: 10px 20px;
+    }
+
+    /* Nuevo estilo para botón de RRHH (Azul) */
+    .btn-aero-blue {
+        background: #007bff !important;
+        color: white !important;
+        border-radius: 4px !important;
+        border: none !important;
+        font-weight: bold;
+        padding: 10px 20px;
     }
 
     .list-group-item {
@@ -138,136 +136,211 @@
         font-weight: 500;
         border-color: #f0f0f0 !important;
     }
+
+    /* --- BOTONES DE ELECCIÓN --- */
+    .btn-choice {
+        padding: 20px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        height: 120px;
+    }
+
+    #btn-elegir-pase {
+        background-color: white;
+        border-color: var(--utm-teal);
+        color: var(--utm-teal);
+    }
+
+    #btn-elegir-pase:hover {
+        background-color: var(--utm-teal);
+        color: white;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 145, 134, 0.2);
+    }
+
+    #btn-elegir-permiso {
+        background-color: white;
+        border-color: #007bff;
+        color: #007bff;
+    }
+
+    #btn-elegir-permiso:hover {
+        background-color: #007bff;
+        color: white;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 123, 255, 0.2);
+    }
+
+    .btn-choice i {
+        font-size: 2rem;
+    }
+    /* Pone un fondo gris a las celdas de sábado y domingo */
+    .fc-day-sat, .fc-day-sun {
+        background-color: #f8f9fa !important;
+        cursor: not-allowed !important;
+    }
+
+/* Opcional: difumina el número del día */
+.fc-day-sat .fc-daygrid-day-number, 
+.fc-day-sun .fc-daygrid-day-number {
+    opacity: 0.3;
+    }
 </style>
 </head>
 <body>
 
-    <svg class="fondo-animado" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none">
-        <defs>
-            <linearGradient id="bg">
-                <stop offset="0%" style="stop-color:rgba(255, 255, 255, 0.06)"></stop>
-                <stop offset="50%" style="stop-color:rgba(216, 236, 248, 0.6)"></stop>
-                <stop offset="100%" style="stop-color:rgba(115, 209, 72, 0.2)"></stop>
-            </linearGradient>
-            <path id="wave" fill="url(#bg)" d="M-363.852,502.589c0,0,236.988-41.997,505.475,0 s371.981,38.998,575.971,0s293.985-39.278,505.474,5.859s493.475,48.368,716.963-4.995v560.106H-363.852V502.589z" />
-        </defs>
-        <g>
-            <use xlink:href='#wave' opacity=".3">
-                <animateTransform attributeName="transform" type="translate" dur="10s" values="270 230; -334 180; 270 230" repeatCount="indefinite" />
-            </use>
-            <use xlink:href='#wave' opacity=".6">
-                <animateTransform attributeName="transform" type="translate" dur="8s" values="-270 230;243 220;-270 230" repeatCount="indefinite" />
-            </use>
-            <use xlink:href='#wave' opacity=".9">
-                <animateTransform attributeName="transform" type="translate" dur="6s" values="0 230;-140 200;0 230" repeatCount="indefinite" />
-            </use>
-        </g>
-    </svg>
-
     <div class="top-navbar d-flex justify-content-between align-items-center px-4">
-        <h4 class="m-0 fw-bold" style="color: var(--primary-color);">
-                <img src="recursos/imagenes/isologo_UTM_white.svg" width="59" class="me-2" alt="logo">
-            Docente
-        </h4>
-        <div class="d-flex align-items-center">
-            <span class="me-4 fw-bold" id="saludo-profesor" style="text-shadow: 0px 2px 3px white;">Cargando usuario...</span>
-           <button id="btn-logout" class="btn btn-sm fw-bold px-3" 
-    style="background-color: transparent; color: #d9534f; border: 2px solid #d9534f; border-radius: 4px;">
-    <i class="fa-solid fa-power-off me-1"></i>
-</button>
+    <h4 class="m-0 fw-bold">
+        <img src="recursos/imagenes/isologo_UTM_white.svg" width="50" class="me-2" alt="logo">
+        Portal Docente
+    </h4>
+    <div class="dropdown">
+        <button class="btn dropdown-toggle text-white fw-bold border-0 d-flex align-items-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" style="text-shadow: 0px 1px 2px rgba(0,0,0,0.5);">
+            <i class="fa-solid fa-circle-user fa-2xl me-2"></i>
+            <span id="saludo-profesor">Cargando...</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userMenu">
+            <li class="px-3 py-2 small text-muted border-bottom">Opciones de cuenta</li>
+            <li>
+                <a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalCambiarPass">
+                    <i class="fa-solid fa-key me-2 text-warning"></i> Cambiar Contraseña
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a class="dropdown-item py-2 text-danger fw-bold" href="#" id="btn-logout">
+                    <i class="fa-solid fa-power-off me-2"></i> Cerrar Sesión
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCambiarPass" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-light">
+                <h6 class="modal-title fw-bold"><i class="fa-solid fa-lock me-2"></i>Seguridad</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-cambiar-pass">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Contraseña Actual</label>
+                        <input type="password" class="form-control form-control-sm" id="pass-actual" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Nueva Contraseña</label>
+                        <input type="password" class="form-control form-control-sm" id="pass-nueva" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">Actualizar</button>
+                </form>
+            </div>
         </div>
     </div>
+</div>
 
     <div class="main-workspace">
-        
-        <div class="corp-panel aero-glass sidebar">
-            <h5 class="mb-4 border-bottom border-light pb-2 fw-bold" style="color: var(--primary-color); text-shadow: 0px 2px 3px white;">
-                <i class="fa-solid fa-circle-info me-2"></i> Estado de Solicitudes
+        <div class="sidebar corp-panel">
+            <h5 class="mb-4 border-bottom pb-2 fw-bold" style="color: var(--utm-teal);">
+                <i class="fa-solid fa-circle-info me-2"></i> Solicitudes
             </h5>
             
             <ul class="list-group list-group-flush mb-4 fw-bold">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Aprobados
-                    <span class="badge rounded-pill shadow-sm border border-light text-dark" style="background: linear-gradient(180deg, #a8ff78, #78ffd6);" id="badge-aprobados">0</span>
+                    <span class="badge rounded-pill shadow-sm text-dark" style="background: linear-gradient(180deg, #a8ff78, #78ffd6);" id="badge-aprobados">0</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Pendientes
-                    <span class="badge rounded-pill shadow-sm border border-light text-dark" style="background: linear-gradient(180deg, #f6d365, #fda085);" id="badge-pendientes">0</span>
+                    <span class="badge rounded-pill shadow-sm text-dark" style="background: linear-gradient(180deg, #f6d365, #fda085);" id="badge-pendientes">0</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     Rechazados
-                    <span class="badge rounded-pill shadow-sm border border-light text-dark" style="background: linear-gradient(180deg, #ff9a9e, #fecfef);" id="badge-rechazados">0</span>
+                    <span class="badge rounded-pill shadow-sm text-dark" style="background: linear-gradient(180deg, #ff9a9e, #fecfef);" id="badge-rechazados">0</span>
                 </li>
             </ul>
-            <h5 class="mt-4 mb-3 border-bottom border-light pb-2 fw-bold" style="color: var(--utm-teal); text-shadow: 0px 1px 2px white;">
+
+            <h5 class="mt-4 mb-3 border-bottom pb-2 fw-bold" style="color: var(--utm-teal);">
                 <i class="fa-solid fa-clock-rotate-left me-2"></i> Historial Reciente
             </h5>
             <div id="historial-lista" class="d-flex flex-column gap-2">
                 <div class="text-center text-muted small py-3">Cargando historial...</div>
             </div>
         </div>
-        
 
-        <div class="corp-panel aero-glass content-area">
+        <div class="content-area corp-panel">
             <div id="calendario"></div>
         </div>
-
     </div>
 
     <div class="modal fade" id="modalSolicitud" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content aero-glass shadow-lg border-0">
-                <div class="modal-header border-bottom border-light" style="background: rgba(255,255,255,0.3);">
-                    <h5 class="modal-title fw-bold" style="color: var(--primary-color); text-shadow: 0px 2px 3px white;">
+            <div class="modal-content shadow-lg border-0">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" style="color: var(--utm-teal);">
                         <i class="fa-solid fa-file-signature me-2"></i> Nueva Solicitud
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     
                     <div id="step-1-choice" class="text-center">
-                        <h6 class="mb-4 fw-bold" style="color: #0c422c; text-shadow: 0px 2px 2px white;">¿Qué tipo de trámite deseas realizar?</h6>
-                        <div class="d-grid gap-3">
-                            <button type="button" class="btn btn-lg fw-bold" id="btn-elegir-pase">
-                                <i class="fa-solid fa-person-walking-arrow-right me-2"></i> Pase de Salida
-                            </button>
-                            <button type="button" class="btn btn-lg fw-bold" id="btn-elegir-permiso" style="background: linear-gradient(180deg, #89f7fe 0%, #66a6ff 49%, #3b8dff 50%, #66a6ff 100%); border: 1px solid white; color: white; border-radius: 8px; box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.15);">
-                                <i class="fa-solid fa-house-medical me-2"></i> Permiso de Inasistencia
-                            </button>
+                        <h6 class="mb-4 fw-bold text-secondary">¿Qué tipo de trámite deseas realizar?</h6>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <button type="button" class="btn btn-choice w-100 fw-bold" id="btn-elegir-pase">
+                                    <i class="fa-solid fa-person-walking-arrow-right"></i>
+                                    <span>Pase de Salida</span>
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" class="btn btn-choice w-100 fw-bold" id="btn-elegir-permiso">
+                                    <i class="fa-solid fa-house-medical"></i>
+                                    <span>Permiso de Inasistencia</span>
+                                </button>
+                            </div>
                         </div>
+                        <p class="mt-4 small text-muted">Selecciona una opción para continuar</p>
                     </div>
 
                     <form id="form-pedir-pase" style="display: none;">
-                        <h6 class="border-bottom border-light pb-2 mb-3 fw-bold" style="color: var(--primary-color); text-shadow: 0 1px 1px white;">Detalles del Pase de Salida</h6>
+                        <h6 class="border-bottom pb-2 mb-3 fw-bold text-secondary">Detalles del Pase</h6>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold text-dark">Fecha de Uso</label>
+                                <label class="form-label fw-bold">Fecha de Uso</label>
                                 <input type="date" class="form-control" id="fecha_uso" readonly required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold text-dark">Hora Inicio</label>
+                                <label class="form-label fw-bold">Hora Inicio</label>
                                 <input type="time" class="form-control" id="hora_inicio" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-dark">Hora Fin</label>
+                            <div class="col-md-6 mt-3">
+                                <label class="form-label fw-bold">Hora Fin</label>
                                 <input type="time" class="form-control" id="hora_fin" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-dark">Motivo / Justificación</label>
+                            <label class="form-label fw-bold">Motivo / Justificación</label>
                             <textarea class="form-control" id="motivo_pase" rows="3" required></textarea>
                         </div>
                         <div class="d-flex justify-content-end gap-2 mt-4">
-                            <button type="button" class="btn btn-light fw-bold shadow-sm border-white" onclick="volverPaso1()">Atrás</button>
+                            <button type="button" class="btn btn-light fw-bold" onclick="volverPaso1()">Atrás</button>
                             <button type="submit" class="btn btn-aero">Enviar a Jefe Inmediato</button>
                         </div>
                     </form>
 
                     <form id="form-pedir-permiso" style="display: none;">
-                        <h6 class="border-bottom border-light pb-2 mb-3 fw-bold" style="color: var(--primary-color); text-shadow: 0 1px 1px white;">Detalles del Permiso</h6>
+                        <h6 class="border-bottom pb-2 mb-3 fw-bold text-secondary">Detalles del Permiso</h6>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold text-dark">Tipo</label>
+                                <label class="form-label fw-bold">Tipo</label>
                                 <select class="form-select" id="tipo_permiso" required>
                                     <option value="Personal">Asunto Personal</option>
                                     <option value="Salud">Salud / Médico</option>
@@ -275,27 +348,27 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold text-dark">Días solicitados</label>
+                                <label class="form-label fw-bold">Días solicitados</label>
                                 <input type="number" class="form-control" id="cantidad_dias" min="1" max="3" value="1" required>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold text-dark">Fecha Inicio</label>
+                                <label class="form-label fw-bold">Fecha Inicio</label>
                                 <input type="date" class="form-control" id="fecha_inicio" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold text-dark">Fecha Fin</label>
+                                <label class="form-label fw-bold">Fecha Fin</label>
                                 <input type="date" class="form-control" id="fecha_fin" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-dark">Motivo / Justificación</label>
+                            <label class="form-label fw-bold">Motivo / Justificación</label>
                             <textarea class="form-control" id="motivo" rows="3" required></textarea>
                         </div>
                         <div class="d-flex justify-content-end gap-2 mt-4">
-                            <button type="button" class="btn btn-light fw-bold shadow-sm border-white" onclick="volverPaso1()">Atrás</button>
-                            <button type="submit" class="btn fw-bold shadow-sm" style="background: linear-gradient(180deg, #89f7fe 0%, #66a6ff 49%, #3b8dff 50%, #66a6ff 100%); border: 1px solid white; color: white; border-radius: 8px;">Enviar a RRHH</button>
+                            <button type="button" class="btn btn-light fw-bold" onclick="volverPaso1()">Atrás</button>
+                            <button type="submit" class="btn btn-aero-blue">Enviar a RRHH</button>
                         </div>
                     </form>
 
@@ -305,17 +378,69 @@
     </div>
 
     <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
-        <div id="toastNotificacion" class="toast border-0 shadow-lg aero-glass" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header border-bottom border-light" id="toast-header-bg" style="background: rgba(255,255,255,0.4); border-top-left-radius: 12px; border-top-right-radius: 12px;">
-                <i class="fa-solid fa-bell me-2 text-dark"></i>
-                <strong class="me-auto text-dark" style="text-shadow: 0px 1px 2px white;">Notificación del Sistema</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        <div id="toastNotificacion" class="toast border-0 shadow-lg" role="alert">
+            <div class="toast-header text-white" id="toast-header-bg">
+                <i class="fa-solid fa-bell me-2"></i>
+                <strong class="me-auto">Aviso del Sistema</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
             </div>
-            <div class="toast-body fw-bold text-dark" id="toast-mensaje" style="background: rgba(255,255,255,0.2); border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
-                Mensaje aquí
+            <div class="toast-body fw-bold text-dark" id="toast-mensaje"></div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalDetalleDocente" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold" style="color: #009186;"><i class="fa-solid fa-circle-info me-2"></i>Detalles de mi Solicitud</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <label class="text-muted small fw-bold text-uppercase">Tipo de Trámite</label>
+                        <p id="v-det-tipo" class="fs-5 fw-bold text-dark mb-0"></p>
+                    </div>
+                    <span id="v-det-tipo-badge" class="badge rounded-pill px-3 py-2"></span>
+                </div>
+
+                <hr class="my-3 text-muted opacity-25">
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label id="v-label-fecha" class="text-muted small fw-bold text-uppercase">Fecha Inicio</label>
+                        <p id="v-det-fecha" class="fw-semibold fs-6 mb-0"></p>
+                    </div>
+                    
+                    <div class="col-6" id="v-cont-fin" style="display: none;">
+                        <label class="text-muted small fw-bold text-uppercase">Fecha Fin</label>
+                        <p id="v-det-fecha-fin" class="fw-semibold fs-6 mb-0"></p>
+                    </div>
+
+                    <div class="col-6" id="v-cont-horas" style="display: none;">
+                        <label class="text-muted small fw-bold text-uppercase">Horario</label>
+                        <p id="v-det-horas" class="fw-semibold fs-6 mb-0 text-primary"></p>
+                    </div>
+                </div>
+
+                <div class="mb-3" id="v-cont-dias" style="display: none;">
+                    <label class="text-muted small fw-bold text-uppercase">Días Totales</label>
+                    <p id="v-det-dias" class="fw-bold fs-5" style="color: #009186;"></p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="text-muted small fw-bold text-uppercase">Motivo / Justificación</label>
+                    <div class="p-3 bg-light rounded border">
+                        <p id="v-det-motivo" class="mb-0 text-secondary" style="font-style: italic;"></p>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end align-items-center mt-4">
+                    <span id="v-det-estado-badge" class="badge fs-6"></span>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/principal.js"></script>
