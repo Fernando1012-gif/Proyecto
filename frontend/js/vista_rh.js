@@ -1,31 +1,62 @@
 //url para consultar la api
 const URL_BASE = 'http://localhost:3000/api';
+const socket = io('http://localhost:3000');
 let registrosGlobales = [];
 let calendarioRH;
 let modalDetalleRH;
 
-
 const token = sessionStorage.getItem('token');
 const usuarioStr = sessionStorage.getItem('usuario');
 
+// CONFIGURACIÓN DE SOCKETS EN TIEMPO REAL
+socket.on('nuevo-pase-creado', () => {
+    cargarDatosGenerales(); // Usamos tu función principal
+    mostrarToast("¡Nuevo pase solicitado!", "info");
+});
+
+socket.on('pase-actualizado', () => {
+    cargarDatosGenerales(); 
+});
+
+socket.on('nuevo-permiso-creado', (data) => {
+    console.log(data.msg);
+    cargarDatosGenerales();
+    mostrarToast("¡Nueva solicitud de Permiso recibida!", "info");
+});
+
+// Escuchar cuando algo cambia
+socket.on('permiso-actualizado', () => {
+    cargarDatosGenerales(); 
+});
+
 if (!token || !usuarioStr) window.location.href = "login.html";
 const usuario = JSON.parse(usuarioStr);
+
 //funcion para ver si la sesion esta expirada
 function manejarSesionExpirada() {
     sessionStorage.clear();
     window.location.href = "login.html";
 }
+
 //aviso
 document.body.insertAdjacentHTML('beforeend', `
     <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
         <div id="toastRH" class="toast" role="alert"><div class="toast-header text-white" id="toast-header-rh"><strong class="me-auto">RRHH</strong></div>
         <div class="toast-body fw-bold" id="toast-msg-rh"></div></div>
     </div>`);
+
 //funcion para mostrar aviso
 function mostrarToast(mensaje, tipo = 'success') {
     const toastEl = document.getElementById('toastRH');
+    const header = document.getElementById('toast-header-rh');
     document.getElementById('toast-msg-rh').textContent = mensaje;
-    document.getElementById('toast-header-rh').className = `toast-header text-white ${tipo === 'success' ? 'bg-success' : 'bg-danger'}`;
+    
+    // Ajuste de colores: verde, rojo o azul (info)
+    let claseFondo = 'bg-success';
+    if (tipo === 'danger' || tipo === 'error') claseFondo = 'bg-danger';
+    if (tipo === 'info') claseFondo = 'bg-info'; 
+
+    header.className = `toast-header text-white ${claseFondo}`;
     new bootstrap.Toast(toastEl, { delay: 3000 }).show();
 }
 
@@ -80,7 +111,6 @@ async function cargarDatosGenerales() {
     }
 }
 
-
 //funcion para mostrar datos en tabla
 function pintarTabla(datos) {
     const tbody = document.getElementById('tabla-general');
@@ -124,6 +154,7 @@ function inicializarCalendarioRH() {
     });
     calendarioRH.render();
 }
+
 //funcion para mostrar eventos en claendario
 function generarEventos(datos) {
     return datos.map(reg => ({
@@ -133,6 +164,7 @@ function generarEventos(datos) {
         extendedProps: { ...reg }
     }));
 }
+
 //funcion para ver detalles de un tramite
 function verDetallesRRHH(data) {
     const esPase = data.tipoTramite === 'Pase';
@@ -168,6 +200,7 @@ function verDetallesRRHH(data) {
     est.className = `badge fs-6 ${data.estado === 'Aprobado' ? 'bg-success' : (data.estado === 'Pendiente' ? 'bg-warning text-dark' : 'bg-danger')}`;
     modalDetalleRH.show();
 }
+
 //funcion para aplicar filtros
 function aplicarFiltros() {
     const fDoc = document.getElementById('filtro-docente').value.toLowerCase();
@@ -210,7 +243,6 @@ if (formPassRH) {
         } catch (error) { mostrarToast("Error de conexion", "error"); }
     });
 }
-
 
 function ordenarRapido(criterio) {
     if (!registrosGlobales.length) return;

@@ -91,6 +91,15 @@ const usersql = {
             throw error;
         }
     },
+obtenerInfoDocentePorPermiso: async (permisoId) => {
+    const sql = `
+        SELECT u.correo_institucional, u.nombre_completo 
+        FROM permisos_goce p 
+        JOIN usuarios u ON p.usuario_id = u.id 
+        WHERE p.id = ?`;
+    const [rows] = await db.execute(sql, [permisoId]);
+    return rows[0]; 
+}
 }
 //exporamos usersql para que el controlador pueda acceder al objeto de este archivo
 module.exports = usersql;

@@ -1,5 +1,6 @@
 //importamos el modelo sql propio de permisos
 const usersql = require('../modelos/sqlPermiso');
+const { enviarNotificacionEstado } = require('../correos/correo');
 
 ////creamos el objeto con las funciones 
 const permisosControlador = {
@@ -55,6 +56,8 @@ const permisosControlador = {
             if (!permisos) {
                 return res.status(404).json({ ok: false, msg: "Algo salio mal" });
             }
+            const io = req.app.get('socketio');
+            io.emit('nuevo-permiso-creado', { msg: 'Un docente solicito un permiso' });
             res.json({ ok: true, msg: "se ha creado correctamente el permiso!" }); 
         } catch(error) {
             if (error.errno === 1644 || error.sqlState === '45000') {
@@ -65,18 +68,36 @@ const permisosControlador = {
     },  
         
     //funcion para cancelar un permiso mediante el valor (Reciclada para Aprobar/Rechazar)
+    //cancelar un permiso (Aprobar/Rechazar/Cancelar)
     cancelarPermiso: async (req, res) => {
-        const {cancelar, id} = req.body;
+        const { cancelar, id } = req.body;
         try {
             const permisos = await usersql.cancelarPermiso(cancelar, id);
+            
             if (!permisos) {
                 return res.status(404).json({ ok: false, msg: "Algo salio mal" });
             }
-            res.json({ ok: true, msg: "Estado modificado correctamente!" }); 
+            const docente = await usersql.obtenerInfoDocentePorPermiso(id);
+
+            //socket para avisar en tiempo real
+            const io = req.app.get('socketio');
+            io.emit('permiso-actualizado', { id, nuevoEstado: cancelar });
+
+            if (docente && docente.correo_institucional) {
+                enviarNotificacionEstado(
+                    docente.correo_institucional, 
+                    docente.nombre_completo, 
+                    "Permiso de Inasistencia", 
+                    cancelar
+                );
+            }
+
+            res.json({ ok: true, msg: "Estado modificado y docente notificado!" }); 
+
         } catch(error) {
-            res.status(500).json({ok: false, msg: "Error de serverp"});
+            console.error("Error en cancelar:", error);
+            res.status(500).json({ok: false, msg: "Error de server"});
         }
-    }
-}
+    }}
     
 module.exports = permisosControlador;

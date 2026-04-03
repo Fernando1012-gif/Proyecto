@@ -1,5 +1,6 @@
 //importamos el modelo sql de pases
 const pasesSql = require('../modelos/sqlPase'); 
+const { enviarNotificacionEstado } = require('../correos/correo');
 
 const pasesControlador = {
     //para crearpases
@@ -19,7 +20,10 @@ const pasesControlador = {
             }
 
             const resultado = await pasesSql.crearPase(usuario_id, fecha_uso, hora_inicio, hora_fin, motivo);
+            const io = req.app.get('socketio'); 
+            io.emit('nuevo-pase-creado', { msg: 'Un docente solicitó un pase' });
             res.json({ ok: true, msg: "Pase creado con éeito" });
+            
 
         } catch (error) {
             res.status(500).json({ ok: false, msg: "error de servidor al crear pase" });
@@ -47,16 +51,36 @@ const pasesControlador = {
         }
     },
 
-    //cancelar un pase
+//cancelar un pase (Aprobar/Rechazar/Cancelar)
     cancelarPase: async (req, res) => {
-        const { id, cancelar } = req.body;
+        const { id, cancelar } = req.body; // 'id' es el del pase, 'cancelar' es el nuevo estado
         try {
+            // 1. Intentamos actualizar el estado en la base de datos
             const paseActualizado = await pasesSql.cancelarPase(cancelar, id);
+            
             if (!paseActualizado) {
-                return res.status(404).json({ ok: false, msg: "algo no salio bien" });
+                return res.status(404).json({ ok: false, msg: "algo no salio bien al actualizar" });
             }
-            res.json({ ok: true, msg: "Pase actualizado correctamente" });
+
+            const docente = await pasesSql.obtenerInfoDocentePorPase(id);
+            
+            //socket para avisar en tiempo real
+            const io = req.app.get('socketio');
+            io.emit('pase-actualizado', { id, nuevoEstado: cancelar });
+
+            if (docente) {
+                enviarNotificacionEstado(
+                    docente.correo_institucional,           
+                    docente.nombre_completo,
+                    "Pase de Salida", 
+                    cancelar
+                );
+            }
+
+            res.json({ ok: true, msg: "Pase actualizado y docente notificado correctamente" });
+            
         } catch (error) {
+            console.error("Error en cancelarPase:", error);
             res.status(500).json({ ok: false, msg: "Error al actualizar estado" });
         }
     },
@@ -75,6 +99,8 @@ const pasesControlador = {
             console.error(error);
             res.status(500).json({ ok: false, msg: "Error del server al modificar" });
         }
-    }}
+    },
+};
+
 
 module.exports = pasesControlador;

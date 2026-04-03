@@ -1,8 +1,30 @@
 //url para consultar api
 const URL_BASE = 'http://localhost:3000/api';
+const socket = io('http://localhost:3000');
 let calendarioJefe;
 let modalDetalle;
 let solicitudesGlobales = []; 
+
+// Escuchamos el aviso del servidor en tiempo real
+socket.on('nuevo-pase-creado', (data) => {
+    console.log("Mensaje del servidor:", data.msg);
+    // Llamamos a tu función real para refrescar los datos
+    cargarTodasLasSolicitudes(); 
+    // Avisamos visualmente al jefe
+    mostrarToast("¡Nueva solicitud recibida!", "info");
+});
+
+socket.on('nuevo-permiso-creado', (data) => {
+    console.log(data.msg);
+    // Corregido: usamos cargarTodasLasSolicitudes() que es la que existe aquí
+    cargarTodasLasSolicitudes(); 
+    mostrarToast("¡Nueva solicitud de Permiso recibida!", "info");
+});
+
+// Escuchar cuando algo cambia
+socket.on('permiso-actualizado', () => {
+    cargarTodasLasSolicitudes(); 
+});
 
 const token = sessionStorage.getItem('token');
 const usuarioStr = sessionStorage.getItem('usuario');
@@ -15,11 +37,13 @@ function manejarSesionExpirada() {
     sessionStorage.clear();
     window.location.href = "login.html";
 }
+
 function mostrarToast(mensaje, tipo = 'success') {
     const toastEl = document.getElementById('toastNotificacion');
     const toastHeader = document.getElementById('toast-header-bg');
     document.getElementById('toast-mensaje').textContent = mensaje;
     toastHeader.className = `toast-header text-white ${tipo === 'success' ? 'bg-success' : 'bg-danger'}`;
+    if(tipo === 'info') toastHeader.className = `toast-header text-white bg-info`;
     new bootstrap.Toast(toastEl).show();
 }
 
@@ -78,6 +102,7 @@ async function cargarTodasLasSolicitudes() {
         mostrarToast("Error al conectar al sserver", "error"); 
     }
 }
+
 //filtro para ordenar historial
 function ejecutarMiniFiltro() {
     const buscador = document.getElementById('mini-docente').value.toLowerCase().trim();
@@ -142,7 +167,7 @@ function actualizarPantallaJefe(datos) {
                 <td>${sol.nombre_completo}</td>
                 <td>${sol.tipoTramite}</td>
                 <td>${fechaMostrar}</td>
-                <td><span class="badge ${sol.estado === 'Aprobado' ? 'bg-success' : 'bg-warning text-dark'}">${sol.estado}</span></td>
+                <td><span class="badge ${sol.estado === 'Aprobado' ? 'bg-success' : (sol.estado === 'Pendiente' ? 'bg-warning text-dark' : 'bg-danger')}">${sol.estado}</span></td>
             </tr>`;
     });
 
@@ -158,6 +183,7 @@ function actualizarPantallaJefe(datos) {
     calendarioJefe.removeAllEventSources();
     calendarioJefe.addEventSource(eventos);
 }
+
 //funcion para ver los detalles de un tramite
 function verDetallesModal(data) {
     const esPase = data.tipoTramite === 'Pase';
@@ -193,7 +219,8 @@ function verDetallesModal(data) {
     
     modalDetalle.show();
 }
-//funcion para aprobar o rechazar 
+
+//funcion para aprobar o rechazar
 async function cambiarEstado(id, tipo, nuevoEstado) {
     const endpoint = tipo === 'pase' ? '/pases/cancelar' : '/permisos/cancelar';
     try {

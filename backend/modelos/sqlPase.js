@@ -94,6 +94,16 @@ const pasesql = {
             console.error("Error al buscar por id", error);
             throw error;
         }
+    },
+    obtenerInfoDocentePorPase: async (paseId) => {
+        
+        const sql = `
+            SELECT u.correo_institucional, u.nombre_completo 
+            FROM pases_salida p 
+            JOIN usuarios u ON p.usuario_id = u.id 
+            WHERE p.id = ?`;
+        const [rows] = await db.execute(sql, [paseId]);
+        return rows[0];
     }
 };
 

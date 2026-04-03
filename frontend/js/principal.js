@@ -1,5 +1,6 @@
 //url api
 const URL_BASE = 'http://localhost:3000/api';
+const socket = io('http://localhost:3000');
 let calendarioOficial;
 let modalInstancia;                
 let modalDetalleDocenteInstancia;  
@@ -12,6 +13,20 @@ let metodoPendiente = null;
 
 const token = sessionStorage.getItem('token');
 const usuarioStr = sessionStorage.getItem('usuario');
+
+// CONFIGURACIÓN DE SOCKETS PARA TIEMPO REAL
+socket.on('pase-actualizado', (data) => {
+    console.log("Estado de pase actualizado:", data);
+    // Corregido: Llamamos a tu función real para refrescar
+    cargarDatosYActualizarCalendario(); 
+    mostrarToast("¡Tu solicitud de Pase ha sido actualizada!", "info");
+});
+
+socket.on('permiso-actualizado', (data) => {
+    console.log("Estado de permiso actualizado:", data);
+    cargarDatosYActualizarCalendario(); 
+    mostrarToast("¡Tu solicitud de Permiso ha sido actualizada!", "info");
+});
 
 if (!token || !usuarioStr) window.location.href = "login.html";
 const usuario = JSON.parse(usuarioStr);
@@ -75,12 +90,19 @@ document.addEventListener('DOMContentLoaded', () => {
     pintarCalendario([]);
     cargarDatosYActualizarCalendario();
 });
+
 //avisos emergentess
 function mostrarToast(mensaje, tipo = 'success') {
     const toastEl = document.getElementById('toastNotificacion');
     const toastHeader = document.getElementById('toast-header-bg');
     document.getElementById('toast-mensaje').textContent = mensaje;
-    toastHeader.className = `toast-header text-white ${tipo === 'success' ? 'bg-success' : 'bg-danger'}`;
+    
+    // Colores: verde, rojo o azul (info)
+    let claseFondo = 'bg-success';
+    if (tipo === 'danger' || tipo === 'error') claseFondo = 'bg-danger';
+    if (tipo === 'info') claseFondo = 'bg-info';
+
+    toastHeader.className = `toast-header text-white ${claseFondo}`;
     new bootstrap.Toast(toastEl, { delay: 4000 }).show();
 }
 
@@ -92,6 +114,7 @@ function volverPaso1() {
     document.getElementById('form-pedir-pase').reset();
     document.getElementById('form-pedir-permiso').reset();
 }
+
 //funcion para calcular la cantidad de dias solicitados
 function calcularDiasPermiso() {
     const fechaInicioStr = document.getElementById('fecha_inicio').value;
@@ -126,6 +149,7 @@ function calcularDiasPermiso() {
         inputDias.classList.remove('is-invalid');
     }
 }
+
 //funcion para ver los detalles de una solicitud
 function verDetallesSolicitud(data) {
     const esPase = data.tipoTramite === 'Pase';
@@ -162,14 +186,12 @@ async function cargarDatosYActualizarCalendario() {
             fetch(`${URL_BASE}/pases/ver`, { headers: { 'x-token': token } }),
             fetch(`${URL_BASE}/permisos/ver`, { headers: { 'x-token': token } })
         ]);
-        //si el codigo de error es 401 obtenemos un redireccionamiento al login
         if (resPases.status === 401 || resPermisos.status === 401) {
             manejarSesionExpirada();
             return;
         }
         const dataPases = await resPases.json();
         const dataPermisos = await resPermisos.json();
-        //si todo sale bien:
         if (dataPases.ok && dataPermisos.ok) {
             const pasesM = (dataPases.data || []).map(p => ({ ...p, tipoTramite: 'Pase', fechaClave: p.fecha_uso }));
             const permisosM = (dataPermisos.data || []).map(p => ({ ...p, tipoTramite: 'Permiso', fechaClave: p.fecha_inicio }));
@@ -192,6 +214,7 @@ async function cargarDatosYActualizarCalendario() {
         mostrarToast("Error de sincronizacion", "error"); 
     }
 }
+
 //funcion para pintar el calendario con los datos del usuario
 function pintarCalendario(eventos) {
     calendarioOficial = new FullCalendar.Calendar(document.getElementById('calendario'), {
@@ -219,7 +242,6 @@ function pintarHistorial(registros) {
     [...registros].sort((a, b) => b.id - a.id).slice(0, 59).forEach(reg => {
         const fechaParaMostrar = reg.fecha_uso_h || reg.fecha_inicio_h;
         
-        //colores
         let borderClass = 'border-secondary';
         if (reg.estado === 'Aprobado') borderClass = 'border-success';
         else if (reg.estado === 'Pendiente') borderClass = 'border-warning';
@@ -230,7 +252,6 @@ function pintarHistorial(registros) {
         div.style.cursor = 'pointer';
         div.onclick = () => verDetallesSolicitud(reg);
         
-        //si el motivo viene vacio:
         const textoMotivo = reg.motivo || 'Sin motivo especificado';
 
         div.innerHTML = `
@@ -278,7 +299,8 @@ function prepararEdicion(tipo, id) {
     }
     modalInstancia.show();
 }
-//funcion para cancelar un tramite si aun no esta aprobado o rechazado
+
+//funcion para cancelar un tramite
 async function cancelarSolicitud(tipo, id) {
     if (!confirm(`¿Cancelar #${id}?`)) return;
     const endpoint = tipo === 'Pase' ? 'pases' : 'permisos';
@@ -302,20 +324,16 @@ document.getElementById('form-pedir-pase').addEventListener('submit', (e) => {
 
     if (hFin <= hInicio) return mostrarToast("La hora de salida debe ser mayor a la de entrada", "error");
 
-    //tenemos la informacion temporalmente
     datosPendientes = { fecha_uso: fechaUso, hora_inicio: hInicio, hora_fin: hFin, motivo: motivo, id: editandoId };
     urlPendiente = editandoId ? `${URL_BASE}/pases/mod` : `${URL_BASE}/pases/crear`;
     metodoPendiente = editandoId ? 'PATCH' : 'POST';
 
-    //generamos los datos para preguntar la confirmacion
     document.getElementById('conf-resumen').innerHTML = `
         <strong>Trámite:</strong> Pase de Salida <br>
         <strong>Fecha de Uso:</strong> <span class="text-primary">${fechaUso}</span> <br>
         <strong>Horario:</strong> ${hInicio} a ${hFin} <br>
         <strong>Motivo:</strong> <span class="text-muted fst-italic">${motivo}</span>
     `;
-    
-    //mostramos la confirmacion
     modalConfirmacionInstancia.show();
 });
 
@@ -328,12 +346,10 @@ document.getElementById('form-pedir-permiso').addEventListener('submit', (e) => 
     const dias = document.getElementById('cantidad_dias').value;
     const motivo = document.getElementById('motivo').value;
 
-    //guardamos la informacion temporalmente
     datosPendientes = { tipo_permiso: tipo, fecha_inicio: fechaI, fecha_fin: fechaF, cantidad_dias: dias, motivo: motivo, id: editandoId };
     urlPendiente = editandoId ? `${URL_BASE}/permisos/mod` : `${URL_BASE}/permisos/crear`;
     metodoPendiente = editandoId ? 'PATCH' : 'POST';
 
-    //genramos los datos para la pregunta de confirmacion
     document.getElementById('conf-resumen').innerHTML = `
         <strong>Trámite:</strong> Permiso de Inasistencia <br>
         <strong>Tipo:</strong> ${tipo} <br>
@@ -344,6 +360,7 @@ document.getElementById('form-pedir-permiso').addEventListener('submit', (e) => 
     modalConfirmacionInstancia.show();
 });
 
+// Cambiar Password
 const formPassDocente = document.getElementById('form-cambiar-pass');
 if (formPassDocente) {
     formPassDocente.addEventListener('submit', async (e) => {
@@ -355,6 +372,9 @@ if (formPassDocente) {
             if ((await resp.json()).ok) { mostrarToast("Cambiado"); bootstrap.Modal.getInstance(document.getElementById('modalCambiarPass')).hide(); formPassDocente.reset(); }
         } catch (error) { mostrarToast("Error", "error"); }
     });
+}
+
+// Corregido: Botón de confirmar envío fuera del bloque IF anterior
 document.getElementById('btn-confirmar-envio').addEventListener('click', async () => {
     const btn = document.getElementById('btn-confirmar-envio');
     btn.disabled = true;
@@ -368,7 +388,6 @@ document.getElementById('btn-confirmar-envio').addEventListener('click', async (
         });
         
         const resultado = await resp.json();
-
         modalConfirmacionInstancia.hide();
 
         if (resultado.ok) { 
@@ -387,16 +406,14 @@ document.getElementById('btn-confirmar-envio').addEventListener('click', async (
         btn.textContent = 'Confirmar y Enviar';
     }
 });
-}
 
-//funcion para  determinar las horas de inicio y fin
+//funcion para determinar las horas de inicio y fin
 function actualizarLimitesHoraFin() {
     const hInicioSelect = document.getElementById('hora_inicio');
     const hFinSelect = document.getElementById('hora_fin');
     
     if (!hInicioSelect || !hFinSelect || !hInicioSelect.value) return;
 
-    //hora de inicio a numero
     const horaInicioNum = parseInt(hInicioSelect.value.split(':')[0], 10);
 
     Array.from(hFinSelect.options).forEach(opcion => {
@@ -422,7 +439,7 @@ function actualizarLimitesHoraFin() {
     }
 }
 
-//funcion para limitar la seleccion de fechas de acuerdo a lo que selecciona el usuario
+//funcion para limitar la seleccion de fechas
 function actualizarLimitesFechaFin() {
     const inputInicio = document.getElementById('fecha_inicio');
     const inputFin = document.getElementById('fecha_fin');
@@ -431,29 +448,21 @@ function actualizarLimitesFechaFin() {
 
     inputFin.min = inputInicio.value;
 
-    //maximo 3 dias habiles
     let fechaMax = new Date(inputInicio.value + 'T00:00:00');
     let diasHabiles = 1;
 
-    if (fechaMax.getDay() === 0 || fechaMax.getDay() === 6) {
-        diasHabiles = 0; 
-    }
+    if (fechaMax.getDay() === 0 || fechaMax.getDay() === 6) diasHabiles = 0; 
 
     while (diasHabiles < 3) {
         fechaMax.setDate(fechaMax.getDate() + 1);
-        //si no es fin de semana cuenta como dia habil
-        if (fechaMax.getDay() !== 0 && fechaMax.getDay() !== 6) {
-            diasHabiles++;
-        }
+        if (fechaMax.getDay() !== 0 && fechaMax.getDay() !== 6) diasHabiles++;
     }
 
-    //formateamos la fecha dia mes año
     const año = fechaMax.getFullYear();
     const mes = String(fechaMax.getMonth() + 1).padStart(2, '0');
     const dia = String(fechaMax.getDate()).padStart(2, '0');
     const maxStr = `${año}-${mes}-${dia}`;
 
-    //limite al calendario 
     inputFin.max = maxStr;
 
     if (inputFin.value > maxStr || inputFin.value < inputInicio.value) {

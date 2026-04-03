@@ -3,9 +3,17 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
-
-const app = express();
+const http = require('http');
+const { Server } = require('socket.io');
 const cors = require('cors');
+
+// Inicializamos app primero para poder usarla en el server
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: { origin: "*" } 
+});
+
 app.use(cors());
 //midlewares
 app.use(express.json());
@@ -14,6 +22,7 @@ app.use(cookieParser());
 app.use(helmet({
     contentSecurityPolicy: false 
 }));
+app.set('socketio', io);
 //configuracion de rutas estaticas
 app.use(express.static(path.join(__dirname, "..", "frontend")));
 
@@ -32,6 +41,6 @@ app.use('/api/pases', rutasPases);
 
 //puerto que usaremos
 const PORT = 3000;
-app.listen(PORT,'0.0.0.0', () => {
+server.listen(PORT,'0.0.0.0', () => {
     console.log(`Servidor listo en http://localhost:${PORT}`);
 });
