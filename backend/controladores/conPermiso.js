@@ -18,11 +18,9 @@ const permisosControlador = {
         }
     }, 
 
-    // NUEVA FUNCIÓN: Para que RH y Jefes vean TODOS los permisos de todos los profes
+    //funcion para ver todos los permisos sin importar id
     verTodosPermisos: async (req, res) => {
         try {
-            // Llama a una nueva funcion en tu sqlPermiso que no lleve el id
-            // Ej: obtenerTodos: async () => { ... sql = 'select * from permisos_goce'; ... }
             const permisos = await usersql.obtenerTodos();
             res.json({ ok: true, data: permisos });
         } catch(error) {
@@ -59,7 +57,6 @@ const permisosControlador = {
             }
             res.json({ ok: true, msg: "se ha creado correctamente el permiso!" }); 
         } catch(error) {
-            // Aquí atrapamos el error del TRIGGER de MySQL (los 3 permisos por cuatrimestre)
             if (error.errno === 1644 || error.sqlState === '45000') {
                 return res.status(400).json({ ok: false, msg: error.sqlMessage })
             }

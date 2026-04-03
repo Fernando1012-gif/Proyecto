@@ -3,12 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Pases y Salidas</title>
-    <link rel="stylesheet" href="css/login.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="/imagenes/favicon_io/apple-touch-icon.png">
+    <title>Login</title>
+    
     <link rel="icon" type="image/png" sizes="32x32" href="/imagenes/favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/imagenes/favicon_io/favicon-16x16.png">
-    <link rel="manifest" href="/imagenes/favicon_io/site.webmanifest">
+
+    <style>
+        :root {
+            --utm-teal: #009186; /* Verde UTM */
+            --utm-dark: #007d74;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Foto de fondo nítida */
+            background-image: url('imagenes/Login.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        #loginsection {
+
+            background: rgba(255, 255, 255, 0.7); 
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-top: 6px solid var(--utm-teal); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .form-title {
+            color: var(--utm-teal);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+            font-size: 2rem;
+        }
+
+        .input-box { margin-bottom: 20px; }
+
+        .input-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .input-box input:focus { border-color: var(--utm-teal); }
+
+        .error {
+            color: #d9534f;
+            font-size: 0.75rem;
+            display: block;
+            margin-top: 5px;
+            height: 15px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--utm-teal);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover { background-color: var(--utm-dark); }
+    </style>
 </head>
 <body>
 

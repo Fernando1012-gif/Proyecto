@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recursos Humanos - UTM</title>
+    <title>Recursos Humanos</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/35660cdf83.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
-    <link rel="icon" type="image/png" sizes="32x32" href="/imagenes/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/imagenes/blue/favicon-32x32.png">
     
 <style>
     :root {
         --utm-teal: #009186;
-        --utm-dark-teal: #007d74;
+        --utm-dark-teal: #0648a3;
         --utm-red: #d9534f;
         --bg-gray: #f4f7f6;
         --border-color: #dee2e6;
@@ -70,8 +70,9 @@
 
     .table-hover tbody tr { cursor: pointer; }
     
-    /* Estilo para el dropdown de usuario */
-    .dropdown-toggle::after { vertical-align: middle; }
+    /* Estilos para los radio buttons de filtrado rápido */
+    .btn-check:checked + .btn-outline-warning { background-color: #ffc107; color: #000; }
+    .btn-check:checked + .btn-outline-info { background-color: #ffffff; color: #000; }
 </style>
 </head>
 <body>
@@ -106,7 +107,7 @@
 
     <div class="main-workspace">
         <div class="sidebar">
-            <h5 class="fw-bold text-primary mb-3"><i class="fa-solid fa-filter me-2"></i>Filtros</h5>
+            <h5 class="fw-bold text-primary mb-3"><i class="fa-solid fa-filter me-2"></i>Filtros Avanzados</h5>
             <form id="form-filtros">
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Docente</label>
@@ -119,14 +120,6 @@
                         <option value="Aprobado">Aprobados</option>
                         <option value="Pendiente">Pendientes</option>
                         <option value="Rechazado">Rechazados</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label small fw-bold">Tipo</label>
-                    <select class="form-select" id="filtro-tipo">
-                        <option value="Ambos">Todos</option>
-                        <option value="Pase">Pases</option>
-                        <option value="Permiso">Permisos</option>
                     </select>
                 </div>
                 <div class="row g-2 mb-3">
@@ -153,18 +146,57 @@
                 <button type="reset" class="btn btn-light w-100 border">Limpiar</button>
             </form>
         </div>
-
+        
         <div class="content-area">
-            <h5 class="fw-bold border-bottom pb-2 mb-4"><i class="fa-solid fa-table me-2"></i>Registros Generales</h5>
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                <h5 class="fw-bold m-0"><i class="fa-solid fa-table me-2"></i>Registros Generales</h5>
+                
+                <div class="d-flex align-items-center gap-2">
+                    <span class="small fw-bold text-muted text-uppercase d-none d-md-inline">Ordenar:</span>
+                    <div class="btn-group btn-group-sm border rounded shadow-sm bg-white">
+                        <button class="btn btn-light" onclick="ordenarRapido('reciente')" title="Más recientes">
+                            <i class="fa-solid fa-clock-rotate-left text-primary"></i>
+                        </button>
+                        <button class="btn btn-light" onclick="ordenarRapido('nombre')" title="Nombre A-Z">
+                            <i class="fa-solid fa-font text-primary"></i>
+                        </button>
+                        <button class="btn btn-light" onclick="ordenarRapido('tipo')" title="Agrupar por Trámite">
+                            <i class="fa-solid fa-layer-group text-primary"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 mb-3 overflow-x-auto pb-1">
+                <div class="btn-group btn-group-sm shadow-sm" role="group">
+                    <input type="radio" class="btn-check" name="qFilter" id="qAll" checked onclick="filtrarRapido('Todos')">
+                    <label class="btn btn-outline-secondary px-3" for="qAll">Todos</label>
+
+                    <input type="radio" class="btn-check" name="qFilter" id="qPase" onclick="filtrarRapido('Pase')">
+                    <label class="btn btn-outline-info px-3" for="qPase">Pases</label>
+
+                    <input type="radio" class="btn-check" name="qFilter" id="qPerm" onclick="filtrarRapido('Permiso')">
+                    <label class="btn btn-outline-info px-3" for="qPerm">Permisos</label>
+                </div>
+                <button class="btn btn-sm btn-link text-muted" onclick="location.reload()" title="Refrescar">
+                    <i class="fa-solid fa-rotate"></i>
+                </button>
+            </div>
+
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-hover align-middle shadow-sm border">
                     <thead class="table-light">
                         <tr>
-                            <th>ID</th><th>Tipo</th><th>Docente</th><th>Fecha</th><th>Motivo</th><th>Estado</th>
+                            <th width="50">ID</th>
+                            <th width="100">Tipo</th>
+                            <th>Docente</th>
+                            <th>Fecha</th>
+                            <th>Motivo</th>
+                            <th width="120">Estado</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-general">
-                        <tr><td colspan="6" class="text-center py-4">Cargando...</td></tr>
+                        <tr><td colspan="6" class="text-center py-4">Cargando registros...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -172,12 +204,12 @@
     </div>
 
     <button class="btn btn-aero position-fixed bottom-0 start-0 m-4 shadow-lg rounded-pill px-4 py-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCalendario">
-        <i class="fa-solid fa-calendar-days me-2"></i>Ver Calendario
+        <i class="fa-solid fa-calendar-days me-2"></i>Ver Calendario Global
     </button>
 
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasCalendario" style="width: 550px;">
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasCalendario" style="width: 600px;">
         <div class="offcanvas-header border-bottom bg-light">
-            <h5 class="offcanvas-title fw-bold text-primary">Calendario Global</h5>
+            <h5 class="offcanvas-title fw-bold text-primary">Mapa de Inasistencias y Salidas</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body">
@@ -196,6 +228,11 @@
                     <label class="text-muted small fw-bold">Docente</label>
                     <p id="det-rh-nombre" class="fs-5 fw-bold text-dark"></p>
                     <div class="row mb-3">
+                        <div class="mb-3">
+                            <label class="text-muted small fw-bold text-uppercase">Solicitado el día:</label>
+                            <p id="det-fecha-creacion" class="fw-bold text-dark mb-0"></p>
+                        </div>
+                        <hr class="my-2 opacity-25">
                         <div class="col-6">
                             <label id="det-rh-label-fecha" class="text-muted small fw-bold">Fecha</label>
                             <p id="det-rh-fecha" class="fw-semibold mb-0"></p>
@@ -219,30 +256,6 @@
                         <span id="det-rh-tipo-badge" class="badge rounded-pill px-3 py-2"></span>
                         <span id="det-rh-estado-badge" class="badge fs-6"></span>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalCambiarPass" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-light">
-                    <h6 class="modal-title fw-bold"><i class="fa-solid fa-lock me-2"></i>Seguridad</h6>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-cambiar-pass">
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Contraseña Actual</label>
-                            <input type="password" class="form-control form-control-sm" id="pass-actual" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Nueva Contraseña</label>
-                            <input type="password" class="form-control form-control-sm" id="pass-nueva" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">Actualizar</button>
-                    </form>
                 </div>
             </div>
         </div>

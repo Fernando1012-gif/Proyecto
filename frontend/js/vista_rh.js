@@ -1,21 +1,27 @@
+//url para consultar la api
 const URL_BASE = 'http://localhost:3000/api';
 let registrosGlobales = [];
 let calendarioRH;
 let modalDetalleRH;
 
-const token = localStorage.getItem('token');
-const usuarioStr = localStorage.getItem('usuario');
+
+const token = sessionStorage.getItem('token');
+const usuarioStr = sessionStorage.getItem('usuario');
 
 if (!token || !usuarioStr) window.location.href = "login.html";
 const usuario = JSON.parse(usuarioStr);
-
-// Inyectar Toast
+//funcion para ver si la sesion esta expirada
+function manejarSesionExpirada() {
+    sessionStorage.clear();
+    window.location.href = "login.html";
+}
+//aviso
 document.body.insertAdjacentHTML('beforeend', `
     <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
         <div id="toastRH" class="toast" role="alert"><div class="toast-header text-white" id="toast-header-rh"><strong class="me-auto">RRHH</strong></div>
         <div class="toast-body fw-bold" id="toast-msg-rh"></div></div>
     </div>`);
-
+//funcion para mostrar aviso
 function mostrarToast(mensaje, tipo = 'success') {
     const toastEl = document.getElementById('toastRH');
     document.getElementById('toast-msg-rh').textContent = mensaje;
@@ -28,11 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('saludo-rh').textContent = usuario.nombre_completo || "RRHH";
     
     document.getElementById('btn-logout').addEventListener('click', () => {
-        localStorage.clear();
+        sessionStorage.clear();
         window.location.href = "login.html";
     });
 
-    // Inicializar calendario al abrir Offcanvas
     document.getElementById('offcanvasCalendario').addEventListener('shown.bs.offcanvas', () => {
         if (!calendarioRH) inicializarCalendarioRH();
         else calendarioRH.updateSize();
@@ -44,22 +49,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function cargarDatosGenerales() {
     try {
+        //consultas para ver pases y permisos de todos
         const [resPases, resPermisos] = await Promise.all([
             fetch(`${URL_BASE}/pases/todos`, { headers: { 'x-token': token } }),
             fetch(`${URL_BASE}/permisos/todos`, { headers: { 'x-token': token } })
         ]);
+
+        //se validan tokens
+        if (resPases.status === 401 || resPermisos.status === 401) {
+            manejarSesionExpirada();
+            return;
+        }
+        const dataP = await resPases.json();
+        const dataM = await resPermisos.json();
         
-        const pases = (await resPases.json()).data || [];
-        const permisos = (await resPermisos.json()).data || [];
+        const pases = dataP.data || [];
+        const permisos = dataM.data || [];
 
         const mPases = pases.map(p => ({ ...p, tipoTramite: 'Pase', fechaClave: p.fecha_uso }));
         const mPermisos = permisos.map(p => ({ ...p, tipoTramite: 'Permiso', fechaClave: p.fecha_inicio }));
 
         registrosGlobales = [...mPases, ...mPermisos].sort((a, b) => new Date(b.fechaClave) - new Date(a.fechaClave));
+        
+        //actualizamos
         pintarTabla(registrosGlobales);
-    } catch (e) { mostrarToast("Error de conexión", "error"); }
+
+    } catch (e) { 
+        console.error("Error en cargarDatosGenerales:", e);
+        mostrarToast("Error de conexión", "error"); 
+    }
 }
 
+
+//funcion para mostrar datos en tabla
 function pintarTabla(datos) {
     const tbody = document.getElementById('tabla-general');
     tbody.innerHTML = '';
@@ -73,11 +95,14 @@ function pintarTabla(datos) {
         tr.onclick = () => verDetallesRRHH(reg);
         let bColor = reg.estado === 'Aprobado' ? 'bg-success' : (reg.estado === 'Pendiente' ? 'bg-warning text-dark' : 'bg-danger');
         
+        //fecha formateada
+        const fechaParaTabla = reg.fecha_uso_h || reg.fecha_inicio_h;
+
         tr.innerHTML = `
             <td class="fw-bold">#${reg.id}</td>
             <td><span class="badge bg-secondary">${reg.tipoTramite}</span></td>
             <td>${reg.nombre_completo}</td>
-            <td>${reg.fechaClave.split('T')[0]}</td>
+            <td>${fechaParaTabla}</td> 
             <td class="text-truncate" style="max-width: 150px;">${reg.motivo}</td>
             <td><span class="badge ${bColor}">${reg.estado}</span></td>`;
         tbody.appendChild(tr);
@@ -89,6 +114,7 @@ function pintarTabla(datos) {
     }
 }
 
+//funcion para iniciar calendario 
 function inicializarCalendarioRH() {
     calendarioRH = new FullCalendar.Calendar(document.getElementById('calendario-rh'), {
         initialView: 'dayGridMonth', locale: 'es', height: '100%',
@@ -98,7 +124,7 @@ function inicializarCalendarioRH() {
     });
     calendarioRH.render();
 }
-
+//funcion para mostrar eventos en claendario
 function generarEventos(datos) {
     return datos.map(reg => ({
         title: `${reg.nombre_completo}: ${reg.tipoTramite}`,
@@ -107,11 +133,14 @@ function generarEventos(datos) {
         extendedProps: { ...reg }
     }));
 }
-
+//funcion para ver detalles de un tramite
 function verDetallesRRHH(data) {
     const esPase = data.tipoTramite === 'Pase';
     document.getElementById('det-rh-nombre').textContent = data.nombre_completo;
     document.getElementById('det-rh-motivo').textContent = data.motivo || 'Sin motivo';
+    
+    //fecha formateada
+    document.getElementById('det-fecha-creacion').textContent = data.fecha_solicitud_h || 'N/A';
     
     const contHoras = document.getElementById('det-rh-cont-horas');
     const contFin = document.getElementById('det-rh-cont-fin');
@@ -119,14 +148,16 @@ function verDetallesRRHH(data) {
 
     if (esPase) {
         document.getElementById('det-rh-label-fecha').textContent = "Fecha Uso";
-        document.getElementById('det-rh-fecha').textContent = data.fecha_uso.split('T')[0];
+        // --- Usamos fecha humana ---
+        document.getElementById('det-rh-fecha').textContent = data.fecha_uso_h;
         contHoras.style.display = 'block'; contFin.style.display = 'none'; contDias.style.display = 'none';
         document.getElementById('det-rh-horas').textContent = `${data.hora_inicio.substring(0,5)} - ${data.hora_fin.substring(0,5)}`;
     } else {
         document.getElementById('det-rh-label-fecha').textContent = "Fecha Inicio";
-        document.getElementById('det-rh-fecha').textContent = data.fecha_inicio.split('T')[0];
+        // --- Usamos fechas humanas ---
+        document.getElementById('det-rh-fecha').textContent = data.fecha_inicio_h;
         contHoras.style.display = 'none'; contFin.style.display = 'block'; contDias.style.display = 'block';
-        document.getElementById('det-rh-fecha-fin').textContent = data.fecha_fin.split('T')[0];
+        document.getElementById('det-rh-fecha-fin').textContent = data.fecha_fin_h;
         document.getElementById('det-rh-dias').textContent = `${data.cantidad_dias} día(s) hábiles`;
     }
 
@@ -137,7 +168,7 @@ function verDetallesRRHH(data) {
     est.className = `badge fs-6 ${data.estado === 'Aprobado' ? 'bg-success' : (data.estado === 'Pendiente' ? 'bg-warning text-dark' : 'bg-danger')}`;
     modalDetalleRH.show();
 }
-
+//funcion para aplicar filtros
 function aplicarFiltros() {
     const fDoc = document.getElementById('filtro-docente').value.toLowerCase();
     const fEst = document.getElementById('filtro-estado').value;
@@ -155,37 +186,70 @@ function aplicarFiltros() {
         return true;
     });
     pintarTabla(res);
-    mostrarToast(`Encontrados: ${res.length}`);
 }
-// Lógica para el formulario de cambio de contraseña en RRHH
+
+//cambiar password
 const formPassRH = document.getElementById('form-cambiar-pass');
 if (formPassRH) {
     formPassRH.addEventListener('submit', async (e) => {
         e.preventDefault();
         const password = document.getElementById('pass-actual').value;
         const npassword = document.getElementById('pass-nueva').value;
-
         try {
             const resp = await fetch(`${URL_BASE}/login/npassword`, {
                 method: 'PATCH',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'x-token': token 
-                },
+                headers: { 'Content-Type': 'application/json', 'x-token': token },
                 body: JSON.stringify({ password, npassword })
             });
-
             const res = await resp.json();
-
             if (res.ok) {
-                mostrarToast("Contraseña actualizada con éxito");
+                mostrarToast("Contraseña actualizada");
                 bootstrap.Modal.getInstance(document.getElementById('modalCambiarPass')).hide();
                 formPassRH.reset();
-            } else {
-                mostrarToast(res.msg, "error");
-            }
-        } catch (error) {
-            mostrarToast("Error al conectar con el servidor", "error");
-        }
+            } else { mostrarToast(res.msg, "error"); }
+        } catch (error) { mostrarToast("Error de conexion", "error"); }
     });
+}
+
+
+function ordenarRapido(criterio) {
+    if (!registrosGlobales.length) return;
+    
+    let copia = [...registrosGlobales];
+
+    switch (criterio) {
+        case 'reciente':
+            //ordenar de mayor a menor id
+            copia.sort((a, b) => b.id - a.id);
+            break;
+        case 'nombre':
+            //ordenar alfabeticamente
+            copia.sort((a, b) => a.nombre_completo.localeCompare(b.nombre_completo));
+            break;
+        case 'tipo':
+            //pases y permisos
+            copia.sort((a, b) => a.tipoTramite.localeCompare(b.tipoTramite));
+            break;
+    }
+
+    pintarTabla(copia);
+}
+
+//funcion para filtrar
+function filtrarRapido(valor) {
+    if (!registrosGlobales.length) return;
+
+    let filtrados = [];
+
+    if (valor === 'Todos') {
+        filtrados = registrosGlobales;
+    } else if (valor === 'Pendiente') {
+        //filtrar pendientes
+        filtrados = registrosGlobales.filter(r => r.estado === 'Pendiente');
+    } else {
+        //filtrar pases o permisos
+        filtrados = registrosGlobales.filter(r => r.tipoTramite === valor);
+    }
+
+    pintarTabla(filtrados);
 }

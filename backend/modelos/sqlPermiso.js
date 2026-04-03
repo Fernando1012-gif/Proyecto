@@ -9,7 +9,16 @@ const usersql = {
     obtenerPermisos: async (id) => {
         try {
             //creamos la consulta donde obtendremos todos los registros de un usuario
-            const sql = 'select * from permisos_goce where usuario_id = ?';
+            const sql = `SELECT 
+    pg.*, 
+    u.nombre_completo, 
+    DATE_FORMAT(pg.fecha_inicio, '%d/%m/%Y') AS fecha_inicio_h, 
+    DATE_FORMAT(pg.fecha_fin, '%d/%m/%Y') AS fecha_fin_h, 
+    DATE_FORMAT(pg.fecha_solicitud, '%d/%m/%Y %H:%i') AS fecha_solicitud_h 
+    FROM permisos_goce pg 
+    INNER JOIN usuarios u ON pg.usuario_id = u.id 
+    WHERE pg.usuario_id = ? 
+    ORDER BY pg.fecha_solicitud DESC`;
             //ejecutamos la consulta mysql con los parametros dados
             const [datos] = await db.execute(sql, [id]);
             //regresamos "datos" pero solo la primera fila 
@@ -40,44 +49,45 @@ const usersql = {
             const [datos] = await db.execute(sql, [us, tipo, fI, fF, cD, motivo]);
             return datos;
         } catch (error){
-            console.error("Error al crear");
+            console.error("Error al crear",error);
             throw error;
 }
     },
-    //funcion para cancelar un permiso mediante el valor de 1
+    //funcion para cancelar un permiso
     cancelarPermiso: async (cancelar, id) => {
         try {
             const sql = 'update permisos_goce set estado = ? where id = ?';
             const [datos] = await db.execute(sql, [cancelar, id]);
             return datos;
     } catch (error){
-            console.error("Error al editar cancelar");
+            console.error("Error al cancelar");
             throw error;
-}},
-// esta funcion sirve para obtener absolutamente todos los permisos (Para Jefe y RRHH)
+    }},
     obtenerTodos: async () => {
         try {
-            // creamos la consulta donde obtendremos todos los permisos completos
-            const sql = 'select * from permisos_goce';
-            // ejecutamos la consulta mysql
+            const sql = `SELECT 
+    pg.id, 
+    pg.usuario_id, 
+    u.nombre_completo,
+    pg.tipo_permiso,
+    pg.cantidad_dias, 
+    pg.motivo, 
+    pg.estado,
+    pg.fecha_inicio, 
+    pg.fecha_fin, 
+    pg.fecha_solicitud,
+    DATE_FORMAT(pg.fecha_inicio, '%d/%m/%Y') AS fecha_inicio_h,
+    DATE_FORMAT(pg.fecha_fin, '%d/%m/%Y') AS fecha_fin_h,
+    DATE_FORMAT(pg.fecha_solicitud, '%d/%m/%Y %H:%i') AS fecha_solicitud_h,
+    pg.revisado_por,
+    pg.fecha_revision
+    FROM permisos_goce pg
+    INNER JOIN usuarios u ON pg.usuario_id = u.id
+    ORDER BY pg.fecha_solicitud DESC`;
             const [datos] = await db.execute(sql);
-            // regresamos todos los datos encontrados
             return datos;
         } catch (error) {
-            console.error("Error al obtener todos los permisos generales", error);
-            throw error;
-        }
-    },
-    obtenerTodos: async () => {
-        try {
-            // Usamos JOIN para traer también el nombre_completo
-            const sql = `SELECT permisos_goce.*, usuarios.nombre_completo 
-                         FROM permisos_goce 
-                         INNER JOIN usuarios ON permisos_goce.usuario_id = usuarios.id`;
-            const [datos] = await db.execute(sql);
-            return datos;
-        } catch (error) {
-            console.error("Error al obtener todos los permisos generales", error);
+            console.error("Error al obtener todos los permisos", error);
             throw error;
         }
     },

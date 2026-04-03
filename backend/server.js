@@ -5,11 +5,12 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 
 const app = express();
-
+const cors = require('cors');
+app.use(cors());
 //midlewares
 app.use(express.json());
 app.use(cookieParser());
-//desactivamos las seguridad por el momento
+//seguridad desactivada por el momento
 app.use(helmet({
     contentSecurityPolicy: false 
 }));
@@ -31,6 +32,6 @@ app.use('/api/pases', rutasPases);
 
 //puerto que usaremos
 const PORT = 3000;
-app.listen(PORT, () => {
+app.listen(PORT,'0.0.0.0', () => {
     console.log(`Servidor listo en http://localhost:${PORT}`);
 });
