@@ -1,0 +1,165 @@
+<div id="plantilla-pdf-container" style="position: absolute; left: -9999px; top: -9999px;">
+    <div id="molde-pase-salida" style="width: 200mm; padding: 15mm; background: white; font-family: 'Helvetica', 'Arial', sans-serif; color: #333;">
+        
+        <div style="display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 25px;">
+            <img src="imagenes/utmlog.png" style="height: 100px;" alt="Logo UTM">
+            <div style="position: absolute; right: 0; top: 0; background: #e8e8e8; padding: 4px 12px; border: 1px solid #ccc; font-size: 10pt; min-width: 120px;">
+                No. Solicitud <span id="pdf-folio" style="margin-left: 10px; font-weight: bold;"></span>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="margin: 5px 0; font-size: 16pt; font-weight: 500;">Solicitud para salida de personal</h2>
+        </div>
+
+        <div style="border: 1px solid #ddd;">
+            <div style="background: #f2f2f2; padding: 10px 15px; border-bottom: 1px solid #fff; display: flex;">
+                <span style="width: 180px; font-size: 10pt;">Fecha</span>
+                <span id="pdf-fecha-hoy" style="font-weight: bold; font-size: 11pt;"></span>
+            </div>
+
+            <div style="background: #f2f2f2; padding: 10px 15px; border-bottom: 1px solid #fff; display: flex; justify-content: space-between;">
+                <div style="display: flex; flex-grow: 1;">
+                    <span style="width: 180px; font-size: 10pt;">Día en que se solicita</span>
+                    <span id="pdf-dia-solicitud" style="font-weight: bold; font-size: 11pt;"></span>
+                </div>
+                <div style="width: 250px;">
+                    <span style="font-size: 10pt;">Hora de</span>
+                    <span id="pdf-hora-inicio" style="margin: 0 8px; font-weight: bold; border-bottom: 1px solid #999;"></span>
+                    <span style="font-size: 10pt;">a</span>
+                    <span id="pdf-hora-fin" style="margin-left: 8px; font-weight: bold; border-bottom: 1px solid #999;"></span>
+                </div>
+            </div>
+
+            <div style="background: #f2f2f2; padding: 10px 15px; border-bottom: 1px solid #fff; display: flex;">
+                <span style="width: 180px; font-size: 10pt;">Personal que solicita</span>
+                <span id="pdf-nombre-personal" style="font-weight: bold; font-size: 11pt; text-transform: uppercase;"></span>
+            </div>
+
+            <div style="background: #f2f2f2; padding: 10px 15px; display: flex; min-height: 40px;">
+                <span style="width: 180px; font-size: 10pt;">Motivo</span>
+                <span id="pdf-motivo-texto" style="font-weight: bold; font-size: 11pt;"></span>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; display: flex; justify-content: space-around;">
+            <div style="width: 290px; text-align: center;">
+                <div style="border-top: 1.9px solid #000; padding-top: 8px; font-size: 10pt; font-weight: 600;">SOLICITANTE</div>
+            </div>
+            <div style="width: 290px; text-align: center;">
+                <div style="border-top: 1.9px solid #000; padding-top: 8px; font-size: 10pt; font-weight: 600;">Vo. Bo.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div id="molde-permiso-inasistencia" style="
+    width: 210mm; 
+    height: 279mm; 
+    padding: 20mm 15mm; /* Aumentamos padding superior para que el texto no tape el escudo del PNG */
+    background-color: white;
+    
+    background-image: url('imagenes/super.png');
+    background-size: cover;          
+    background-position: center;    
+    background-repeat: no-repeat;    
+  
+    font-family: 'Arial', sans-serif; 
+    color: #000; 
+    position: relative; 
+    font-size: 10pt;
+    box-sizing: border-box;">
+    
+    <div style="margin-left: 25mm; margin-top: 5mm; margin-bottom: 25px;">
+        <p style="margin: 0; font-weight: bold; font-size: 11pt;" id="p-pdf-rector"></p>
+        <p style="margin: 0; font-weight: bold;">RECTOR DE LA UTM</p>
+        <p style="margin: 0; font-weight: bold;">PRESENTE.</p>
+    </div>
+
+    <div style="margin-bottom: 15px; line-height: 1.4;">
+        <p>De acuerdo a la Cláusula <u>33 y 34</u> del Contrato Colectivo de Trabajo vigente de la Universidad Tecnológica de Morelia.</p>
+        <p><strong>C. <span id="p-pdf-nombre-titulo"></span>, me permito solicitar atentamente su autorización para:</strong></p>
+    </div>
+
+    <div style="margin-left: 15mm; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; margin-bottom: 6px;">
+            <div style="width: 25px; height: 18px; border: 1.2px solid #000; margin-right: 12px; text-align: center; font-weight: bold;" id="check-economico"></div>
+            <span>Permiso Económico</span>
+        </div>
+        <div style="display: flex; align-items: flex-start; margin-bottom: 6px;">
+            <div style="width: 25px; height: 18px; border: 1.2px solid #000; margin-right: 12px; text-align: center; font-weight: bold;" id="check-sin-goce"></div>
+            <div>
+                <span>Licencia Sin Goce de Sueldo</span>
+                <p style="margin: 0; font-size: 7pt; color: #444;">(El trabajador deberá avisar por escrito de su reincorporación o tramitar la prórroga de su licencia, 10 días hábiles antes de su vencimiento)</p>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 6px;">
+            <div style="width: 25px; height: 18px; border: 1.2px solid #000; margin-right: 12px; text-align: center; font-weight: bold;" id="check-con-goce"></div>
+            <span>Licencia Con Goce de Sueldo</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 6px;">
+            <div style="width: 25px; height: 18px; border: 1.2px solid #000; margin-right: 12px; text-align: center; font-weight: bold;" id="check-cumple"></div>
+            <span>Permiso por Cumpleaños (Cláusula 27, Inciso j)</span>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 35px; margin-left: 5mm;">
+        <p>Número de días Solicitados: <span style="border: 1.2px solid #000; padding: 2px 12px; font-weight: bold;" id="p-pdf-dias"></span></p>
+        <p>Fechas: <u><span id="p-pdf-rango-fechas" style="font-weight: bold; padding: 0 5px;"></span></u></p>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 25px; text-align: center; padding: 0 10mm;">
+    <div style="width: 42%;">
+        <div style="border-bottom: 1.2px solid #000; padding-bottom: 3px; font-weight: bold; min-height: 18px; text-transform: uppercase;" id="p-pdf-firma-trabajador"></div>
+        <p style="margin-top: 4px; font-size: 8.5pt;">Nombre y firma del trabajador</p>
+    </div>
+    <div style="width: 42%;">
+        <div style="border-bottom: 1.2px solid #000; padding-bottom: 3px; font-weight: bold; min-height: 18px; text-transform: uppercase;" id="pdf-jefe-inmediato-nombre"></div>
+        <p style="margin-top: 4px; font-size: 8.5pt;">Vo. Bo. Jefe Inmediato</p>
+    </div>
+    </div>
+
+    <div style="padding: 12px 15px; margin-bottom: 35px; background-color: transparent; border: none;"> 
+    <p style="margin: 0 0 8px 0; font-weight: bold; font-size: 9pt; border-bottom: 1px solid #000; text-transform: uppercase; letter-spacing: 0.5px;">
+        Datos para el Departamento de Recursos Humanos
+    </p>
+    
+    <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 8px 15px; font-size: 8.5pt;">
+        <div>Fecha de Ingreso: <span id="rh-fecha-ingreso" style="font-weight: bold;"></span></div>
+        <div>Área de Adscripción: <span id="rh-area" style="font-weight: bold;"></span></div>
+        <div>Categoría: <span id="rh-categoria" style="font-weight: bold;"></span></div>
+        <div>CUATRIMESTRE ACTUAL: <span id="rh-cuatrimestre" style="font-weight: bold;"></span></div>
+        <div style="grid-column: span 2;">Contrato por Tiempo (determinado/indeterminado): <span id="rh-contrato" style="font-weight: bold;"></span></div>
+        <div style="grid-column: span 2;">RFC: <span id="rh-rfc" style="font-weight: bold;"></span></div>
+    </div>
+        
+        <div style="display: flex; justify-content: space-between; margin-top: 20px; align-items: flex-end; background: transparent;">
+            <div style="width: 48%; text-align: center; background: transparent;">
+                <p style="margin: 0; font-weight: bold; padding-top: 4px; text-transform: uppercase; font-size: 9pt;" id="p-pdf-jefe-rh"></p>
+                <p style="margin: 0; font-size: 7.5pt;">Jefe del Departamento de Recursos Humanos</p>
+        </div>
+    
+        <div id="rh-recepcion-info" style="width: 38%; height: 90px; text-align: center; font-size: 7pt; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #000; padding: 5px; box-sizing: border-box; background: transparent; font-weight: bold;">
+            <span style="font-size: 5pt; color: #666; font-weight: normal; margin-bottom: 2px;">FECHA Y HORA DE RECEPCIÓN</span>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 25px;">
+        <p style="margin-bottom: 35px; font-weight: bold; font-size: 10pt;">Autoriza</p>
+        <div style="display: inline-block; width: 220px; border-top: 1.2px solid #000; padding-top: 4px;">
+            <p style="margin: 0; font-weight: bold; text-transform: uppercase; font-size: 9pt;" id="p-pdf-delegada"></p>
+            <p style="margin: 0; font-size: 8.5pt;">Delegada Administrativa</p>
+        </div>
+    </div>
+
+    <div style="position: absolute; bottom: 12mm; left: 15mm; right: 15mm; display: flex; justify-content: space-between; align-items: flex-end; font-size: 6.5pt; color: #555;">
+        <div>
+            <p style="margin: 0; max-width: 400px;">.</p>
+        </div>
+        <p style="margin: 0; font-style: italic;">C.c.p. Departamento de Recursos Humanos.</p>
+    </div>
+</div>

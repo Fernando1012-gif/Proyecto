@@ -34,10 +34,21 @@ app.get("/", (req, res) => {
 const rutasLogin = require('./rutas/rutaLogin'); 
 const rutasPermisos = require('./rutas/rutaPermiso');
 const rutasPases = require('./rutas/rutaPase'); 
+const db = require('./bd/base');
 //usamos las apis
 app.use('/api/login', rutasLogin);
 app.use('/api/permisos', rutasPermisos);
 app.use('/api/pases', rutasPases); 
+
+
+app.get('/api/dias/ver', async (req, res) => {
+    try {
+        const [rows] = await db.execute("SELECT fecha, descripcion FROM dias_festivos");
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ ok: false, msg: "Error al obtener festivos" });
+    }
+});
 
 //puerto que usaremos
 const PORT = 3000;

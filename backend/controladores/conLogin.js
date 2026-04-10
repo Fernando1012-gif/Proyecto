@@ -29,6 +29,7 @@ const loginControlador = {
             }
     },
     //funcion para hacer login con correo y password
+    //funcion para hacer login con correo y password
     iniciarLogin: async (req, res) => {
         //obtenemos los datos del body que nos han enviado
         const { correo, password } = req.body;
@@ -49,8 +50,7 @@ const loginControlador = {
             //creamos el payload para hacer nuestro token de sesion :v
             const payload = {
                 id: usuario.id,
-                rol: usuario.rol,
-                nombre: usuario.nombre_completo
+                rol: usuario.rol
             }
             //obtenemos nuestro token dando como argumentos el payload y el secreto
             const token = jwt.sign(payload, process.env.JWT_SECRET, {
@@ -72,6 +72,33 @@ const loginControlador = {
         res.status(500).json({ ok: false, msg: "Error interno" });
     }},
 
+    //nueva funcion para revalidar 
+    nuevoToken: async (req, res) => {
+        try {
+            const { id } = req.usuario;
+            
+            const usuario = await usersql.buscarId(id);
+            
+            if (!usuario) {
+                return res.status(401).json({ ok: false, msg: "Usuario no encontrado" });
+            }
+
+            const token = jwt.sign({ id: usuario.id, rol: usuario.rol }, process.env.JWT_SECRET, {
+                expiresIn: '4h'
+            });
+
+            const usuarioSeg = { ...usuario };
+            delete usuarioSeg.contraseña;
+
+            res.json({
+                ok: true,
+                usuario: usuarioSeg,
+                token
+            });
+        } catch (error) {
+            res.status(500).json({ ok: false, msg: "Error al revalidar" });
+        }
+    },
     //funcion para actualizar la contraseña
     acContraseña: async (req, res) => {
         //sacamos parametros del body proporcionado por el front

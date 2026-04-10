@@ -22,12 +22,17 @@ const pasesql = {
     //consulta para obtener todos los pases sin importar el usuario
     obtenerTodos: async () => {
         try {
-            const sql = `SELECT p.*, u.nombre_completo,
-                        DATE_FORMAT(p.fecha_uso, '%d/%m/%Y') AS fecha_uso_h,
-                        DATE_FORMAT(p.fecha_solicitud, '%d/%m/%Y %H:%i') AS fecha_solicitud_h
-                        FROM pases_salida p
-                        INNER JOIN usuarios u ON p.usuario_id = u.id
-                        ORDER BY p.fecha_solicitud DESC`;
+            const sql = `SELECT 
+    p.*, 
+    u.nombre_completo,
+    ur.nombre_completo AS revisado_por_nombre, 
+    DATE_FORMAT(p.fecha_uso, '%d/%m/%Y') AS fecha_uso_h,
+    DATE_FORMAT(p.fecha_solicitud, '%d/%m/%Y %H:%i') AS fecha_solicitud_h,
+    DATE_FORMAT(p.fecha_revision, '%d/%m/%Y %H:%i') AS fecha_revision_h
+FROM pases_salida p
+INNER JOIN usuarios u ON p.usuario_id = u.id
+LEFT JOIN usuarios ur ON p.revisado_por = ur.id 
+ORDER BY p.fecha_solicitud DESC`;
             const [datos] = await db.execute(sql);
             return datos;
         } catch (error) {
@@ -35,7 +40,7 @@ const pasesql = {
             throw error;
         }
     },
-    obtenerTodosPases: async function() { return await this.obtenerTodos(); },
+    obtenerTodosPases: async function () { return await this.obtenerTodos(); },
 
     //consulta para contar pases mensuales
     contarPasesMensuales: async (usuario_id) => {
@@ -45,7 +50,7 @@ const pasesql = {
                          AND MONTH(fecha_uso) = MONTH(CURRENT_DATE()) 
                          AND YEAR(fecha_uso) = YEAR(CURRENT_DATE())
                          AND estado IN ('Pendiente', 'Aprobado')`;
-            
+
             const [rows] = await db.execute(sql, [usuario_id]);
             return rows[0].total || 0;
         } catch (error) {
@@ -66,17 +71,19 @@ const pasesql = {
     modPase: async (fU, hI, hF, motivo, id) => {
         try {
             const sql = `UPDATE pases_salida SET fecha_uso = ?, hora_inicio = ?, hora_fin = ?, motivo = ? WHERE id = ?`;
-            const [datos] = await db.execute(sql, [fU, hI, hF, motivo, id]); 
+            const [datos] = await db.execute(sql, [fU, hI, hF, motivo, id]);
             return datos;
         } catch (error) { throw error; }
     },
     //consulta para cancelar un pase
-    cancelarPase: async (estado, id) => {
-        try {
-            const sql = 'UPDATE pases_salida SET estado = ? WHERE id = ?';
-            const [datos] = await db.execute(sql, [estado, id]);
-            return datos;
-        } catch (error) { throw error; }
+    // En tu archivo de modelos SQL:
+    cancelarPase: async (estado, id, revisado_por) => {
+        // Usamos NOW() para que MariaDB ponga la fecha y hora exacta de la revision
+        const sql = `UPDATE pases_salida 
+                 SET estado = ?, revisado_por = ?, fecha_revision = NOW() 
+                 WHERE id = ?`;
+        const [result] = await db.query(sql, [estado, revisado_por, id]);
+        return result.affectedRows > 0;
     },
 
     //consulta para buscar pase por id
@@ -96,7 +103,7 @@ const pasesql = {
         }
     },
     obtenerInfoDocentePorPase: async (paseId) => {
-        
+
         const sql = `
             SELECT u.correo_institucional, u.nombre_completo 
             FROM pases_salida p 

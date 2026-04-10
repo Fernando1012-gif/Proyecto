@@ -1,18 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Docentes</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/35660cdf83.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
-    <link rel="apple-touch-icon" sizes="180x180" href="/imagenes/favicon_io/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/imagenes/favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/imagenes/favicon_io/favicon-16x16.png">
-    <link rel="manifest" href="/imagenes/favicon_io/site.webmanifest">
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Docentes</title>
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+        <script src="https://kit.fontawesome.com/35660cdf83.js"
+            crossorigin="anonymous"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+        <link rel="apple-touch-icon" sizes="180x180"
+            href="/imagenes/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32"
+            href="/imagenes/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16"
+            href="/imagenes/favicon_io/favicon-16x16.png">
+        <link rel="manifest" href="/imagenes/favicon_io/site.webmanifest">
+        <style>
     :root {
         --utm-teal: #009186;
         --utm-dark-teal: #007d74;
@@ -105,12 +112,19 @@
 
     /* --- BOTONES Y COMPONENTES --- */
     #btn-logout {
-        background: var !important;
+        background: rgb(255, 255, 255) !important;
         color: var(--utm-red) !important;
         border: 2px solid var(--utm-red) !important;
         padding: 5px 15px !important;
     }
-
+    .dia-bloqueado {
+        background-color: #d6d7d8 !important; /* Gris claro */
+        cursor: not-allowed !important;
+        opacity: 1;
+    }
+    .dia-bloqueado .fc-daygrid-day-number {
+        color: #66686a; /* Número en gris */
+    }
     .btn-aero {
         background: var(--utm-teal) !important;
         color: white !important;
@@ -120,7 +134,6 @@
         padding: 10px 20px;
     }
 
-    /* Nuevo estilo para botón de RRHH (Azul) */
     .btn-aero-blue {
         background: #007bff !important;
         color: white !important;
@@ -180,296 +193,493 @@
     .btn-choice i {
         font-size: 2rem;
     }
-    /* Pone un fondo gris a las celdas de sábado y domingo */
-    .fc-day-sat, .fc-day-sun {
-        background-color: #f8f9fa !important;
-        cursor: not-allowed !important;
-    }
+    #v-det-motivo, 
+        #det-motivo, 
+        #det-rh-motivo {
+            word-wrap: break-word;       /* Rompe palabras largas si es necesario */
+            overflow-wrap: break-word;    /* Estándar moderno para lo mismo */
+            white-space: pre-wrap;       /* Respeta los enter/saltos de línea  */
+            word-break: break-word;      /* Compatibilidad extra */
+        }
+    </style>
+    </head>
+    <body>
 
-/* Opcional: difumina el número del día */
-.fc-day-sat .fc-daygrid-day-number, 
-.fc-day-sun .fc-daygrid-day-number {
-    opacity: 0.3;
-    }
-</style>
-</head>
-<body>
-
-    <div class="top-navbar d-flex justify-content-between align-items-center px-4">
-    <h4 class="m-0 fw-bold">
-        <img src="recursos/imagenes/isologo_UTM_white.svg" width="50" class="me-2" alt="logo">
-        Portal Docente
-    </h4>
-    <div class="dropdown">
-        <button class="btn dropdown-toggle text-white fw-bold border-0 d-flex align-items-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" style="text-shadow: 0px 1px 2px rgba(0,0,0,0.5);">
-            <i class="fa-solid fa-circle-user fa-2xl me-2"></i>
-            <span id="saludo-profesor">Cargando...</span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userMenu">
-            <li class="px-3 py-2 small text-muted border-bottom">Opciones de cuenta</li>
-            <li>
-                <a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalCambiarPass">
-                    <i class="fa-solid fa-key me-2 text-warning"></i> Cambiar Contraseña
-                </a>
-            </li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-                <a class="dropdown-item py-2 text-danger fw-bold" href="#" id="btn-logout">
-                    <i class="fa-solid fa-power-off me-2"></i> Cerrar Sesión
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
-
-<div class="modal fade" id="modalCambiarPass" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-light">
-                <h6 class="modal-title fw-bold"><i class="fa-solid fa-lock me-2"></i>Seguridad</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="form-cambiar-pass">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Contraseña Actual</label>
-                        <input type="password" class="form-control form-control-sm" id="pass-actual" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Nueva Contraseña</label>
-                        <input type="password" class="form-control form-control-sm" id="pass-nueva" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">Actualizar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <div class="main-workspace">
-        <div class="sidebar corp-panel">
-            <h5 class="mb-4 border-bottom pb-2 fw-bold" style="color: var(--utm-teal);">
-                <i class="fa-solid fa-circle-info me-2"></i> Solicitudes
-            </h5>
-            
-            <ul class="list-group list-group-flush mb-4 fw-bold">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Aprobados
-                    <span class="badge rounded-pill shadow-sm text-dark" style="background: linear-gradient(180deg, #a8ff78, #78ffd6);" id="badge-aprobados">0</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Pendientes
-                    <span class="badge rounded-pill shadow-sm text-dark" style="background: linear-gradient(180deg, #f6d365, #fda085);" id="badge-pendientes">0</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Rechazados
-                    <span class="badge rounded-pill shadow-sm text-dark" style="background: linear-gradient(180deg, #ff9a9e, #fecfef);" id="badge-rechazados">0</span>
-                </li>
-            </ul>
-
-            <h5 class="mt-4 mb-3 border-bottom pb-2 fw-bold" style="color: var(--utm-teal);">
-                <i class="fa-solid fa-clock-rotate-left me-2"></i> Historial Reciente
-            </h5>
-            <div id="historial-lista" class="d-flex flex-column gap-2">
-                <div class="text-center text-muted small py-3">Cargando historial...</div>
+        <div
+            class="top-navbar d-flex justify-content-between align-items-center px-4">
+            <h4 class="m-0 fw-bold">
+                <img src="recursos/imagenes/isologo_UTM_white.svg" width="50"
+                    class="me-2" alt="logo">
+                Docente
+            </h4>
+            <div class="dropdown">
+                <button
+                    class="btn dropdown-toggle text-white fw-bold border-0 d-flex align-items-center"
+                    type="button" id="userMenu" data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    style="text-shadow: 0px 1px 2px rgba(0,0,0,0.5);">
+                    <i class="fa-solid fa-circle-user fa-2xl me-2"></i>
+                    <span id="saludo-profesor">Cargando...</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0"
+                    aria-labelledby="userMenu">
+                    <li
+                        class="px-3 py-2 small text-muted border-bottom">Opciones
+                        de cuenta</li>
+                    <li>
+                        <a class="dropdown-item py-2" href="#" id="link-perfil">
+                            <i
+                                class="fa-solid fa-id-card me-2 text-primary"></i>
+                            Información Perfil
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item py-2" href="#"
+                            id="link-seguridad">
+                            <i class="fa-solid fa-key me-2 text-warning"></i>
+                            Cambiar Contraseña
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item py-2 text-danger fw-bold"
+                            href="#" id="btn-logout">
+                            <i class="fa-solid fa-power-off me-2"></i> Cerrar
+                            Sesión
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
 
-        <div class="content-area corp-panel">
-            <div id="calendario"></div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalSolicitud" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-lg border-0">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title fw-bold" style="color: var(--utm-teal);">
-                        <i class="fa-solid fa-file-signature me-2"></i> Nueva Solicitud
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    
-                    <div id="step-1-choice" class="text-center">
-                        <h6 class="mb-4 fw-bold text-secondary">¿Qué tipo de trámite deseas realizar?</h6>
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <button type="button" class="btn btn-choice w-100 fw-bold" id="btn-elegir-pase">
-                                    <i class="fa-solid fa-person-walking-arrow-right"></i>
-                                    <span>Pase de Salida</span>
-                                </button>
-                            </div>
-                            <div class="col-6">
-                                <button type="button" class="btn btn-choice w-100 fw-bold" id="btn-elegir-permiso">
-                                    <i class="fa-solid fa-house-medical"></i>
-                                    <span>Permiso de Inasistencia</span>
-                                </button>
-                            </div>
-                        </div>
-                        <p class="mt-4 small text-muted">Selecciona una opción para continuar</p>
-                    </div>
-
-                    <form id="form-pedir-pase" style="display: none;">
-                        <h6 class="border-bottom pb-2 mb-3 fw-bold text-secondary">Detalles del Pase</h6>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Fecha de Uso</label>
-                                <input type="date" class="form-control" id="fecha_uso" readonly required>
-                            </div>
-                            <div class="row">
-                                <div class="col-6 mb-3">
-                                    <label class="form-label small fw-bold">Hora de Inicio:</label>
-                                    <select id="hora_inicio" class="form-select">
-
-                                    </select>
-                                </div>
-                                <div class="col-6 mb-3">
-                                    <label class="form-label small fw-bold">Hora de Fin:</label>
-                                    <select id="hora_fin" class="form-select">
-
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Motivo / Justificación</label>
-                            <textarea class="form-control" id="motivo_pase" rows="3" required></textarea>
-                        </div>
-                        <div class="d-flex justify-content-end gap-2 mt-4">
-                            <button type="button" class="btn btn-light fw-bold" onclick="volverPaso1()">Atrás</button>
-                            <button type="submit" class="btn btn-aero">Enviar a Jefe Inmediato</button>
-                        </div>
-                    </form>
-
-                    <form id="form-pedir-permiso" style="display: none;">
-                        <h6 class="border-bottom pb-2 mb-3 fw-bold text-secondary">Detalles del Permiso</h6>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Tipo</label>
-                                <select class="form-select" id="tipo_permiso" required>
-                                    <option value="Personal">Asunto Personal</option>
-                                    <option value="Salud">Salud / Médico</option>
-                                    <option value="Institucional">Labor Institucional</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Días solicitados</label>
-                                <input type="number" class="form-control" id="cantidad_dias" min="1" max="3" value="1" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Fecha Inicio</label>
-                                <input type="date" class="form-control" id="fecha_inicio" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Fecha Fin</label>
-                                <input type="date" class="form-control" id="fecha_fin" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Motivo / Justificación</label>
-                            <textarea class="form-control" id="motivo" rows="3" required></textarea>
-                        </div>
-                        <div class="d-flex justify-content-end gap-2 mt-4">
-                            <button type="button" class="btn btn-light fw-bold" onclick="volverPaso1()">Atrás</button>
-                            <button type="submit" class="btn btn-aero-blue">Enviar a RRHH</button>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-        </div>
-    </div>
-<div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title fw-bold">
-                    <i class="fa-solid fa-triangle-exclamation me-2"></i>Confirmar Solicitud
+        <div class="main-workspace">
+            <div class="sidebar corp-panel">
+                <h5 class="mb-4 border-bottom pb-2 fw-bold"
+                    style="color: var(--utm-teal);">
+                    <i class="fa-solid fa-circle-info me-2"></i> Solicitudes
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <p class="text-muted small mb-3">Revisa que los datos sean correctos antes de enviarla al sistema.</p>
-                <div id="conf-resumen" class="bg-light p-3 rounded border text-dark fs-6">
+
+                <ul class="list-group list-group-flush mb-4 fw-bold">
+                    <li
+                        class="list-group-item d-flex justify-content-between align-items-center">
+                        Aprobados
+                        <span class="badge rounded-pill shadow-sm text-dark"
+                            style="background: linear-gradient(180deg, #a8ff78, #78ffd6);"
+                            id="badge-aprobados">0</span>
+                    </li>
+                    <li
+                        class="list-group-item d-flex justify-content-between align-items-center">
+                        Pendientes
+                        <span class="badge rounded-pill shadow-sm text-dark"
+                            style="background: linear-gradient(180deg, #f6d365, #fda085);"
+                            id="badge-pendientes">0</span>
+                    </li>
+                    <li
+                        class="list-group-item d-flex justify-content-between align-items-center">
+                        Rechazados
+                        <span class="badge rounded-pill shadow-sm text-dark"
+                            style="background: linear-gradient(180deg, #ff9a9e, #fecfef);"
+                            id="badge-rechazados">0</span>
+                    </li>
+                </ul>
+
+                <h5 class="mt-4 mb-3 border-bottom pb-2 fw-bold"
+                    style="color: var(--utm-teal);">
+                    <i class="fa-solid fa-clock-rotate-left me-2"></i> Historial
+                    Reciente
+                </h5>
+                <div id="historial-lista" class="d-flex flex-column gap-2">
+                    <div class="text-center text-muted small py-3">Cargando
+                        historial...</div>
                 </div>
             </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Regresar a editar</button>
-                <button type="button" class="btn btn-success fw-bold" id="btn-confirmar-envio">Confirmar y Enviar</button>
-            </div>
-        </div>
-    </div>
-</div>
-    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
-        <div id="toastNotificacion" class="toast border-0 shadow-lg" role="alert">
-            <div class="toast-header text-white" id="toast-header-bg">
-                <i class="fa-solid fa-bell me-2"></i>
-                <strong class="me-auto">Aviso del Sistema</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-            </div>
-            <div class="toast-body fw-bold text-dark" id="toast-mensaje"></div>
-        </div>
-    </div>
-    <div class="modal fade" id="modalDetalleDocente" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-light">
-                <h5 class="modal-title fw-bold" style="color: #009186;"><i class="fa-solid fa-circle-info me-2"></i>Detalles de mi Solicitud</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <label class="text-muted small fw-bold text-uppercase">Tipo de Trámite</label>
-                        <p id="v-det-tipo" class="fs-5 fw-bold text-dark mb-0"></p>
-                    </div>
-                    <span id="v-det-tipo-badge" class="badge rounded-pill px-3 py-2"></span>
-                </div>
 
-                <hr class="my-3 text-muted opacity-25">
-
-                <div class="row mb-3">
-                    <div class="col-6">
-                        <label id="v-label-fecha" class="text-muted small fw-bold text-uppercase">Fecha Inicio</label>
-                        <p id="v-det-fecha" class="fw-semibold fs-6 mb-0"></p>
-                    </div>
-                    
-                    <div class="col-6" id="v-cont-fin" style="display: none;">
-                        <label class="text-muted small fw-bold text-uppercase">Fecha Fin</label>
-                        <p id="v-det-fecha-fin" class="fw-semibold fs-6 mb-0"></p>
-                    </div>
-
-                    <div class="col-6" id="v-cont-horas" style="display: none;">
-                        <label class="text-muted small fw-bold text-uppercase">Horario</label>
-                        <p id="v-det-horas" class="fw-semibold fs-6 mb-0 text-primary"></p>
-                    </div>
-                </div>
-
-                <div class="mb-3" id="v-cont-dias" style="display: none;">
-                    <label class="text-muted small fw-bold text-uppercase">Días Totales</label>
-                    <p id="v-det-dias" class="fw-bold fs-5" style="color: #009186;"></p>
-                </div>
-
-                <div class="mb-3">
-                    <label class="text-muted small fw-bold text-uppercase">Motivo / Justificación</label>
-                    <div class="p-3 bg-light rounded border">
-                        <p id="v-det-motivo" class="mb-0 text-secondary" style="font-style: italic;"></p>
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-end align-items-center mt-4">
-                    <span id="v-det-estado-badge" class="badge fs-6"></span>
-                </div>
+            <div class="content-area corp-panel">
+                <div id="calendario"></div>
             </div>
         </div>
-    </div>
-</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script src="js/principal.js"></script>
-</body>
-</html>
+        <div class="modal fade" id="modalSolicitud" tabindex="-1"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content shadow-lg border-0">
+                    <div class="modal-header bg-light">
+                        <h5 class="modal-title fw-bold"
+                            style="color: var(--utm-teal);">
+                            <i class="fa-solid fa-file-signature me-2"></i>
+                            Nueva Solicitud
+                        </h5>
+                        <button type="button" class="btn-close"
+                            data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+
+                        <div id="step-1-choice" class="text-center">
+                            <h6 class="mb-4 fw-bold text-secondary">¿Qué tipo de
+                                trámite deseas realizar?</h6>
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <button type="button"
+                                        class="btn btn-choice w-100 fw-bold"
+                                        id="btn-elegir-pase">
+                                        <i
+                                            class="fa-solid fa-person-walking-arrow-right"></i>
+                                        <span>Pase de Salida</span>
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button"
+                                        class="btn btn-choice w-100 fw-bold"
+                                        id="btn-elegir-permiso">
+                                        <i
+                                            class="fa-solid fa-house-medical"></i>
+                                        <span>Permiso de Inasistencia</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="mt-4 small text-muted">Selecciona una
+                                opción para continuar</p>
+                        </div>
+
+                        <form id="form-pedir-pase" style="display: none;">
+                            <h6
+                                class="border-bottom pb-2 mb-3 fw-bold text-secondary">Detalles
+                                del Pase</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Fecha de
+                                        Uso</label>
+                                    <input type="date" class="form-control"
+                                        id="fecha_uso" readonly required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <label
+                                            class="form-label small fw-bold">Hora
+                                            de Inicio:</label>
+                                        <select id="hora_inicio"
+                                            class="form-select">
+
+                                        </select>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <label
+                                            class="form-label small fw-bold">Hora
+                                            de Fin:</label>
+                                        <select id="hora_fin"
+                                            class="form-select">
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Motivo /
+                                    Justificación</label>
+                                <textarea class="form-control" id="motivo_pase"
+                                    rows="3" required></textarea>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <button type="button"
+                                    class="btn btn-light fw-bold"
+                                    onclick="volverPaso1()">Atrás</button>
+                                <button type="submit"
+                                    class="btn btn-aero">Enviar a Jefe
+                                    Inmediato</button>
+                            </div>
+                        </form>
+
+                        <form id="form-pedir-permiso" style="display: none;">
+                            <h6
+                                class="border-bottom pb-2 mb-3 fw-bold text-secondary">Detalles
+                                del Permiso</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label
+                                        class="form-label fw-bold">Tipo</label>
+                                    <select class="form-select"
+                                        id="tipo_permiso" required>
+                                        <option value="Personal">Asunto
+                                            Personal</option>
+                                        <option value="Salud">Salud /
+                                            Médico</option>
+                                        <option value="Institucional">Labor
+                                            Institucional</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Días
+                                        solicitados</label>
+                                    <input type="number" class="form-control"
+                                        id="cantidad_dias" min="1" max="3"
+                                        value="1" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Fecha
+                                        Inicio</label>
+                                    <input type="date" class="form-control"
+                                        id="fecha_inicio" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Fecha
+                                        Fin</label>
+                                    <input type="date" class="form-control"
+                                        id="fecha_fin" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Motivo /
+                                    Justificación</label>
+                                <textarea class="form-control" id="motivo"
+                                    rows="3" required></textarea>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <button type="button"
+                                    class="btn btn-light fw-bold"
+                                    onclick="volverPaso1()">Atrás</button>
+                                <button type="submit"
+                                    class="btn btn-aero-blue">Enviar a
+                                    RRHH</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modalConfirmacion" tabindex="-1"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title fw-bold">
+                            <i
+                                class="fa-solid fa-triangle-exclamation me-2"></i>Confirmar
+                            Solicitud
+                        </h5>
+                        <button type="button" class="btn-close"
+                            data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <p class="text-muted small mb-3">Revisa la accion que
+                            realizaras.</p>
+                        <div id="conf-resumen"
+                            class="bg-light p-3 rounded border text-dark fs-6">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-light fw-bold"
+                            data-bs-dismiss="modal">Regresar a editar</button>
+                        <button type="button" class="btn btn-success fw-bold"
+                            id="btn-confirmar-envio">Confirmar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="toast-container position-fixed bottom-0 end-0 p-3"
+            style="z-index: 1055;">
+            <div id="toastNotificacion" class="toast border-0 shadow-lg"
+                role="alert">
+                <div class="toast-header text-white" id="toast-header-bg">
+                    <i class="fa-solid fa-bell me-2"></i>
+                    <strong class="me-auto">Aviso del Sistema</strong>
+                    <button type="button" class="btn-close"
+                        data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body fw-bold text-dark"
+                    id="toast-mensaje"></div>
+            </div>
+        </div>
+        <div class="modal fade" id="modalDetalleDocente" tabindex="-1"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header bg-light">
+                        <h5 class="modal-title fw-bold"
+                            style="color: #009186;"><i
+                                class="fa-solid fa-circle-info me-2"></i>Detalles
+                            de mi Solicitud</h5>
+                        <button type="button" class="btn-close"
+                            data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div
+                            class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <label
+                                    class="text-muted small fw-bold text-uppercase">Tipo
+                                    de Trámite</label>
+                                <p id="v-det-tipo"
+                                    class="fs-5 fw-bold text-dark mb-0"></p>
+                            </div>
+                            <span id="v-det-tipo-badge"
+                                class="badge rounded-pill px-3 py-2"></span>
+                        </div>
+
+                        <hr class="my-3 text-muted opacity-25">
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label id="v-label-fecha"
+                                    class="text-muted small fw-bold text-uppercase">Fecha
+                                    Inicio</label>
+                                <p id="v-det-fecha"
+                                    class="fw-semibold fs-6 mb-0"></p>
+                            </div>
+
+                            <div class="col-6" id="v-cont-fin"
+                                style="display: none;">
+                                <label
+                                    class="text-muted small fw-bold text-uppercase">Fecha
+                                    Fin</label>
+                                <p id="v-det-fecha-fin"
+                                    class="fw-semibold fs-6 mb-0"></p>
+                            </div>
+
+                            <div class="col-6" id="v-cont-horas"
+                                style="display: none;">
+                                <label
+                                    class="text-muted small fw-bold text-uppercase">Horario</label>
+                                <p id="v-det-horas"
+                                    class="fw-semibold fs-6 mb-0 text-primary"></p>
+                            </div>
+                        </div>
+
+                        <div class="mb-3" id="v-cont-dias"
+                            style="display: none;">
+                            <label
+                                class="text-muted small fw-bold text-uppercase">Días
+                                Totales</label>
+                            <p id="v-det-dias" class="fw-bold fs-5"
+                                style="color: #009186;"></p>
+                        </div>
+                        <div id="v-cont-revision" style="display: none;"
+                            class="p-3 mb-3 bg-success bg-opacity-10 border border-success rounded">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label
+                                        class="text-muted small fw-bold text-uppercase">Revisado
+                                        por:</label>
+                                    <p id="v-det-revisado-por"
+                                        class="fw-bold mb-0 text-success"></p>
+                                </div>
+                                <div class="col-6">
+                                    <label
+                                        class="text-muted small fw-bold text-uppercase">Fecha
+                                        de respuesta:</label>
+                                    <p id="v-det-fecha-revision"
+                                        class="small fw-semibold mb-0"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                class="text-muted small fw-bold text-uppercase">Motivo
+                                / Justificación</label>
+                            <div class="p-3 bg-light rounded border">
+                                <p id="v-det-motivo" class="mb-0 text-secondary"
+                                    style="font-style: italic;"></p>
+                            </div>
+                        </div>
+
+                        <div
+                            class="d-flex justify-content-between align-items-center mt-4">
+
+                            <span id="v-det-estado-badge"
+                                class="badge fs-6"></span>
+
+                            <button id="btn-descargar-pdf"
+                                class="btn btn-danger fw-bold shadow-sm"
+                                style="display: none;">
+                                <i class="fa-solid fa-file-pdf me-1"></i>
+                                Descargar PDF
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="modalPerfil" tabindex="-1"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg">
+                        <div class="modal-header bg-light">
+                            <h5 class="modal-title fw-bold"
+                                style="color: var(--utm-teal);"><i
+                                    class="fa-solid fa-user-gear me-2"></i>Expediente
+                                Docente</h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <div class="text-center mb-4"><h5 id="p-nombre"
+                                    class="fw-bold mb-0"></h5><p id="p-area"
+                                    class="text-muted small mb-0"></p></div>
+                            <div id="info-laboral-perfil"
+                                class="row g-3 p-3 bg-light rounded border mb-4">
+                                <div class="col-6"><label
+                                        class="text-muted small fw-bold text-uppercase"
+                                        style="font-size:0.6rem">RFC</label><p
+                                        id="p-rfc"
+                                        class="fw-semibold small mb-0"></p></div>
+                                <div class="col-6"><label
+                                        class="text-muted small fw-bold text-uppercase"
+                                        style="font-size:0.6rem">Categoría</label><p
+                                        id="p-categoria"
+                                        class="fw-semibold small mb-0"></p></div>
+                                <div class="col-6"><label
+                                        class="text-muted small fw-bold text-uppercase"
+                                        style="font-size:0.6rem">Fecha
+                                        Ingreso</label><p id="p-ingreso"
+                                        class="fw-semibold small mb-0"></p></div>
+                                <div class="col-6"><label
+                                        class="text-muted small fw-bold text-uppercase"
+                                        style="font-size:0.6rem">Contrato</label><p
+                                        id="p-contrato"
+                                        class="fw-semibold small mb-0"></p></div>
+                            </div>
+                            <div id="seccion-seguridad" style="display: none;"
+                                class="mt-3 border-top pt-3">
+                                <h6
+                                    class="small fw-bold mb-3 text-warning">Cambiar
+                                    Contraseña</h6>
+                                <form id="form-cambiar-pass">
+                                    <div class="mb-2"><input type="password"
+                                            class="form-control form-control-sm"
+                                            id="pass-actual"
+                                            placeholder="Contraseña actual"
+                                            required></div>
+                                    <div class="mb-3"><input type="password"
+                                            class="form-control form-control-sm"
+                                            id="pass-nueva"
+                                            placeholder="Nueva contraseña"
+                                            required></div>
+                                    <div class="d-flex gap-2">
+                                        <button type="button"
+                                            class="btn btn-sm btn-light w-50"
+                                            onclick="document.getElementById('seccion-seguridad').style.display='none'">Cancelar</button>
+                                        <button type="submit"
+                                            class="btn btn-sm btn-primary w-50">Actualizar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+            <script src="js/principal.js"></script>
+            <script
+                src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+            <script
+                src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+            <script src="js/admins.js"></script>
+            <script src="js/pdfsito.js"></script>
+
+        </body>
+    </html>

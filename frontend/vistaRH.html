@@ -3,77 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recursos Humanos</title>
-    
+    <title>RH</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/35660cdf83.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
     <link rel="icon" type="image/png" sizes="32x32" href="/imagenes/blue/favicon-32x32.png">
-    
-<style>
-    :root {
-        --utm-teal: #009186;
-        --utm-dark-teal: #0648a3;
-        --utm-red: #d9534f;
-        --bg-gray: #f4f7f6;
-        --border-color: #dee2e6;
-        --text-dark: #333;
-    }
 
-    html, body {
-        height: 100vh;
-        margin: 0;
-        overflow: hidden; 
-        background-color: var(--bg-gray);
-        font-family: 'Segoe UI', Roboto, sans-serif;
-    }
+    <style>
+        :root {
+            --utm-teal: #009186;
+            --utm-dark-teal: #0648a3;
+            --utm-red: #d9534f;
+            --bg-gray: #f8f9fa;
+            --border-color: #dee2e6;
+            --text-dark: #333;
+        }
 
-    .top-navbar {
-        background-color: var(--utm-teal) !important;
-        height: 60px;
-        color: white;
-        display: flex;
-        align-items: center;
-        padding: 0 25px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        z-index: 1000;
-    }
+        html, body {
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; 
+            background-color: var(--bg-gray);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
 
-    .main-workspace {
-        display: flex;
-        height: calc(100vh - 60px);
-        width: 100%;
-    }
+        .top-navbar {
+            background-color: var(--utm-teal) !important;
+            height: 60px;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
 
-    .sidebar {
-        width: 320px;
-        background-color: white !important;
-        border-right: 1px solid var(--border-color);
-        padding: 20px;
-        flex-shrink: 0;
-        overflow-y: auto;
-    }
+        .main-workspace {
+            display: flex;
+            height: calc(100vh - 60px);
+            width: 100%;
+        }
 
-    .content-area {
-        flex-grow: 1;
-        background-color: white;
-        padding: 20px;
-        overflow-y: auto;
-    }
+        .sidebar {
+            width: 320px;
+            background-color: white !important;
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
 
-    .btn-aero {
-        background: var(--utm-teal) !important;
-        color: white !important;
-        border: none !important;
-        font-weight: bold;
-    }
+        .content-area {
+            flex-grow: 1;
+            background-color: var(--bg-gray) !important;
+            padding: 40px !important;
+            overflow-y: auto;
+        }
 
-    .table-hover tbody tr { cursor: pointer; }
-    
-    /* Estilos para los radio buttons de filtrado rápido */
-    .btn-check:checked + .btn-outline-warning { background-color: #ffc107; color: #000; }
-    .btn-check:checked + .btn-outline-info { background-color: #ffffff; color: #000; }
-</style>
+        .btn-aero {
+            background: var(--utm-teal) !important;
+            color: white !important;
+            border: none !important;
+            font-weight: bold;
+        }
+
+        .table-hover tbody tr { cursor: pointer; }
+
+        .btn-check:checked + .btn-outline-warning { background-color: #ffc107; color: #000; }
+        .btn-check:checked + .btn-outline-info { background-color: #ffffff; color: #000; }
+
+        .historial-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #eef2f7;
+        }
+        #v-det-motivo, 
+        #det-motivo, 
+        #det-rh-motivo {
+            word-wrap: break-word;       
+            overflow-wrap: break-word;    
+            white-space: pre-wrap;       
+            word-break: break-word;      
+        }
+    </style>
 </head>
 <body>
 
@@ -83,50 +98,83 @@
             Recursos Humanos
         </h4>
 
-        <div class="dropdown">
-            <button class="btn dropdown-toggle text-white fw-bold border-0 d-flex align-items-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" style="text-shadow: 0px 1px 2px rgba(0,0,0,0.5);">
-                <i class="fa-solid fa-circle-user fa-2xl me-2"></i>
-                <span id="saludo-rh">Cargando...</span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userMenu">
-                <li class="px-3 py-2 small text-muted border-bottom">Opciones de cuenta</li>
-                <li>
-                    <a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalCambiarPass">
-                        <i class="fa-solid fa-key me-2 text-warning"></i> Cambiar Contraseña
-                    </a>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <a class="dropdown-item py-2 text-danger fw-bold" href="#" id="btn-logout">
-                        <i class="fa-solid fa-power-off me-2"></i> Cerrar Sesión
-                    </a>
-                </li>
-            </ul>
+        <div class="d-flex align-items-center">
+            <a href="informeRH.html" class="btn btn-outline-light border-0 fw-bold me-4" style="background-color: rgba(255,255,255,0.1);">
+                <i class="fa-solid fa-chart-pie me-2"></i>Estadisticas
+            </a>
+
+            <div class="dropdown">
+                <button class="btn dropdown-toggle text-white fw-bold border-0 d-flex align-items-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" style="text-shadow: 0px 1px 2px rgba(0,0,0,0.5);">
+                    <i class="fa-solid fa-circle-user fa-2xl me-2"></i>
+                    <span id="saludo-rh">Cargando...</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userMenu">
+                    <li class="px-3 py-2 small text-muted border-bottom">Opciones de cuenta</li>
+                    <li>
+                        <a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalCambiarPass">
+                            <i class="fa-solid fa-key me-2 text-warning"></i> Cambiar Contraseña
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item py-2 text-danger fw-bold" href="#" id="btn-logout">
+                            <i class="fa-solid fa-power-off me-2"></i> Cerrar Sesión
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 
     <div class="main-workspace">
         <div class="sidebar">
+            <a href="vistaRHS.html" class="btn text-white w-100 mb-4 d-flex justify-content-between align-items-center shadow-sm py-3" style="background-color: var(--utm-red); border: none; border-radius: 8px;">
+                <span class="fw-bold fs-6"><i class="fa-solid fa-bell fa-shake me-2"></i> Por Autorizar</span>
+                <span class="badge bg-white text-danger rounded-pill fs-6 shadow-sm" id="badge-nav-solicitudes">0</span>
+            </a>
+            
+            <hr class="mb-4 text-muted opacity-25">
+
             <h5 class="fw-bold text-primary mb-3"><i class="fa-solid fa-filter me-2"></i>Filtros Avanzados</h5>
             <form id="form-filtros">
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Docente</label>
-                    <input type="text" class="form-control" id="filtro-docente" placeholder="Buscar por nombre...">
+                    <input type="text" class="form-control form-control-sm" id="filtro-docente" placeholder="Buscar por nombre...">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Área / Departamento</label>
+                    <input type="text" class="form-control form-control-sm" id="filtro-area" placeholder="Ej. Enfermería, Sistemas...">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Tipo de Trámite</label>
+                    <select class="form-select form-select-sm" id="filtro-tipo">
+                        <option value="Todos">Todos</option>
+                        <option value="Pase">Pases de Salida</option>
+                        <option value="Permiso">Permisos</option>
+                    </select>
                 </div>
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Estado</label>
-                    <select class="form-select" id="filtro-estado">
+                    <select class="form-select form-select-sm" id="filtro-estado">
                         <option value="Todos">Todos</option>
                         <option value="Aprobado">Aprobados</option>
+                        <option value="Vo.Bo.">Con Vo.Bo.</option>
                         <option value="Pendiente">Pendientes</option>
                         <option value="Rechazado">Rechazados</option>
                     </select>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Rango de Fechas</label>
+                    <div class="d-flex gap-2">
+                        <input type="date" class="form-control form-control-sm" id="filtro-fecha-inicio" title="Desde">
+                        <input type="date" class="form-control form-control-sm" id="filtro-fecha-fin" title="Hasta">
+                    </div>
+                </div>
                 <div class="row g-2 mb-3">
                     <div class="col-6">
-                        <label class="form-label small fw-bold">Mes</label>
-                        <select class="form-select" id="filtro-mes">
-                            <option value="">Cualquiera</option>
+                        <label class="form-label small fw-bold">Mes Histórico</label>
+                        <select class="form-select form-select-sm" id="filtro-mes">
+                            <option value>Todos</option>
                             <option value="01">Enero</option><option value="02">Febrero</option>
                             <option value="03">Marzo</option><option value="04">Abril</option>
                             <option value="05">Mayo</option><option value="06">Junio</option>
@@ -137,132 +185,138 @@
                     </div>
                     <div class="col-6">
                         <label class="form-label small fw-bold">Año</label>
-                        <input type="number" class="form-control" id="filtro-año" placeholder="2026">
+                        <input type="number" class="form-control form-control-sm" id="filtro-año" placeholder="Ej. 2026">
                     </div>
                 </div>
-                <button type="button" class="btn btn-aero w-100 mb-2" id="btn-aplicar-filtros">
+                <button type="button" class="btn btn-aero w-100 mb-2 py-2 shadow-sm" id="btn-aplicar-filtros">
                     <i class="fa-solid fa-magnifying-glass me-2"></i>Buscar
                 </button>
-                <button type="reset" class="btn btn-light w-100 border">Limpiar</button>
+                <button type="reset" class="btn btn-light w-100 border py-2" onclick="setTimeout(aplicarFiltros, 100)">Limpiar Filtros</button>
             </form>
         </div>
-        
+
         <div class="content-area">
-            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
-                <h5 class="fw-bold m-0"><i class="fa-solid fa-table me-2"></i>Registros Generales</h5>
-                
-                <div class="d-flex align-items-center gap-2">
-                    <span class="small fw-bold text-muted text-uppercase d-none d-md-inline">Ordenar:</span>
-                    <div class="btn-group btn-group-sm border rounded shadow-sm bg-white">
-                        <button class="btn btn-light" onclick="ordenarRapido('reciente')" title="Más recientes">
-                            <i class="fa-solid fa-clock-rotate-left text-primary"></i>
+            
+            <div class="historial-panel">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                    <div>
+                        <h4 class="fw-bold m-0 text-dark"><i class="fa-solid fa-table-list me-2 text-primary"></i>Directorio de Trámites</h4>
+                        <p class="text-muted small m-0">Gestión y búsqueda de todo el historial de la UTM</p>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-success fw-bold shadow-sm px-3" onclick="exportarExcel()">
+                            <i class="fa-solid fa-file-excel me-2"></i>Exportar (CSV)
                         </button>
-                        <button class="btn btn-light" onclick="ordenarRapido('nombre')" title="Nombre A-Z">
-                            <i class="fa-solid fa-font text-primary"></i>
-                        </button>
-                        <button class="btn btn-light" onclick="ordenarRapido('tipo')" title="Agrupar por Trámite">
-                            <i class="fa-solid fa-layer-group text-primary"></i>
-                        </button>
+
+                        <div class="btn-group border rounded shadow-sm bg-white">
+                            <button class="btn btn-light px-3" onclick="ordenarRapido('reciente')" title="Más recientes"><i class="fa-solid fa-clock-rotate-left text-primary"></i></button>
+                            <button class="btn btn-light px-3" onclick="ordenarRapido('nombre')" title="Orden Alfabético"><i class="fa-solid fa-font text-primary"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle m-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-3">ID</th>
+                                <th>Tipo</th>
+                                <th>Docente</th>
+                                <th>Fecha Evento</th>
+                                <th>Estado Actual</th>
+                                <th>Motivo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-general">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-aero position-fixed bottom-0 end-0 m-4 shadow-lg rounded-pill px-4 py-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCalendario">
+            <i class="fa-solid fa-calendar-days me-2"></i>Ver Calendario Global
+        </button>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasCalendario" style="width: 600px;">
+            <div class="offcanvas-header border-bottom bg-light">
+                <h5 class="offcanvas-title fw-bold text-primary">Mapa de Inasistencias y Salidas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div id="calendario-rh" style="height: 100%;"></div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalDetalleRH" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header bg-light">
+                        <h5 class="modal-title fw-bold" style="color: var(--utm-teal);">Detalle del Trámite</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <label class="text-muted small fw-bold">Docente</label>
+                        <p id="det-rh-nombre" class="fs-5 fw-bold text-dark"></p>
+                        <div class="row mb-3">
+                            <div class="mb-3">
+                                <label class="text-muted small fw-bold text-uppercase">Solicitado el día:</label>
+                                <p id="det-fecha-creacion" class="fw-bold text-dark mb-0"></p>
+                            </div>
+                            <hr class="my-2 opacity-25">
+                            <div class="col-6">
+                                <label id="det-rh-label-fecha" class="text-muted small fw-bold">Fecha</label>
+                                <p id="det-rh-fecha" class="fw-semibold mb-0"></p>
+                            </div>
+                            <div class="col-6" id="det-rh-cont-fin" style="display:none;">
+                                <label class="text-muted small fw-bold">Fecha Fin</label>
+                                <p id="det-rh-fecha-fin" class="fw-semibold mb-0"></p>
+                            </div>
+                            <div class="col-6" id="det-rh-cont-horas" style="display:none;">
+                                <label class="text-muted small fw-bold">Horario</label>
+                                <p id="det-rh-horas" class="fw-semibold mb-0 text-primary"></p>
+                            </div>
+                        </div>
+                        <div class="mb-3" id="det-rh-cont-dias" style="display:none;">
+                            <label class="text-muted small fw-bold">Días Solicitados</label>
+                            <p id="det-rh-dias" class="fw-bold fs-4" style="color: var(--utm-teal);"></p>
+                        </div>
+                        <div id="det-rh-cont-revision" style="display: none;" class="p-3 mb-3 bg-success bg-opacity-10 border border-success rounded">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="text-muted small fw-bold text-uppercase">Revisado por:</label>
+                                    <p id="det-rh-revisado-por" class="fw-bold mb-0 text-success"></p>
+                                </div>
+                                <div class="col-6">
+                                    <label class="text-muted small fw-bold text-uppercase">Fecha de respuesta:</label>
+                                    <p id="det-rh-fecha-revision" class="small fw-semibold mb-0"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <label class="text-muted small fw-bold">Motivo</label>
+                        <div class="p-3 bg-light rounded border"><p id="det-rh-motivo" class="mb-0 small italic text-secondary"></p></div>
+                        <div class="d-flex justify-content-between align-items-center mt-4 border-top pt-3">
+                            <div class="d-flex gap-2 align-items-center">
+                                <span id="det-rh-tipo-badge" class="badge rounded-pill px-3 py-2"></span>
+                                <span id="det-rh-estado-badge" class="badge fs-6"></span>
+                            </div>
+                            <button id="btn-descargar-pdf" class="btn btn-danger fw-bold shadow-sm" style="display: none;">
+                                <i class="fa-solid fa-file-pdf me-1"></i> Descargar PDF
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="d-flex align-items-center gap-2 mb-3 overflow-x-auto pb-1">
-                <div class="btn-group btn-group-sm shadow-sm" role="group">
-                    <input type="radio" class="btn-check" name="qFilter" id="qAll" checked onclick="filtrarRapido('Todos')">
-                    <label class="btn btn-outline-secondary px-3" for="qAll">Todos</label>
-
-                    <input type="radio" class="btn-check" name="qFilter" id="qPase" onclick="filtrarRapido('Pase')">
-                    <label class="btn btn-outline-info px-3" for="qPase">Pases</label>
-
-                    <input type="radio" class="btn-check" name="qFilter" id="qPerm" onclick="filtrarRapido('Permiso')">
-                    <label class="btn btn-outline-info px-3" for="qPerm">Permisos</label>
-                </div>
-                <button class="btn btn-sm btn-link text-muted" onclick="location.reload()" title="Refrescar">
-                    <i class="fa-solid fa-rotate"></i>
-                </button>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-hover align-middle shadow-sm border">
-                    <thead class="table-light">
-                        <tr>
-                            <th width="50">ID</th>
-                            <th width="100">Tipo</th>
-                            <th>Docente</th>
-                            <th>Fecha</th>
-                            <th>Motivo</th>
-                            <th width="120">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-general">
-                        <tr><td colspan="6" class="text-center py-4">Cargando registros...</td></tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+        <script src="js/vista_rh.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script src="js/admins.js"></script>
+        <script src="js/pdfsito.js"></script>
     </div>
-
-    <button class="btn btn-aero position-fixed bottom-0 start-0 m-4 shadow-lg rounded-pill px-4 py-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCalendario">
-        <i class="fa-solid fa-calendar-days me-2"></i>Ver Calendario Global
-    </button>
-
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasCalendario" style="width: 600px;">
-        <div class="offcanvas-header border-bottom bg-light">
-            <h5 class="offcanvas-title fw-bold text-primary">Mapa de Inasistencias y Salidas</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div id="calendario-rh" style="height: 100%;"></div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalDetalleRH" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title fw-bold" style="color: var(--utm-teal);">Detalle del Trámite</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <label class="text-muted small fw-bold">Docente</label>
-                    <p id="det-rh-nombre" class="fs-5 fw-bold text-dark"></p>
-                    <div class="row mb-3">
-                        <div class="mb-3">
-                            <label class="text-muted small fw-bold text-uppercase">Solicitado el día:</label>
-                            <p id="det-fecha-creacion" class="fw-bold text-dark mb-0"></p>
-                        </div>
-                        <hr class="my-2 opacity-25">
-                        <div class="col-6">
-                            <label id="det-rh-label-fecha" class="text-muted small fw-bold">Fecha</label>
-                            <p id="det-rh-fecha" class="fw-semibold mb-0"></p>
-                        </div>
-                        <div class="col-6" id="det-rh-cont-fin" style="display:none;">
-                            <label class="text-muted small fw-bold">Fecha Fin</label>
-                            <p id="det-rh-fecha-fin" class="fw-semibold mb-0"></p>
-                        </div>
-                        <div class="col-6" id="det-rh-cont-horas" style="display:none;">
-                            <label class="text-muted small fw-bold">Horario</label>
-                            <p id="det-rh-horas" class="fw-semibold mb-0 text-primary"></p>
-                        </div>
-                    </div>
-                    <div class="mb-3" id="det-rh-cont-dias" style="display:none;">
-                        <label class="text-muted small fw-bold">Días Solicitados</label>
-                        <p id="det-rh-dias" class="fw-bold fs-4" style="color: var(--utm-teal);"></p>
-                    </div>
-                    <label class="text-muted small fw-bold">Motivo</label>
-                    <div class="p-3 bg-light rounded border"><p id="det-rh-motivo" class="mb-0 small italic text-secondary"></p></div>
-                    <div class="d-flex justify-content-between mt-4">
-                        <span id="det-rh-tipo-badge" class="badge rounded-pill px-3 py-2"></span>
-                        <span id="det-rh-estado-badge" class="badge fs-6"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script src="js/vista_rh.js"></script>
 </body>
 </html>
