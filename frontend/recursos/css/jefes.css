@@ -1,0 +1,55 @@
+.main-workspace { padding: 15px; gap: 15px; }
+.sidebar { width: 380px; border: 1px solid var(--border-color) !important; border-radius: 4px; }
+
+.scroll-interno { flex-grow: 1; overflow-y: auto; margin-top: 10px; }
+
+.content-area { gap: 15px; overflow: hidden; padding: 0 !important; background: transparent !important; }
+
+.mini-filter-bar {
+    background-color: white; border: 1px solid var(--border-color); padding: 10px 20px;
+    border-radius: 4px; display: flex; align-items: center; gap: 15px;
+}
+
+.panel-estadisticas {
+    height: 35%; background-color: white !important; border: 1px solid var(--border-color) !important;
+    padding: 15px; border-radius: 4px; display: flex; flex-direction: column;
+}
+
+.panel-calendario {
+    flex-grow: 1; background-color: white !important; border: 1px solid var(--border-color) !important;
+    padding: 15px; border-radius: 4px; overflow: hidden;
+}
+
+.solicitud-card {
+    background: #fff !important; border: 1px solid var(--border-color) !important;
+    border-left: 4px solid var(--utm-teal) !important; border-radius: 4px; padding: 15px; margin-bottom: 10px;
+}
+
+.btn-success { background-color: var(--utm-teal) !important; border: none !important; font-weight: bold; }
+.btn-danger { background-color: var(--utm-red) !important; border: none !important; font-weight: bold; }
+
+#calendario-jefe { height: 100%; }
+.fc a, .fc-daygrid-day-number { color: var(--text-dark) !important; text-decoration: none !important; }
+.fc .fc-toolbar-title { color: var(--utm-teal) !important; font-weight: bold; }
+
+@media (max-width: 768px) {
+    .main-workspace { flex-direction: column !important; height: calc(100vh - 60px) !important; overflow: hidden !important; padding: 0 !important; }
+    .sidebar { width: 100% !important; height: 100% !important; border: none !important; padding: 15px !important; }
+
+    .content-area {
+        display: none; position: fixed; top: 60px; left: 0; width: 100vw !important;
+        height: calc(100vh - 60px) !important; z-index: 1040; background: var(--bg-gray) !important;
+        padding: 15px !important; flex-direction: column; 
+    }
+    .content-area.active-movil { display: flex !important; }
+
+    .panel-estadisticas { height: auto !important; flex-grow: 1 !important; border: none !important; padding: 0 !important; background: transparent !important; margin: 0 !important; }
+    .panel-estadisticas .scroll-interno { background: white !important; border-radius: 12px !important; padding: 10px !important; box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important; height: 100%; }
+    .panel-calendario { flex-grow: 1 !important; height: 100% !important; padding: 10px !important; border: none !important; border-radius: 12px !important; box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important; }
+    
+    .btn-cerrar-overlay { bottom: 25px; right: 20px; }
+    .btn-cerrar-overlay.mostrar { display: flex !important; }
+
+    .mini-filter-bar { flex-direction: column; gap: 10px; padding: 15px !important; border-radius: 12px !important; }
+    #mini-docente { width: 100% !important; }
+}

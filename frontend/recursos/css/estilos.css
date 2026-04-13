@@ -1,0 +1,87 @@
+
+:root {
+    --utm-teal: #009186;
+    --utm-dark-teal: #007d74;
+    --utm-dark-teal-rh: #0648a3; /* Variante azul para RH */
+    --utm-red: #d9534f;
+    --bg-gray: #f4f7f6; /* Fondo general */
+    --bg-gray-rh: #f8f9fa; /* Fondo más claro para RH */
+    --border-color: #dee2e6;
+    --text-dark: #333;
+}
+
+
+html, body {
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; 
+    background-color: var(--bg-gray);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.top-navbar {
+    background-color: var(--utm-teal) !important;
+    height: 60px;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+    position: relative;
+}
+
+.main-workspace {
+    display: flex;
+    height: calc(100vh - 60px); 
+    width: 100%;
+}
+
+.sidebar {
+    background-color: white !important;
+    border-right: 1px solid var(--border-color);
+    padding: 20px;
+    flex-shrink: 0; 
+    overflow-y: auto;
+}
+
+.content-area {
+    flex-grow: 1; 
+    background-color: var(--bg-gray) !important;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+#v-det-motivo, #det-motivo, #det-rh-motivo {
+    word-wrap: break-word;       
+    overflow-wrap: break-word;    
+    white-space: pre-wrap;       
+    word-break: break-word;      
+}
+
+.btn-cerrar-overlay {
+    display: none; 
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    border-radius: 50% !important;
+    background: var(--utm-red) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(217, 83, 79, 0.4) !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem !important;
+    z-index: 2101;
+    border: none !important;
+    transition: transform 0.2s ease;
+}
+.btn-cerrar-overlay:active { transform: scale(0.9); }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 10px; }
+
+
+.modal { z-index: 9999 !important; }
+.modal-backdrop { z-index: 9998 !important; }

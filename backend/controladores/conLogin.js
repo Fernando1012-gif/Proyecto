@@ -138,7 +138,27 @@ const loginControlador = {
                 usuario: {id, rol, nombre_completo},
                 token
             });
-}
+        },
+        obtenerContadores: async (req, res) => {
+        try {
+            const { id } = req.usuario;
+            const pasesql = require('../modelos/sqlPase');
+            const permisosql = require('../modelos/sqlPermiso');
+
+            const [pasesUsados, permisosUsados] = await Promise.all([
+                pasesql.contarPasesMensuales(id),
+                permisosql.contarPermisosCuatrimestrales(id)
+            ]);
+
+            res.json({
+                ok: true,
+                pases: { usados: pasesUsados, disponibles: Math.max(0, 3 - pasesUsados) },
+                permisos: { usados: permisosUsados, disponibles: Math.max(0, 3 - permisosUsados) }
+            });
+        } catch (error) {
+            res.status(500).json({ ok: false, msg: "Error al obtener contadores" });
+        }
+    }
 }
 //con esto exportamos el objeto y sus funciones para que cualquier archivo pueda usarlo
 //se llamara "logincontrolador"

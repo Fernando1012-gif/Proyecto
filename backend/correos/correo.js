@@ -41,9 +41,9 @@ const enviarNotificacionEstado = async (emailDestino, nombreDocente, tramite, es
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log(`Correo enviado a ${emailDestino}`);
+        console.log(`correo enviado ${emailDestino}`);
     } catch (error) {
-        console.error('Error al enviar correo:', error);
+        console.error('error al enviar correo:', error);
     }
 };
 

@@ -1,8 +1,8 @@
 const db = require('../bd/base');
 
 const sqlValidaciones = {
-    // 1. Buscamos si es festivo o cumpleaños
-    checkFechaEspecial: async (fechaSolicitada, usuarioId) => {
+    //festivo o cumpleaños
+    fechaEspecial: async (fechaSolicitada, usuarioId) => {
         const sqlFestivo = "SELECT descripcion FROM dias_festivos WHERE fecha = ?";
         const [festivos] = await db.execute(sqlFestivo, [fechaSolicitada]);
 
@@ -18,7 +18,7 @@ const sqlValidaciones = {
             esCumple: cumple.length > 0
         };
     },
-    verificarTraslape: async (usuarioId, fechaInicio, fechaFin = null) => {
+    verificarT: async (usuarioId, fechaInicio, fechaFin = null) => {
         const fFin = fechaFin || fechaInicio; 
 
         const [pases] = await db.execute(

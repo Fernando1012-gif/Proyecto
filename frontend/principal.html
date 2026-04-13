@@ -19,198 +19,16 @@
         <link rel="icon" type="image/png" sizes="16x16"
             href="/imagenes/favicon_io/favicon-16x16.png">
         <link rel="manifest" href="/imagenes/favicon_io/site.webmanifest">
-        <style>
-    :root {
-        --utm-teal: #009186;
-        --utm-dark-teal: #007d74;
-        --utm-red: #d9534f;
-        --bg-gray: #f4f7f6;
-        --border-color: #dee2e6;
-        --text-dark: #333;
-    }
-
-    /* base*/
-    html, body {
-        height: 100vh;
-        margin: 0;
-        overflow: hidden; 
-        background-color: var(--bg-gray);
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    .fondo-animado { display: none; }
-
-    .top-navbar {
-        background-color: var(--utm-teal) !important;
-        height: 60px;
-        color: white;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        z-index: 1000;
-        position: relative;
-    }
-
-    .main-workspace {
-        display: flex;
-        height: calc(100vh - 60px); 
-        width: 100%;
-    }
-
-    /* --- SIDEBAR IZQUIERDO --- */
-    .sidebar {
-        width: 300px;
-        background-color: white !important;
-        border-right: 1px solid var(--border-color);
-        padding: 20px;
-        flex-shrink: 0; 
-        overflow-y: auto;
-        box-shadow: none !important;
-    }
-
-    /* --- ÁREA DEL CALENDARIO --- */
-    .content-area {
-        flex-grow: 1; 
-        background-color: white !important;
-        padding: 20px;
-        overflow: hidden; 
-        display: flex;
-        flex-direction: column;
-    }
-
-    #calendario {
-        height: 100%;
-        width: 100%;
-    }
-
-    .corp-panel {
-        background: white !important;
-        border: 1px solid var(--border-color) !important;
-        border-radius: 0px !important; 
-    }
-    
-    .fc a, .fc-daygrid-day-number, .fc-col-header-cell-cushion {
-        color: var(--text-dark) !important;
-        text-decoration: none !important;
-        font-weight: 600;
-    }
-
-    .fc .fc-toolbar-title {
-        color: var(--utm-teal) !important;
-        font-size: 1.5rem !important;
-        text-transform: lowercase;
-    }
-
-    .fc .fc-button-primary {
-        background-color: var(--utm-teal) !important;
-        border: none !important;
-        text-transform: lowercase;
-        font-weight: bold;
-    }
-
-    .fc .fc-button-active {
-        background-color: var(--utm-dark-teal) !important;
-    }
-
-    /* --- BOTONES Y COMPONENTES --- */
-    #btn-logout {
-        background: rgb(255, 255, 255) !important;
-        color: var(--utm-red) !important;
-        border: 2px solid var(--utm-red) !important;
-        padding: 5px 15px !important;
-    }
-    .dia-bloqueado {
-        background-color: #d6d7d8 !important; /* Gris claro */
-        cursor: not-allowed !important;
-        opacity: 1;
-    }
-    .dia-bloqueado .fc-daygrid-day-number {
-        color: #66686a; /* Número en gris */
-    }
-    .btn-aero {
-        background: var(--utm-teal) !important;
-        color: white !important;
-        border-radius: 4px !important;
-        border: none !important;
-        font-weight: bold;
-        padding: 10px 20px;
-    }
-
-    .btn-aero-blue {
-        background: #007bff !important;
-        color: white !important;
-        border-radius: 4px !important;
-        border: none !important;
-        font-weight: bold;
-        padding: 10px 20px;
-    }
-
-    .list-group-item {
-        background: white !important;
-        color: var(--text-dark) !important;
-        font-weight: 500;
-        border-color: #f0f0f0 !important;
-    }
-
-    /* --- BOTONES DE ELECCIÓN --- */
-    .btn-choice {
-        padding: 20px;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        height: 120px;
-    }
-
-    #btn-elegir-pase {
-        background-color: white;
-        border-color: var(--utm-teal);
-        color: var(--utm-teal);
-    }
-
-    #btn-elegir-pase:hover {
-        background-color: var(--utm-teal);
-        color: white;
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 145, 134, 0.2);
-    }
-
-    #btn-elegir-permiso {
-        background-color: white;
-        border-color: #007bff;
-        color: #007bff;
-    }
-
-    #btn-elegir-permiso:hover {
-        background-color: #007bff;
-        color: white;
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 123, 255, 0.2);
-    }
-
-    .btn-choice i {
-        font-size: 2rem;
-    }
-    #v-det-motivo, 
-        #det-motivo, 
-        #det-rh-motivo {
-            word-wrap: break-word;       /* Rompe palabras largas si es necesario */
-            overflow-wrap: break-word;    /* Estándar moderno para lo mismo */
-            white-space: pre-wrap;       /* Respeta los enter/saltos de línea  */
-            word-break: break-word;      /* Compatibilidad extra */
-        }
-    </style>
+        <link rel="stylesheet" href="recursos/css/estilos.css">
+        <link rel="stylesheet" href="recursos/css/principal.css">
     </head>
     <body>
 
         <div
             class="top-navbar d-flex justify-content-between align-items-center px-4">
             <h4 class="m-0 fw-bold">
-                <img src="recursos/imagenes/isologo_UTM_white.svg" width="50"
+                <img src="recursos/imagenes/isologo_UTM_white.svg" width="75"
                     class="me-2" alt="logo">
-                Docente
             </h4>
             <div class="dropdown">
                 <button
@@ -256,32 +74,54 @@
             <div class="sidebar corp-panel">
                 <h5 class="mb-4 border-bottom pb-2 fw-bold"
                     style="color: var(--utm-teal);">
-                    <i class="fa-solid fa-circle-info me-2"></i> Solicitudes
+                    <i class="fa-solid fa-chart-pie me-2"></i> Numero de Prestaciones
                 </h5>
 
-                <ul class="list-group list-group-flush mb-4 fw-bold">
-                    <li
-                        class="list-group-item d-flex justify-content-between align-items-center">
-                        Aprobados
-                        <span class="badge rounded-pill shadow-sm text-dark"
-                            style="background: linear-gradient(180deg, #a8ff78, #78ffd6);"
-                            id="badge-aprobados">0</span>
-                    </li>
-                    <li
-                        class="list-group-item d-flex justify-content-between align-items-center">
-                        Pendientes
-                        <span class="badge rounded-pill shadow-sm text-dark"
-                            style="background: linear-gradient(180deg, #f6d365, #fda085);"
-                            id="badge-pendientes">0</span>
-                    </li>
-                    <li
-                        class="list-group-item d-flex justify-content-between align-items-center">
-                        Rechazados
-                        <span class="badge rounded-pill shadow-sm text-dark"
-                            style="background: linear-gradient(180deg, #ff9a9e, #fecfef);"
-                            id="badge-rechazados">0</span>
-                    </li>
-                </ul>
+                <div class="mb-4">
+                    <div class="p-3 mb-3 border rounded-3 bg-white shadow-sm">
+                        <div
+                            class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small fw-bold text-dark">Pases
+                                (Mes)</span>
+                            <span id="pases-badge"
+                                class="badge rounded-pill bg-secondary">0 /
+                                3</span>
+                        </div>
+                        <div class="progress"
+                            style="height: 8px; background-color: #e9ecef;">
+                            <div id="pases-bar" class="progress-bar"
+                                role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <p class="text-muted mt-2 mb-0"
+                            style="font-size: 0.7rem;">Límite mensual: 3
+                            pases</p>
+                    </div>
+
+                    <div class="p-3 mb-3 border rounded-3 bg-white shadow-sm">
+                        <div
+                            class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small fw-bold text-dark">Permisos
+                                (Cuatri)</span>
+                            <span id="permisos-badge"
+                                class="badge rounded-pill bg-secondary">0 /
+                                3</span>
+                        </div>
+                        <div class="progress"
+                            style="height: 8px; background-color: #e9ecef;">
+                            <div id="permisos-bar" class="progress-bar"
+                                role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <p class="text-muted mt-2 mb-0"
+                            style="font-size: 0.7rem;">Límite cuatrimestral: 3
+                            días</p>
+                    </div>
+                    <button
+                        class="btn btn-aero w-100 mb-4 py-3 shadow d-md-none"
+                        onclick="toggleCalendarioMovil(true)">
+                        <i class="fa-solid fa-calendar-days me-2"></i> Abrir
+                        Calendario y Solicitar
+                    </button>
+                </div>
 
                 <h5 class="mt-4 mb-3 border-bottom pb-2 fw-bold"
                     style="color: var(--utm-teal);">
@@ -295,6 +135,11 @@
             </div>
 
             <div class="content-area corp-panel">
+                <button id="btn-cerrar-cal-movil"
+                    class="btn btn-danger rounded-circle shadow"
+                    onclick="toggleCalendarioMovil(false)">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
                 <div id="calendario"></div>
             </div>
         </div>
@@ -384,8 +229,7 @@
                                     class="btn btn-light fw-bold"
                                     onclick="volverPaso1()">Atrás</button>
                                 <button type="submit"
-                                    class="btn btn-aero">Enviar a Jefe
-                                    Inmediato</button>
+                                    class="btn btn-aero">Enviar a Revision</button>
                             </div>
                         </form>
 
@@ -601,85 +445,86 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="modalPerfil" tabindex="-1"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content border-0 shadow-lg">
-                        <div class="modal-header bg-light">
-                            <h5 class="modal-title fw-bold"
-                                style="color: var(--utm-teal);"><i
-                                    class="fa-solid fa-user-gear me-2"></i>Expediente
-                                Docente</h5>
-                            <button type="button" class="btn-close"
-                                data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal fade" id="modalPerfil" tabindex="-1"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header bg-light">
+                        <h5 class="modal-title fw-bold"
+                            style="color: var(--utm-teal);"><i
+                                class="fa-solid fa-user-gear me-2"></i>Expediente
+                            Docente</h5>
+                        <button type="button" class="btn-close"
+                            data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="text-center mb-4"><h5 id="p-nombre"
+                                class="fw-bold mb-0"></h5><p id="p-area"
+                                class="text-muted small mb-0"></p></div>
+                        <div id="info-laboral-perfil"
+                            class="row g-3 p-3 bg-light rounded border mb-4">
+                            <div class="col-6"><label
+                                    class="text-muted small fw-bold text-uppercase"
+                                    style="font-size:0.6rem">RFC</label><p
+                                    id="p-rfc"
+                                    class="fw-semibold small mb-0"></p></div>
+                            <div class="col-6"><label
+                                    class="text-muted small fw-bold text-uppercase"
+                                    style="font-size:0.6rem">Categoría</label><p
+                                    id="p-categoria"
+                                    class="fw-semibold small mb-0"></p></div>
+                            <div class="col-6"><label
+                                    class="text-muted small fw-bold text-uppercase"
+                                    style="font-size:0.6rem">Fecha
+                                    Ingreso</label><p id="p-ingreso"
+                                    class="fw-semibold small mb-0"></p></div>
+                            <div class="col-6"><label
+                                    class="text-muted small fw-bold text-uppercase"
+                                    style="font-size:0.6rem">Contrato</label><p
+                                    id="p-contrato"
+                                    class="fw-semibold small mb-0"></p></div>
                         </div>
-                        <div class="modal-body p-4">
-                            <div class="text-center mb-4"><h5 id="p-nombre"
-                                    class="fw-bold mb-0"></h5><p id="p-area"
-                                    class="text-muted small mb-0"></p></div>
-                            <div id="info-laboral-perfil"
-                                class="row g-3 p-3 bg-light rounded border mb-4">
-                                <div class="col-6"><label
-                                        class="text-muted small fw-bold text-uppercase"
-                                        style="font-size:0.6rem">RFC</label><p
-                                        id="p-rfc"
-                                        class="fw-semibold small mb-0"></p></div>
-                                <div class="col-6"><label
-                                        class="text-muted small fw-bold text-uppercase"
-                                        style="font-size:0.6rem">Categoría</label><p
-                                        id="p-categoria"
-                                        class="fw-semibold small mb-0"></p></div>
-                                <div class="col-6"><label
-                                        class="text-muted small fw-bold text-uppercase"
-                                        style="font-size:0.6rem">Fecha
-                                        Ingreso</label><p id="p-ingreso"
-                                        class="fw-semibold small mb-0"></p></div>
-                                <div class="col-6"><label
-                                        class="text-muted small fw-bold text-uppercase"
-                                        style="font-size:0.6rem">Contrato</label><p
-                                        id="p-contrato"
-                                        class="fw-semibold small mb-0"></p></div>
-                            </div>
-                            <div id="seccion-seguridad" style="display: none;"
-                                class="mt-3 border-top pt-3">
-                                <h6
-                                    class="small fw-bold mb-3 text-warning">Cambiar
-                                    Contraseña</h6>
-                                <form id="form-cambiar-pass">
-                                    <div class="mb-2"><input type="password"
-                                            class="form-control form-control-sm"
-                                            id="pass-actual"
-                                            placeholder="Contraseña actual"
-                                            required></div>
-                                    <div class="mb-3"><input type="password"
-                                            class="form-control form-control-sm"
-                                            id="pass-nueva"
-                                            placeholder="Nueva contraseña"
-                                            required></div>
-                                    <div class="d-flex gap-2">
-                                        <button type="button"
-                                            class="btn btn-sm btn-light w-50"
-                                            onclick="document.getElementById('seccion-seguridad').style.display='none'">Cancelar</button>
-                                        <button type="submit"
-                                            class="btn btn-sm btn-primary w-50">Actualizar</button>
-                                    </div>
-                                </form>
-                            </div>
+                        <div id="seccion-seguridad" style="display: none;"
+                            class="mt-3 border-top pt-3">
+                            <h6
+                                class="small fw-bold mb-3 text-warning">Cambiar
+                                Contraseña</h6>
+                            <form id="form-cambiar-pass">
+                                <div class="mb-2"><input type="password"
+                                        class="form-control form-control-sm"
+                                        id="pass-actual"
+                                        placeholder="Contraseña actual"
+                                        required></div>
+                                <div class="mb-3"><input type="password"
+                                        class="form-control form-control-sm"
+                                        id="pass-nueva"
+                                        placeholder="Nueva contraseña"
+                                        required></div>
+                                <div class="d-flex gap-2">
+                                    <button type="button"
+                                        class="btn btn-sm btn-light w-50"
+                                        onclick="document.getElementById('seccion-seguridad').style.display='none'">Cancelar</button>
+                                    <button type="submit"
+                                        class="btn btn-sm btn-primary w-50">Actualizar</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <script
-                src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-            <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-            <script src="js/principal.js"></script>
-            <script
-                src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-            <script
-                src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-            <script src="js/admins.js"></script>
-            <script src="js/pdfsito.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+        <script src="js/principal.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script src="js/admins.js"></script>
+        <script src="js/pdfsito.js"></script>
 
-        </body>
-    </html>
+    </body>
+</html>

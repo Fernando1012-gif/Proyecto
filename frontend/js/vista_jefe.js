@@ -1,27 +1,24 @@
 //url para consultar api
-const URL_BASE = 'http://localhost:3000/api';
-const socket = io('http://localhost:3000');
+const URL_BASE = '/api';
+const socket = io();
 let calendarioJefe;
 let modalDetalle;
 let solicitudesGlobales = [];
 
-// Escuchamos el aviso del servidor en tiempo real
+//socket en tiempo real
 socket.on('nuevo-pase-creado', (data) => {
     console.log("Mensaje del servidor:", data.msg);
-    // Llamamos a tu función real para refrescar los datos
     cargarTodasLasSolicitudes();
-    // Avisamos visualmente al jefe
     mostrarToast("¡Nueva solicitud recibida!", "info");
 });
 
 socket.on('nuevo-permiso-creado', (data) => {
     console.log(data.msg);
-    // Corregido: usamos cargarTodasLasSolicitudes() que es la que existe aquí
     cargarTodasLasSolicitudes();
     mostrarToast("¡Nueva solicitud de Permiso recibida!", "info");
 });
 
-// Escuchar cuando algo cambia
+//socket en tiempo real
 socket.on('permiso-actualizado', () => {
     cargarTodasLasSolicitudes();
 });
@@ -75,14 +72,28 @@ function inicializarCalendario() {
         locale: 'es',
         height: '100%',
         headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,listWeek' },
+        windowResize: function(arg) {
+            if (window.innerWidth < 768) {
+                calendarioJefe.setOption('headerToolbar', {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: 'today'
+                });
+            } else {
+                calendarioJefe.setOption('headerToolbar', {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,listWeek'
+                });
+            }
+        },
         eventClick: (info) => verDetallesModal(info.event.extendedProps)
     });
     calendarioJefe.render();
 }
-// vista_jefe.js
+//funcion para obtener datos desde backend
 async function cargarTodasLasSolicitudes() {
     try {
-        // 1. Agregamos la carga de festivos igual que en principal.js
         const [respPases, respPermisos, respFest] = await Promise.all([
             fetch(`${URL_BASE}/pases/todos`, { headers: { 'x-token': token } }),
             fetch(`${URL_BASE}/permisos/todos`, { headers: { 'x-token': token } }),
@@ -96,7 +107,6 @@ async function cargarTodasLasSolicitudes() {
 
         const dataPases = respPases.ok ? await respPases.json() : { data: [] };
         const dataPermisos = respPermisos.ok ? await respPermisos.json() : { data: [] };
-        // Guardamos los festivos en una variable global o la pasamos
         window.festivosGlobalesJefe = respFest.ok ? await respFest.json() : [];
 
         const pases = (dataPases.data || []).map(p => ({ ...p, tipoTramite: 'Pase' }));
@@ -130,7 +140,6 @@ function ejecutarMiniFiltro() {
 }
 
 //funcion para actualizar con datos
-// vista_jefe.js
 function actualizarPantallaJefe(datos) {
     const listaPendientes = document.getElementById('lista-pendientes');
     const tablaEstadisticas = document.getElementById('tabla-estadisticas');
@@ -147,14 +156,14 @@ function actualizarPantallaJefe(datos) {
     }));
 
     let contadorPendientes = 0;
-    const cumpleaniosAgregados = new Set(); // Para no repetir cumple si el profe tiene varios trámites
+    const cumpleaniosAgregados = new Set();
 
     datos.forEach(sol => {
         const esPase = sol.tipoTramite === 'Pase';
         const fechaMostrar = sol.fecha_uso_h || sol.fecha_inicio_h;
         const fechaISO = (esPase ? sol.fecha_uso : sol.fecha_inicio).split('T')[0];
 
-        // Evento del trámite
+        //evento del tramite
         eventos.push({
             title: `${sol.nombre_completo}: ${sol.tipoTramite}`,
             start: fechaISO,
@@ -165,7 +174,7 @@ function actualizarPantallaJefe(datos) {
             extendedProps: { ...sol }
         });
 
-        // 2. NUEVO: Lógica de Cumpleaños Global (desde la tabla usuarios vía solicitudes)
+        //logica de cumpleaños
         if (sol.fecha_nacimiento && !cumpleaniosAgregados.has(sol.id_usuario)) {
             const cumpleMesDia = sol.fecha_nacimiento.substring(5, 10);
             const añoActual = new Date().getFullYear();
@@ -173,7 +182,7 @@ function actualizarPantallaJefe(datos) {
                 title: `Cumple: ${sol.nombre_completo.split(' ')[0]}`,
                 start: `${añoActual}-${cumpleMesDia}`,
                 allDay: true,
-                backgroundColor: '#6f42c1', // Morado para distinguir de pases amarillos
+                backgroundColor: '#6f42c1',
                 borderColor: 'transparent'
             });
             cumpleaniosAgregados.add(sol.id_usuario);
@@ -213,7 +222,7 @@ function actualizarPantallaJefe(datos) {
     });
 
     if (contadorPendientes === 0) {
-        listaPendientes.innerHTML = `<div class="text-center py-5 opacity-50"><i class="fa-solid fa-mug-hot fa-3x mb-3" style="color: var(--utm-teal);"></i><p class="fw-bold mb-0">¡Todo al día!</p></div>`;
+        listaPendientes.innerHTML = `<div class="text-center py-5 opacity-50"><i class="fa-solid fa-mug-hot fa-3x mb-3" style="color: var(--utm-teal);"></i><p class="fw-bold mb-0">Todo al dia</p></div>`;
     }
 
     calendarioJefe.removeAllEventSources();
@@ -223,7 +232,7 @@ function actualizarPantallaJefe(datos) {
 function verDetallesModal(data) {
     const esPase = data.tipoTramite === 'Pase';
 
-    // 1. Llenado de información básica
+    //info basica
     document.getElementById('det-nombre').textContent = data.nombre_completo;
     document.getElementById('det-motivo').textContent = data.motivo || 'Sin motivo especificado';
     document.getElementById('det-fecha-creacion').textContent = data.fecha_solicitud_h || 'N/A';
@@ -234,7 +243,7 @@ function verDetallesModal(data) {
     const contDias = document.getElementById('det-contenedor-dias');
     const contRevision = document.getElementById('det-contenedor-revision');
 
-    // 2. Lógica de Auditoría (Revisión)
+    //logica de revision
     if (data.estado !== 'Pendiente' && data.revisado_por_nombre) {
         contRevision.style.display = 'block';
         document.getElementById('det-revisado-por').textContent = data.revisado_por_nombre;
@@ -246,7 +255,7 @@ function verDetallesModal(data) {
         contRevision.style.display = 'none';
     }
 
-    // 3. Selección de campos según el Trámite
+    //segun el tramite:
     if (esPase) {
         labelFecha.textContent = "Fecha de Uso";
         document.getElementById('det-fecha').textContent = data.fecha_uso_h;
@@ -289,7 +298,7 @@ function verDetallesModal(data) {
         }
     }
 
-    // 5. Badges de Estado y Tipo
+    //estado y tipo
     document.getElementById('det-tipo-badge').textContent = data.tipoTramite;
     document.getElementById('det-tipo-badge').className = `badge rounded-pill px-4 py-2 ${esPase ? 'bg-secondary text-white' : 'bg-secondary'}`;
 
@@ -368,4 +377,41 @@ function confirmarAccion(btn, id, tipo, estado) {
     }, 1000);
 
     btn.dataset.intervalo = intervalo;
+}
+
+function toggleVistaMovil(vista, show) {
+    const area = document.querySelector('.content-area');
+    const historial = document.querySelector('.panel-estadisticas');
+    const filtros = document.querySelector('.mini-filter-bar');
+    const calendario = document.querySelector('.panel-calendario');
+    const btnCerrar = document.getElementById('btn-cerrar-vista-movil');
+    
+    if (show) {
+        area.classList.add('active-movil');
+        btnCerrar.classList.add('mostrar');
+        
+        if (vista === 'historial') {
+            filtros.style.display = 'flex';
+            historial.style.display = 'flex';
+            calendario.style.display = 'none';
+        } else if (vista === 'calendario') {
+            filtros.style.display = 'none';
+            historial.style.display = 'none';
+            calendario.style.display = 'block';
+            
+            if (calendarioJefe) {
+                setTimeout(() => {
+                    calendarioJefe.setOption('height', '100%');
+                    calendarioJefe.updateSize();
+                }, 100);
+            }
+        }
+    } else {
+        area.classList.remove('active-movil');
+        btnCerrar.classList.remove('mostrar');
+        //limpieza de los estilos en línea para que en pc vuelva a la normalidad
+        filtros.style.display = '';
+        historial.style.display = '';
+        calendario.style.display = '';
+    }
 }

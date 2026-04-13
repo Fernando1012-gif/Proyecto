@@ -1,414 +1,221 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Directivos</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directivos</title>
 
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet">
-        <script src="https://kit.fontawesome.com/35660cdf83.js"
-            crossorigin="anonymous"></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
-        <link rel="icon" type="image/png" sizes="32x32"
-            href="/imagenes/red/favicon-32x32.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/35660cdf83.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/imagenes/red/favicon-32x32.png">
+    <link rel="stylesheet" href="recursos/css/estilos.css">
+    <link rel="stylesheet" href="recursos/css/jefes.css">
+</head>
+<body>
 
-        <style>
-    :root {
-        --utm-teal: #009186;
-        --utm-dark-teal: #007d74;
-        --utm-red: #d9534f;
-        --bg-gray: #f4f7f6;
-        --border-color: #dee2e6;
-        --text-dark: #333;
-    }
+    <div class="top-navbar d-flex justify-content-between align-items-center px-3">
+        <div>
+            <img src="recursos/imagenes/isologo_UTM_white.svg" height="29" alt="logo">
+        </div>
 
-    html, body {
-        height: 100vh;
-        margin: 0;
-        overflow: hidden; 
-        background-color: var(--bg-gray);
-        font-family: 'Segoe UI', Roboto, sans-serif;
-    }
-
-    .top-navbar {
-        background-color: var(--utm-teal) !important;
-        height: 60px;
-        color: white;
-        display: flex;
-        align-items: center;
-        padding: 0 25px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        z-index: 1000;
-    }
-
-    .main-workspace {
-        display: flex;
-        height: calc(100vh - 60px);
-        width: 100%;
-        padding: 15px;
-        gap: 15px;
-    }
-
-    .sidebar {
-        width: 380px;
-        background-color: white !important;
-        border: 1px solid var(--border-color) !important;
-        display: flex;
-        flex-direction: column;
-        flex-shrink: 0;
-        border-radius: 4px;
-        padding: 20px;
-    }
-
-    .scroll-interno {
-        flex-grow: 1;
-        overflow-y: auto;
-        margin-top: 10px;
-    }
-
-    .content-area {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        overflow: hidden;
-    }
-
-    .mini-filter-bar {
-        background-color: white;
-        border: 1px solid var(--border-color);
-        padding: 10px 20px;
-        border-radius: 4px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .panel-estadisticas {
-        height: 35%;
-        background-color: white !important;
-        border: 1px solid var(--border-color) !important;
-        padding: 15px;
-        border-radius: 4px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .panel-calendario {
-        flex-grow: 1;
-        background-color: white !important;
-        border: 1px solid var(--border-color) !important;
-        padding: 15px;
-        border-radius: 4px;
-        overflow: hidden;
-    }
-
-    .solicitud-card {
-        background: #fff !important;
-        border: 1px solid var(--border-color) !important;
-        border-left: 4px solid var(--utm-teal) !important;
-        border-radius: 4px;
-        padding: 15px;
-        margin-bottom: 10px;
-    }
-
-    .btn-success { background-color: var(--utm-teal) !important; border: none !important; font-weight: bold; }
-    .btn-danger { background-color: var(--utm-red) !important; border: none !important; font-weight: bold; }
-
-    #calendario-jefe { height: 100%; }
-    .fc a, .fc-daygrid-day-number { color: var(--text-dark) !important; text-decoration: none !important; }
-    .fc .fc-toolbar-title { color: var(--utm-teal) !important; font-weight: bold; }
-    #v-det-motivo, 
-        #det-motivo, 
-        #det-rh-motivo {
-            word-wrap: break-word;       /* Rompe palabras largas si es necesario */
-            overflow-wrap: break-word;    /* Estándar moderno para lo mismo */
-            white-space: pre-wrap;       /* Respeta los enter/saltos de línea */
-            word-break: break-word;      /* Compatibilidad extra */
-        }
-</style>
-    </head>
-    <body>
-
-        <div
-            class="top-navbar d-flex justify-content-between align-items-center">
-            <h4 class="m-0 fw-bold">
-                <img src="recursos/imagenes/isologo_UTM_white.svg" width="50"
-                    class="me-2" alt="logo">
-                Subdirector
-            </h4>
+        <div class="d-flex align-items-center gap-3">
+            
+            <div class="d-md-none d-flex gap-2">
+                <button class="btn text-white p-2" onclick="toggleVistaMovil('historial', true)" title="Historial">
+                    <i class="fa-solid fa-clock-rotate-left fa-lg"></i>
+                </button>
+                <button class="btn text-white p-2" onclick="toggleVistaMovil('calendario', true)" title="Calendario">
+                    <i class="fa-solid fa-calendar-days fa-lg"></i>
+                </button>
+            </div>
 
             <div class="dropdown">
-                <button
-                    class="btn dropdown-toggle text-white fw-bold border-0 d-flex align-items-center"
-                    type="button" id="userMenu" data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    style="text-shadow: 0px 1px 2px rgba(0,0,0,0.5);">
-                    <i class="fa-solid fa-circle-user fa-2xl me-2"></i>
-                    <span id="saludo-jefe">Usuario</span>
+                <button class="btn dropdown-toggle text-white fw-bold border-0 d-flex align-items-center p-0" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-circle-user fa-xl me-2"></i>
+                    <span id="saludo-jefe" style="font-size: 0.9rem;" class="d-none d-sm-inline">Cargando...</span>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow border-0"
-                    aria-labelledby="userMenu">
-                    <li
-                        class="px-3 py-2 small text-muted border-bottom">Opciones
-                        de cuenta</li>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userMenu">
+                    <li class="px-3 py-2 small text-muted border-bottom">Opciones de cuenta</li>
                     <li>
-                        <a class="dropdown-item py-2" href="#"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalCambiarPass">
-                            <i class="fa-solid fa-key me-2 text-warning"></i>
-                            Cambiar Contraseña
+                        <a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalCambiarPass">
+                            <i class="fa-solid fa-key me-2 text-warning"></i> Cambiar Contraseña
                         </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                        <a class="dropdown-item py-2 text-danger fw-bold"
-                            href="#" id="btn-logout">
-                            <i class="fa-solid fa-power-off me-2"></i> Cerrar
-                            Sesión
+                        <a class="dropdown-item py-2 text-danger fw-bold" href="#" id="btn-logout">
+                            <i class="fa-solid fa-power-off me-2"></i> Cerrar Sesión
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
+    </div>
 
-        <div class="main-workspace">
-            <div class="sidebar">
-                <h5 class="fw-bold"
-                    style="color: var(--utm-teal); border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <i class="fa-solid fa-list-check me-2"></i>Pendientes
-                </h5>
-                <div class="scroll-interno" id="lista-pendientes"></div>
-            </div>
-
-            <div class="content-area">
-                <div class="mini-filter-bar shadow-sm">
-                    <input type="text" id="mini-docente"
-                        class="form-control form-control-sm w-25"
-                        placeholder="Buscar docente..."
-                        onkeyup="ejecutarMiniFiltro()">
-
-                    <div class="btn-group btn-group-sm">
-                        <input type="radio" class="btn-check" name="btn-tipo"
-                            id="t-todos" value="Ambos" checked
-                            onchange="ejecutarMiniFiltro()">
-                        <label class="btn btn-outline-secondary"
-                            for="t-todos">Todos</label>
-                        <input type="radio" class="btn-check" name="btn-tipo"
-                            id="t-pases" value="Pase"
-                            onchange="ejecutarMiniFiltro()">
-                        <label class="btn btn-outline-secondary"
-                            for="t-pases">Pases</label>
-                        <input type="radio" class="btn-check" name="btn-tipo"
-                            id="t-permisos" value="Permiso"
-                            onchange="ejecutarMiniFiltro()">
-                        <label class="btn btn-outline-secondary"
-                            for="t-permisos">Permisos</label>
-                    </div>
-
-                    <div class="form-check form-switch small ms-auto">
-                        <input class="form-check-input" type="checkbox"
-                            id="check-solo-pendientes"
-                            onchange="ejecutarMiniFiltro()">
-                        <label class="form-check-label fw-bold text-muted"
-                            for="check-solo-pendientes">Solo Pendientes</label>
-                    </div>
-                </div>
-
-                <div class="panel-estadisticas">
-                    <h6 class="fw-bold" style="color: var(--utm-teal);"><i
-                            class="fa-solid fa-chart-bar me-2"></i>Historial de
-                        Aprobaciones</h6>
-                    <div class="scroll-interno">
-                        <table class="table table-sm table-hover align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Docente</th>
-                                    <th>Tipo</th>
-                                    <th>Fecha</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-estadisticas"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="panel-calendario">
-                    <div id="calendario-jefe"></div>
-                </div>
-            </div>
+    <div class="main-workspace">
+        <div class="sidebar">
+            <h5 class="fw-bold" style="color: var(--utm-teal); border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                <i class="fa-solid fa-list-check me-2"></i>Pendientes
+            </h5>
+            <div class="scroll-interno" id="lista-pendientes"></div>
         </div>
 
-        <div class="modal fade" id="modalDetalleSolicitud" tabindex="-1"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0 shadow-lg">
-                    <div class="modal-header bg-light">
-                        <h5 class="modal-title fw-bold"
-                            style="color: var(--utm-teal);"><i
-                                class="fa-solid fa-circle-info me-2"></i>Detalles</h5>
-                        <button type="button" class="btn-close"
-                            data-bs-dismiss="modal"></button>
+        <div class="content-area">
+            <button id="btn-cerrar-vista-movil" class="btn-cerrar-overlay" onclick="toggleVistaMovil('', false)">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="mini-filter-bar shadow-sm">
+                <input type="text" id="mini-docente" class="form-control form-control-sm w-25" placeholder="Buscar docente..." onkeyup="ejecutarMiniFiltro()">
+
+                <div class="btn-group btn-group-sm">
+                    <input type="radio" class="btn-check" name="btn-tipo" id="t-todos" value="Ambos" checked onchange="ejecutarMiniFiltro()">
+                    <label class="btn btn-outline-secondary" for="t-todos">Todos</label>
+                    
+                    <input type="radio" class="btn-check" name="btn-tipo" id="t-pases" value="Pase" onchange="ejecutarMiniFiltro()">
+                    <label class="btn btn-outline-secondary" for="t-pases">Pases</label>
+                    
+                    <input type="radio" class="btn-check" name="btn-tipo" id="t-permisos" value="Permiso" onchange="ejecutarMiniFiltro()">
+                    <label class="btn btn-outline-secondary" for="t-permisos">Permisos</label>
+                </div>
+
+                <div class="form-check form-switch small ms-auto">
+                    <input class="form-check-input" type="checkbox" id="check-solo-pendientes" onchange="ejecutarMiniFiltro()">
+                    <label class="form-check-label fw-bold text-muted" for="check-solo-pendientes">Solo Pendientes</label>
+                </div>
+            </div>
+
+            <div class="panel-estadisticas">
+                <h6 class="fw-bold" style="color: var(--utm-teal);"><i class="fa-solid fa-chart-bar me-2"></i>Historial de Aprobaciones</h6>
+                <div class="scroll-interno">
+                    <table class="table table-sm table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Docente</th>
+                                <th>Tipo</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-estadisticas"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel-calendario">
+                <div id="calendario-jefe"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalDetalleSolicitud" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" style="color: var(--utm-teal);"><i class="fa-solid fa-circle-info me-2"></i>Detalles</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <label class="text-muted small fw-bold text-uppercase">Docente</label>
+                            <p id="det-nombre" class="fs-5 fw-bold text-dark mb-0"></p>
+                        </div>
+                        <span id="det-tipo-badge" class="badge rounded-pill px-3 py-2"></span>
                     </div>
-                    <div class="modal-body p-4">
-                        <div
-                            class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <label
-                                    class="text-muted small fw-bold text-uppercase">Docente</label>
-                                <p id="det-nombre"
-                                    class="fs-5 fw-bold text-dark mb-0"></p>
-                            </div>
-                            <span id="det-tipo-badge"
-                                class="badge rounded-pill px-3 py-2"></span>
+                    <div class="mb-3">
+                        <label class="text-muted small fw-bold text-uppercase">Solicitado el día:</label>
+                        <p id="det-fecha-creacion" class="fw-bold text-dark mb-0"></p>
+                    </div>
+                    <hr class="my-2 opacity-25">
+                    <hr class="my-3 text-muted opacity-25">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label id="label-fecha-principal" class="text-muted small fw-bold text-uppercase">Fecha Inicio</label>
+                            <p id="det-fecha" class="fw-semibold fs-6 mb-0"></p>
                         </div>
-                        <div class="mb-3">
-                            <label
-                                class="text-muted small fw-bold text-uppercase">Solicitado
-                                el día:</label>
-                            <p id="det-fecha-creacion"
-                                class="fw-bold text-dark mb-0"></p>
+                        <div class="col-6" id="det-contenedor-fin" style="display: none;">
+                            <label class="text-muted small fw-bold text-uppercase">Fecha Fin</label>
+                            <p id="det-fecha-fin" class="fw-semibold fs-6 mb-0"></p>
                         </div>
-                        <hr class="my-2 opacity-25">
-                        <hr class="my-3 text-muted opacity-25">
-                        <div class="row mb-3">
+                        <div class="col-6" id="det-contenedor-horas" style="display: none;">
+                            <label class="text-muted small fw-bold text-uppercase">Horario (Salida - Regreso)</label>
+                            <p id="det-horas" class="fw-semibold fs-6 mb-0 text-primary"></p>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="det-contenedor-dias" style="display: none;">
+                        <label class="text-muted small fw-bold text-uppercase">Días de Inasistencia</label>
+                        <p id="det-dias" class="fw-bold fs-5 text-teal" style="color: var(--utm-teal);"></p>
+                    </div>
+                    <div id="det-contenedor-revision" style="display: none;" class="p-3 mb-3 bg-success bg-opacity-10 border border-success rounded">
+                        <div class="row">
                             <div class="col-6">
-                                <label id="label-fecha-principal"
-                                    class="text-muted small fw-bold text-uppercase">Fecha
-                                    Inicio</label>
-                                <p id="det-fecha"
-                                    class="fw-semibold fs-6 mb-0"></p>
+                                <label class="text-muted small fw-bold text-uppercase">Revisado por:</label>
+                                <p id="det-revisado-por" class="fw-bold mb-0 text-success"></p>
                             </div>
-                            <div class="col-6" id="det-contenedor-fin"
-                                style="display: none;">
-                                <label
-                                    class="text-muted small fw-bold text-uppercase">Fecha
-                                    Fin</label>
-                                <p id="det-fecha-fin"
-                                    class="fw-semibold fs-6 mb-0"></p>
-                            </div>
-                            <div class="col-6" id="det-contenedor-horas"
-                                style="display: none;">
-                                <label
-                                    class="text-muted small fw-bold text-uppercase">Horario
-                                    (Salida - Regreso)</label>
-                                <p id="det-horas"
-                                    class="fw-semibold fs-6 mb-0 text-primary"></p>
+                            <div class="col-6">
+                                <label class="text-muted small fw-bold text-uppercase">Fecha de respuesta:</label>
+                                <p id="det-fecha-revision" class="small fw-semibold mb-0"></p>
                             </div>
                         </div>
-                        <div class="mb-3" id="det-contenedor-dias"
-                            style="display: none;">
-                            <label
-                                class="text-muted small fw-bold text-uppercase">Días
-                                de Inasistencia</label>
-                            <p id="det-dias" class="fw-bold fs-5 text-teal"
-                                style="color: var(--utm-teal);"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small fw-bold text-uppercase">Motivo / Justificación</label>
+                        <div class="p-3 bg-light rounded border">
+                            <p id="det-motivo" class="mb-0 text-secondary" style="font-style: italic;"></p>
                         </div>
-                        <div id="det-contenedor-revision" style="display: none;"
-                            class="p-3 mb-3 bg-success bg-opacity-10 border border-success rounded">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label
-                                        class="text-muted small fw-bold text-uppercase">Revisado
-                                        por:</label>
-                                    <p id="det-revisado-por"
-                                        class="fw-bold mb-0 text-success"></p>
-                                </div>
-                                <div class="col-6">
-                                    <label
-                                        class="text-muted small fw-bold text-uppercase">Fecha
-                                        de respuesta:</label>
-                                    <p id="det-fecha-revision"
-                                        class="small fw-semibold mb-0"></p>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <span id="det-estado-badge" class="badge fs-6"></span>
+                        <button id="btn-descargar-pdf" class="btn btn-danger fw-bold shadow-sm" style="display: none;">
+                            <i class="fa-solid fa-file-pdf me-1"></i> Descargar PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCambiarPass" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-light">
+                    <h6 class="modal-title fw-bold"><i class="fa-solid fa-lock me-2"></i>Seguridad</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-cambiar-pass">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Contraseña Actual</label>
+                            <input type="password" class="form-control form-control-sm" id="pass-actual" required>
                         </div>
                         <div class="mb-3">
-                            <label
-                                class="text-muted small fw-bold text-uppercase">Motivo
-                                / Justificación</label>
-                            <div class="p-3 bg-light rounded border">
-                                <p id="det-motivo" class="mb-0 text-secondary"
-                                    style="font-style: italic;"></p>
-                            </div>
+                            <label class="form-label small fw-bold">Nueva Contraseña</label>
+                            <input type="password" class="form-control form-control-sm" id="pass-nueva" required>
                         </div>
-                        <div
-                            class="d-flex justify-content-between align-items-center mt-4">
-
-                            <span id="det-estado-badge"
-                                class="badge fs-6"></span>
-
-                            <button id="btn-descargar-pdf"
-                                class="btn btn-danger fw-bold shadow-sm"
-                                style="display: none;">
-                                <i class="fa-solid fa-file-pdf me-1"></i>
-                                Descargar PDF
-                            </button>
-
-                        </div>
-
-                    </div>
+                        <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">Actualizar</button>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="modal fade" id="modalCambiarPass" tabindex="-1"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-sm">
-                <div class="modal-content border-0 shadow">
-                    <div class="modal-header bg-light">
-                        <h6 class="modal-title fw-bold"><i
-                                class="fa-solid fa-lock me-2"></i>Seguridad</h6>
-                        <button type="button" class="btn-close"
-                            data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="form-cambiar-pass">
-                            <div class="mb-3">
-                                <label
-                                    class="form-label small fw-bold">Contraseña
-                                    Actual</label>
-                                <input type="password"
-                                    class="form-control form-control-sm"
-                                    id="pass-actual" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold">Nueva
-                                    Contraseña</label>
-                                <input type="password"
-                                    class="form-control form-control-sm"
-                                    id="pass-nueva" required>
-                            </div>
-                            <button type="submit"
-                                class="btn btn-primary btn-sm w-100 fw-bold">Actualizar</button>
-                        </form>
-                    </div>
-                </div>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 10000;">
+        <div id="toastNotificacion" class="toast" role="alert">
+            <div class="toast-header text-white" id="toast-header-bg">
+                <strong class="me-auto">Aviso</strong>
             </div>
+            <div class="toast-body fw-bold" id="toast-mensaje"></div>
         </div>
+    </div>
 
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div id="toastNotificacion" class="toast" role="alert">
-                <div class="toast-header text-white"
-                    id="toast-header-bg"><strong
-                        class="me-auto">Aviso</strong></div>
-                <div class="toast-body fw-bold" id="toast-mensaje"></div>
-            </div>
-        </div>
-
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-        <script src="js/vista_jefe.js"></script>
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-        <script src="js/admins.js"></script>
-        <script src="js/pdfsito.js"></script>
-    </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="js/vista_jefe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="js/admins.js"></script>
+    <script src="js/pdfsito.js"></script>
+</body>
 </html>

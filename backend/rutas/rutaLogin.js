@@ -13,6 +13,7 @@ router.get('/perfil', validarToken, loginControlador.verPerfil);
 router.patch('/npassword', validarToken, loginControlador.acContraseña);
 //ruta para revalidar los tokem si es que bam a expirar
 router.get('/ntoken', validarToken, loginControlador.nuevoToken);
+router.get('/contadores', validarToken, loginControlador.obtenerContadores);
 
 
 module.exports = router;

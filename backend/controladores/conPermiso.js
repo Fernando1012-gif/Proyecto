@@ -53,7 +53,7 @@ const permisosControlador = {
         const us = req.usuario.id;
 
         try {
-            const infoFecha = await sqlValidaciones.checkFechaEspecial(fecha_inicio, us);
+            const infoFecha = await sqlValidaciones.fechaEspecial(fecha_inicio, us);
 
             if (infoFecha.esFestivo) {
                 return res.status(400).json({
@@ -69,7 +69,7 @@ const permisosControlador = {
                 });
             }
 
-            const traslape = await sqlValidaciones.verificarTraslape(us, fecha_inicio, fecha_fin);
+            const traslape = await sqlValidaciones.verificarT(us, fecha_inicio, fecha_fin);
             if (traslape) {
                 return res.status(400).json({
                     ok: false,
@@ -91,16 +91,14 @@ const permisosControlador = {
             res.status(500).json({ ok: false, mensaje: "hay un problema en el server al crear" });
         }
     },
-
-    //funcion para cancelar un permiso mediante el valor (Reciclada para Aprobar/Rechazar)
     //cancelar un permiso (Aprobar/Rechazar/Cancelar)
     cancelarPermiso: async (req, res) => {
         const { cancelar, id } = req.body;
         try {
-            // Sacamos el ID del admin que esta haciendo el movimiento
+            //sacamos el ID del admin que esta haciendo el movimiento
             const revisado_por = req.usuario.id;
 
-            // 1. Intentamos actualizar el estado incluyendo quien revisa
+            //intentamos actualizar el estado incluyendo quien revisa
             const permisos = await usersql.cancelarPermiso(cancelar, id, revisado_por);
 
             if (!permisos) {
@@ -111,7 +109,7 @@ const permisosControlador = {
             //socket para avisar en tiempo real
             const io = req.app.get('socketio');
             io.emit('permiso-actualizado', { id, nuevoEstado: cancelar });
-
+            req.app.get('socketio').emit('actualizar-contadores');
             if (docente && docente.correo_institucional) {
                 enviarNotificacionEstado(
                     docente.correo_institucional,

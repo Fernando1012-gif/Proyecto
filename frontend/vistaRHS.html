@@ -8,93 +8,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/35660cdf83.js" crossorigin="anonymous"></script>
     <link rel="icon" type="image/png" sizes="32x32" href="/imagenes/blue/favicon-32x32.png">
-
-    <style>
-        :root {
-            --utm-teal: #009186;
-            --utm-dark-teal: #0648a3;
-            --utm-red: #d9534f;
-            --bg-gray: #f8f9fa;
-            --border-color: #dee2e6;
-            --text-dark: #333;
-        }
-
-        html, body {
-            height: 100vh;
-            margin: 0;
-            overflow: hidden; 
-            background-color: var(--bg-gray);
-            font-family: 'Segoe UI', Roboto, sans-serif;
-        }
-
-        .top-navbar {
-            background-color: var(--utm-teal) !important;
-            height: 60px;
-            color: white;
-            display: flex;
-            align-items: center;
-            padding: 0 25px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-
-        .main-workspace {
-            display: flex;
-            height: calc(100vh - 60px);
-            width: 100%;
-        }
-
-        .sidebar {
-            width: 320px;
-            background-color: white !important;
-            border-right: 1px solid var(--border-color);
-            padding: 20px;
-            flex-shrink: 0;
-            overflow-y: auto;
-        }
-
-        .content-area {
-            flex-grow: 1;
-            background-color: var(--bg-gray) !important;
-            padding: 40px !important;
-            overflow-y: auto;
-        }
-
-        /* Tarjetas Pro de la Bandeja */
-        .card-action {
-            border: none !important;
-            border-radius: 15px !important;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-            background: white !important;
-            transition: all 0.3s ease;
-        }
-
-        .card-action:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .btn-confirm-rh {
-            min-width: 105px; 
-            border-radius: 8px !important;
-            font-weight: 700 !important;
-            font-size: 0.85rem !important;
-        }
-        
-        #det-rh-motivo {
-            word-wrap: break-word;       
-            overflow-wrap: break-word;    
-            white-space: pre-wrap;       
-            word-break: break-word;      
-        }
-    </style>
+    <link rel="stylesheet" href="recursos/css/estilos.css">
+    <link rel="stylesheet" href="recursos/css/rh.css">
 </head>
 <body>
 
     <div class="top-navbar d-flex justify-content-between align-items-center">
         <h4 class="m-0 fw-bold">
-            <img src="recursos/imagenes/isologo_UTM_white.svg" width="50" class="me-2" alt="logo">
-            Bandeja de Aprobacion
+            <img src="recursos/imagenes/isologo_UTM_white.svg" width="70" class="me-2" alt="logo">
         </h4>
 
         <div class="dropdown">

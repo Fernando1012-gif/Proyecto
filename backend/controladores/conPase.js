@@ -23,7 +23,7 @@ const pasesControlador = {
                 return res.status(403).json({ ok: false, msg: "limite alcanzado: solo puedes pedir 3 pases por mes" });
             }
 
-            const infoFecha = await sqlValidaciones.checkFechaEspecial(fecha_uso, usuario_id);
+            const infoFecha = await sqlValidaciones.fechaEspecial(fecha_uso, usuario_id);
 
             if (infoFecha.esFestivo) {
                 return res.status(400).json({
@@ -39,7 +39,7 @@ const pasesControlador = {
                 });
             }
 
-            const traslape = await sqlValidaciones.verificarTraslape(usuario_id, fecha_uso);
+            const traslape = await sqlValidaciones.verificarT(usuario_id, fecha_uso);
             if (traslape) {
                 return res.status(400).json({
                     ok: false,
@@ -84,11 +84,8 @@ const pasesControlador = {
     cancelarPase: async (req, res) => {
         const { id, cancelar } = req.body; // 'id' es el del pase, 'cancelar' es el nuevo estado
         try {
-            // Extraemos el id de quien realiza la accion (el admin) desde el token
+            //extraemos el id de quien realiza la accion (el admin) desde el token
             const revisado_por = req.usuario.id;
-
-            // 1. Intentamos actualizar el estado en la base de datos
-            // Enviamos tambien quien revisa para que se registre en la tabla
             const paseActualizado = await pasesSql.cancelarPase(cancelar, id, revisado_por);
 
             if (!paseActualizado) {
@@ -100,6 +97,7 @@ const pasesControlador = {
             //socket para avisar en tiempo real
             const io = req.app.get('socketio');
             io.emit('pase-actualizado', { id, nuevoEstado: cancelar });
+            req.app.get('socketio').emit('actualizar-contadores');
 
             if (docente) {
                 enviarNotificacionEstado(

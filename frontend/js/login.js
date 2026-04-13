@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api/login/login';
+const API_URL = '/api/login/login';
 
 const formulario = document.getElementById("loginform");
 const correoInput = document.getElementById("correo");

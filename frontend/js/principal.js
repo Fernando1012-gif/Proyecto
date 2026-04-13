@@ -1,6 +1,6 @@
 //url api
-const URL_BASE = 'http://localhost:3000/api';
-const socket = io('http://localhost:3000');
+const URL_BASE = '/api';
+const socket = io();
 let calendarioOficial;
 let modalInstancia;
 let modalDetalleDocenteInstancia;
@@ -15,16 +15,17 @@ let festivosGlobales = []; //
 const token = sessionStorage.getItem('token');
 const usuarioStr = sessionStorage.getItem('usuario');
 
-// CONFIGURACIÓN DE SOCKETS PARA TIEMPO REAL
+//sockets para tiempo real
 socket.on('pase-actualizado', (data) => {
     cargarDatosYActualizarCalendario();
-    mostrarToast("¡Tu solicitud de Pase ha sido actualizada!", "info");
+    mostrarToast("La solicitud de Pase ha sido actualizada!", "info");
 });
 
 socket.on('permiso-actualizado', (data) => {
     cargarDatosYActualizarCalendario();
-    mostrarToast("¡Tu solicitud de Permiso ha sido actualizada!", "info");
+    mostrarToast("La solicitud de Permiso ha sido actualizada!", "info");
 });
+socket.on('actualizar-contadores', actualizarPresupuestoSalidas);
 
 if (!token || !usuarioStr) window.location.href = "login.html";
 const usuario = JSON.parse(usuarioStr);
@@ -90,22 +91,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await resp.json();
 
             if (res.ok) {
-                // Si todo sale bien, avisamos y cerramos
+                //si todo sale bien cerramos
                 mostrarToast(res.msg);
-                e.target.reset(); // Limpiamos los campos
-                modalPerfilInstancia.hide(); // Cerramos el modal de golpe
+                e.target.reset(); 
+                modalPerfilInstancia.hide();
             } else {
-                // Si la contraseña actual no coincide o algo falla
                 mostrarToast(res.msg, "error");
             }
         } catch (error) {
-            // Por si se cae el servidor o no hay internet
-            mostrarToast("Error de conexión con el servidor", "error");
+            mostrarToast("Error de conexión con el server", "error");
         }
     });
     const hoy = new Date().toISOString().split('T')[0];
 
-    // Aplicamos el límite a los inputs de fecha
+    //limite a fechas
     const inputFechaPase = document.getElementById('fecha_uso'); 
     const inputFechaInicio = document.getElementById('fecha_inicio'); 
 
@@ -214,7 +213,7 @@ function verDetallesSolicitud(data) {
     document.getElementById('v-det-tipo').textContent = data.tipoTramite;
     document.getElementById('v-det-motivo').textContent = data.motivo || 'Sin motivo';
 
-    // SECCIÓN DE AUDITORÍA: Muestra quién aprobó/rechazó y cuándo
+    //muestra quien aprobo o rechazo
     const contRev = document.getElementById('v-cont-revision');
     if (data.estado !== 'Pendiente' && data.revisado_por_nombre) {
         contRev.style.display = 'block';
@@ -346,23 +345,41 @@ function pintarCalendario(eventos) {
             day: 'día',
             list: 'agenda'
         },
+        //conf para celular
+        windowResize: function(arg) {
+            if (window.innerWidth < 768) {
+                //si es vista celular:
+                calendarioOficial.setOption('headerToolbar', {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: 'today'
+                });
+            } else {
+                //si es pc:
+                calendarioOficial.setOption('headerToolbar', {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,listMonth'
+                });
+            }
+        },
 
         
         dayCellClassNames: (arg) => {
             const fechaCelda = arg.date.toISOString().split('T')[0];
             const cumpleMesDia = usuario.fecha_nacimiento.substring(5, 10);
             
-            // 1. Fines de semana (fondo gris claro)
+            //fines de semana
             if (arg.date.getDay() === 0 || arg.date.getDay() === 6) return ['bg-light'];
             
-            // 2. Comprobaciones de la UTM
+            //festivo o cumple
             const esFestivo = festivosGlobales.some(f => f.fecha.split('T')[0] === fechaCelda);
             const esCumple = fechaCelda.substring(5, 10) === cumpleMesDia;
             
-            // 3. NUEVO: Comprobamos si el día ya está ocupado por un trámite (Pase o rango de Permiso)
+            //si el dia esta ocupado:
             const diaOcupado = verificarDias(fechaCelda);
 
-            // Si es festivo, cumple, o ya tiene trámite, le ponemos la clase que lo sombrea y bloquea el cursor
+            //bloqueamos dia 
             if (esFestivo || esCumple || diaOcupado) {
                 return ['dia-bloqueado'];
             }
@@ -376,21 +393,17 @@ function pintarCalendario(eventos) {
             hoyCheck.setHours(0, 0, 0, 0);
             const fechaClick = new Date(info.dateStr + 'T00:00:00');
             
-            // Si es pasado, no dejes que abra el modal
+            //si es pasado bloqueamos
             if (fechaClick < hoyCheck) {
-                mostrarToast("No puedes solicitar días pasados", "error");
+                mostrarToast("No puedes solicitar dias pasados", "error");
                 return;
             }
-            
-            // Si el día tiene la clase de bloqueo (Fines de semana, festivos, cumple u ocupado)
             if (info.dayEl.classList.contains('dia-bloqueado') || info.date.getDay() === 0 || info.date.getDay() === 6) {
-                
-                // Revisamos por qué está bloqueado para mandar el mensaje correcto
                 if (verificarDias(info.dateStr)) {
-                    mostrarToast("Ya tienes un trámite activo para este día", "error"); // Bloqueo por trámite
+                    mostrarToast("Ya tienes un trámite activo para este día", "error"); 
                 } else {
                     const esCumple = info.dateStr.substring(5, 10) === usuario.fecha_nacimiento.substring(5, 10);
-                    mostrarToast(esCumple ? "Feliz cumpleaños!!!" : "No hay labores este día", "info"); // Bloqueo por calendario
+                    mostrarToast(esCumple ? "Feliz cumpleaños!!!" : "No hay labores este dia", "info");
                 }
                 return;
             }
@@ -422,13 +435,13 @@ function pintarHistorial(registros) {
         const prioridad = { 'Pendiente': 1, 'Vo.Bo.': 2, 'Aprobado': 3, 'Rechazado': 4, 'Cancelado': 5 };
         const pA = prioridad[a.estado] || 99;
         const pB = prioridad[b.estado] || 99;
-
-        if (pA !== pB) return pA - pB; // Primero por estado
-        return b.id - a.id; // Luego por ID más reciente
+        //estado reciente
+        if (pA !== pB) return pA - pB;
+        //id reciente
+        return b.id - a.id;
     
     }).slice(0, 59).forEach(reg => {
         const fechaParaMostrar = reg.fecha_uso_h || reg.fecha_inicio_h;
-        // principal.js
         let borderClass = reg.estado === 'Aprobado' ? 'border-success' : (reg.estado === 'Vo.Bo.' ? 'border-info' : 
             (reg.estado === 'Pendiente' ? 'border-warning' : 'border-danger'));
         const div = document.createElement('div');
@@ -484,17 +497,14 @@ function prepararEdicion(tipo, id) {
     modalInstancia.show();
 }
 
-// Función para cancelar un trámite usando el modal del sistema
+//cancelar un tramite
 function cancelarSolicitud(tipo, id) {
-    // 1. Preparamos el endpoint según el tipo
     const endpoint = tipo === 'Pase' ? 'pases' : 'permisos';
-
-    // 2. Seteamos las variables globales que ya usa tu botón de "Confirmar"
     urlPendiente = `${URL_BASE}/${endpoint}/cancelar`;
     metodoPendiente = 'PATCH';
     datosPendientes = { id, cancelar: "Cancelado" };
 
-    // 3. Personalizamos el mensaje del modal para que no sea genérico
+    //modal de cancelacion
     document.getElementById('conf-resumen').innerHTML = `
         <div class="text-center">
             <i class="fa-solid fa-circle-exclamation text-danger mb-3" style="font-size: 3rem;"></i>
@@ -506,11 +516,10 @@ function cancelarSolicitud(tipo, id) {
         </div>
     `;
 
-    // 4. Mostramos el modal de confirmación del sistema
     modalConfirmacionInstancia.show();
 }
 
-// Listeners de formularios
+
 document.getElementById('form-pedir-pase').addEventListener('submit', (e) => {
     e.preventDefault();
     const fechaUso = document.getElementById('fecha_uso').value;
@@ -535,7 +544,6 @@ document.getElementById('form-pedir-permiso').addEventListener('submit', (e) => 
     const fechaI = document.getElementById('fecha_inicio').value;
     const fechaF = document.getElementById('fecha_fin').value;
 
-    // Revisamos cada día del rango solicitado
     let temp = new Date(fechaI + 'T00:00:00');
     const fFinal = new Date(fechaF + 'T00:00:00');
 
@@ -573,7 +581,7 @@ document.getElementById('btn-confirmar-envio').addEventListener('click', async (
     finally { btn.disabled = false; }
 });
 
-// Ayudantes de límites
+//limites
 function actualizarLimitesHoraFin() {
     const hIn = document.getElementById('hora_inicio');
     const hFi = document.getElementById('hora_fin');
@@ -610,7 +618,7 @@ function actualizarLimitesFechaFin() {
 function abrirPerfil(conSeguridad) {
     const u = JSON.parse(sessionStorage.getItem('usuario'));
 
-    // Llenamos el modal con los datos de la DB
+    //llenamos el modal
     document.getElementById('p-nombre').textContent = u.nombre_completo;
     document.getElementById('p-rfc').textContent = u.rfc || 'No registrado';
     document.getElementById('p-categoria').textContent = u.categoria || 'N/A';
@@ -618,7 +626,7 @@ function abrirPerfil(conSeguridad) {
     document.getElementById('p-ingreso').textContent = u.fecha_ingreso ? u.fecha_ingreso.split('T')[0] : 'N/A';
     document.getElementById('p-contrato').textContent = u.tipo_contrato || 'N/A';
 
-    // Mostramos u ocultamos la seguridad según el clic
+    //password
     document.getElementById('info-laboral-perfil').style.display = conSeguridad ? 'none' : 'flex';
     document.getElementById('seccion-seguridad').style.display = conSeguridad ? 'block' : 'none';
     const titulo = document.querySelector('#modalPerfil .modal-title');
@@ -628,22 +636,77 @@ function abrirPerfil(conSeguridad) {
     modalPerfilInstancia.show();
 }
 function verificarDias(fechaNueva) {
-    // Comparamos solo la parte YYYY-MM-DD
     const fechaBusqueda = typeof fechaNueva === 'string' ? fechaNueva : fechaNueva.toISOString().split('T')[0];
 
     return todosLosRegistrosGlobal.some(reg => {
-        // No contamos las solicitudes rechazadas o canceladas
         if (reg.estado === 'Rechazado' || reg.estado === 'Cancelado') return false;
 
         if (reg.tipoTramite === 'Pase') {
-            // Si es un pase, comparamos fecha directa
             return reg.fecha_uso.split('T')[0] === fechaBusqueda;
         } else {
-            // Si es permiso, revisamos si la fecha cae dentro del rango
             const inicio = new Date(reg.fecha_inicio.split('T')[0]);
             const fin = new Date(reg.fecha_fin.split('T')[0]);
             const actual = new Date(fechaBusqueda);
             return (actual >= inicio && actual <= fin);
         }
     });
+}
+//funcion para contadores
+async function actualizarPresupuestoSalidas() {
+    const token = sessionStorage.getItem('token');
+    if (!token) return;
+
+    try {
+        const resp = await fetch('/api/login/contadores', {
+            headers: { 'x-token': token }
+        });
+        const data = await resp.json();
+
+        if (data.ok) {
+            renderizarBarra('pases', data.pases.usados);
+            renderizarBarra('permisos', data.permisos.usados);
+        }
+    } catch (error) {
+        console.error("Error al cargar presupuesto:", error);
+    }
+}
+//funcion para barra visual
+function renderizarBarra(tipo, usados) {
+    const badge = document.getElementById(`${tipo}-badge`);
+    const bar = document.getElementById(`${tipo}-bar`);
+    const porcentaje = (usados / 3) * 100;
+
+    badge.textContent = `${usados} / 3`;
+    bar.style.width = `${porcentaje}%`;
+
+    //logica de colores
+    if (usados >= 3) {
+        badge.className = "badge rounded-pill bg-danger";
+        bar.className = "progress-bar bg-danger";
+    } else if (usados === 2) {
+        badge.className = "badge rounded-pill bg-warning text-dark";
+        bar.className = "progress-bar bg-warning";
+    } else {
+        badge.className = "badge rounded-pill bg-success";
+        bar.className = "progress-bar bg-success";
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    actualizarPresupuestoSalidas();
+});
+function toggleCalendarioMovil(show) {
+    const area = document.querySelector('.content-area');
+    if (show) {
+        area.classList.add('active-movil');
+        //calendario ajustado
+        if (calendarioOficial) {
+            setTimeout(() => {
+                calendarioOficial.setOption('height', '100%');
+                calendarioOficial.updateSize();
+            }, 50);
+        }
+    } else {
+        area.classList.remove('active-movil');
+    }
 }

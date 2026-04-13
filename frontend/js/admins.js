@@ -1,6 +1,6 @@
 const CONFIG_SISTEMA = {
-    rector: "LIC. SERGIO PIMENTEL MENDOZA",
-    jefe_rh: "L.C. MARCOS ALEJANDRO LÓPEZ ZAMUDIO",
-    delegada_admin: "L.A. ALONDRA NÚÑEZ NÚÑEZ",
+    rector: "ING VLADIMIR PUTIN",
+    jefe_rh: "Pepe el loco",
+    delegada_admin: "Claudia CHeibaum",
     cuatrimestre_actual: "ENERO - ABRIL 2026"
 };

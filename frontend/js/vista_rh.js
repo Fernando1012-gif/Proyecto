@@ -1,6 +1,6 @@
-// URL para consultar la api
-const URL_BASE = 'http://localhost:3000/api';
-const socket = io('http://localhost:3000');
+//consultar api
+const URL_BASE = '/api';
+const socket = io();
 let registrosGlobales = [];
 let calendarioRH;
 let modalDetalleRH;
@@ -8,7 +8,7 @@ let modalDetalleRH;
 const token = sessionStorage.getItem('token');
 const usuarioStr = sessionStorage.getItem('usuario');
 
-// Sockets
+//socket en tiempo real
 socket.on('nuevo-pase-creado', () => { cargarDatosGenerales(); mostrarToast("¡Nuevo pase solicitado!", "info"); });
 socket.on('pase-actualizado', () => { cargarDatosGenerales(); });
 socket.on('nuevo-permiso-creado', (data) => { cargarDatosGenerales(); mostrarToast("¡Nueva solicitud de Permiso recibida!", "info"); });
@@ -62,63 +62,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cargarDatosGenerales();
 });
-// vista_rh.js
-// vista_rh.js
-// vista_rh.js
+//obtener datos desde backend
 async function cargarDatosGenerales() {
     try {
-        // 1. Realizamos las peticiones al servidor para obtener toda la información necesaria
         const [resPases, resPermisos, resFest] = await Promise.all([
             fetch(`${URL_BASE}/pases/todos`, { headers: { 'x-token': token } }),
             fetch(`${URL_BASE}/permisos/todos`, { headers: { 'x-token': token } }),
             fetch(`${URL_BASE}/dias/ver`, { headers: { 'x-token': token } })
         ]);
 
-        // 2. Verificamos si la sesión sigue activa (Token válido)
         if (resPases.status === 401 || resPermisos.status === 401) return manejarSesionExpirada();
 
         const dataP = await resPases.json();
         const dataM = await resPermisos.json();
-        // Guardamos los días festivos en una variable global para el calendario
         window.festivosGlobalesRH = resFest.ok ? await resFest.json() : []; 
 
-        // 3. Mapeamos los datos y asignamos una fecha clave única para el ordenamiento
         const mPases = (dataP.data || []).map(p => ({ ...p, tipoTramite: 'Pase', fechaClave: p.fecha_uso }));
         const mPermisos = (dataM.data || []).map(p => ({ ...p, tipoTramite: 'Permiso', fechaClave: p.fecha_inicio }));
 
-        // --- LÓGICA DE FOLIADO PERSONAL (PRE-PROCESAMIENTO) ---
-        
-        // A. Unimos todo y ordenamos de más ANTIGUO a más RECIENTE para contar correctamente (1, 2, 3...)
         let todos = [...mPases, ...mPermisos].sort((a, b) => new Date(a.fechaClave) - new Date(b.fechaClave));
 
         const contadores = {};
         todos.forEach(reg => {
-            const uid = reg.id_usuario; // Usamos el ID del docente como referencia
+            const uid = reg.id_usuario; 
             
-            // Si es la primera vez que vemos a este docente, inicializamos sus contadores
             if (!contadores[uid]) {
                 contadores[uid] = { Pase: 0, Permiso: 0 };
             }
             
-            // Incrementamos el contador según el tipo de trámite de este docente específico
+            //incrementamos el contador
             contadores[uid][reg.tipoTramite]++;
-            
-            // Creamos la propiedad 'folio_personal' en el objeto (Esto quita el error de undefined)
             reg.folio_personal = contadores[uid][reg.tipoTramite];
         });
-
-        // B. Una vez foliados, los ordenamos de más RECIENTE a más ANTIGUO para mostrarlos arriba en el sistema
         registrosGlobales = todos.sort((a, b) => new Date(b.fechaClave) - new Date(a.fechaClave));
 
-        // 4. Mandamos los datos ya procesados a pintar el Dashboard y el Historial
         pintarDashboardRH(registrosGlobales);
 
     } catch (e) { 
-        console.error("Error al cargar datos de RRHH:", e); 
+        console.error("Error al cargar datos de rh", e); 
         mostrarToast("Error de conexión con el servidor", "error");
     }
 }
-
+//funcion para pintar los datos
 function pintarDashboardRH(datos) {
     const contenedorGrid = document.getElementById('pendientes-grid');
     const tablaHistorial = document.getElementById('tabla-general');
@@ -128,24 +113,23 @@ function pintarDashboardRH(datos) {
     const historial = datos;
 
     if (badgeNav) badgeNav.textContent = pendientes.length;
-
+    const badgeMovil = document.getElementById('badge-nav-solicitudes-movil');
+    if (badgeMovil) badgeMovil.textContent = pendientes.length;
     if (contenedorGrid) {
         if (pendientes.length === 0) {
             contenedorGrid.innerHTML = `
                 <div class="col-12 text-center py-5 text-muted">
                     <i class="fa-solid fa-mug-hot fa-4x mb-3 opacity-25" style="color: var(--utm-teal);"></i>
-                    <h5 class="fw-bold">¡Todo al día!</h5>
+                    <h5 class="fw-bold">Todo al dia</h5>
                     <p>No hay nada pendiente de autorizar!!!</p>
                 </div>`;
         } else {
             contenedorGrid.innerHTML = pendientes.map(reg => {
 
-                // INTELIGENCIA RH: Detección de Colisiones
                 const area = reg.area_adscripcion;
                 let alertaChoque = '';
 
                 if (area && area !== 'No Registrada') {
-                    // Busca si hay otro docente aprobado/VoBo en la misma área y mismo día
                     const choques = historial.filter(h =>
                         h.id !== reg.id &&
                         h.fechaClave === reg.fechaClave &&
@@ -236,9 +220,10 @@ function inicializarCalendarioRH() {
         eventClick: (info) => verDetallesRRHH(info.event.extendedProps)
     });
     calendarioRH.render();
-}// vista_rh.js
+}
+//eventos
 function generarEventos(datos) {
-    // 1. Iniciamos con festivos
+    //festivos
     let eventos = (window.festivosGlobalesRH || []).map(f => ({
         title: ` ${f.descripcion}`,
         start: f.fecha.split('T')[0],
@@ -249,7 +234,6 @@ function generarEventos(datos) {
     const cumpleaniosAgregados = new Set();
 
     datos.forEach(reg => {
-        // Evento del trámite
         eventos.push({
             title: `${reg.nombre_completo}: ${reg.tipoTramite}`,
             start: reg.fechaClave.split('T')[0],
@@ -257,7 +241,7 @@ function generarEventos(datos) {
             extendedProps: { ...reg }
         });
 
-        // 2. Evento de Cumpleaños Global
+        //cumpleaños
         if (reg.fecha_nacimiento && !cumpleaniosAgregados.has(reg.id_usuario)) {
             const año = new Date().getFullYear();
             const mesDia = reg.fecha_nacimiento.substring(5, 10);
@@ -274,7 +258,7 @@ function generarEventos(datos) {
 
     return eventos;
 }
-
+//modal info 
 function verDetallesRRHH(data) {
     const esPase = data.tipoTramite === 'Pase';
     document.getElementById('det-rh-nombre').textContent = data.nombre_completo;
@@ -330,12 +314,10 @@ function verDetallesRRHH(data) {
 
     modalDetalleRH.show();
 }
-
+//filtros historial
 function aplicarFiltros() {
     const elDoc = document.getElementById('filtro-docente');
     const fDoc = elDoc ? elDoc.value.toLowerCase() : '';
-
-    // Filtro Nuevo: Área
     const elArea = document.getElementById('filtro-area');
     const fArea = elArea ? elArea.value.toLowerCase() : '';
 
@@ -345,7 +327,6 @@ function aplicarFiltros() {
     const elTipo = document.getElementById('filtro-tipo');
     const fTipo = elTipo ? elTipo.value : 'Todos';
 
-    // Filtros Nuevos: Rango de Fechas
     const elFechaIni = document.getElementById('filtro-fecha-inicio');
     const fFechaIni = elFechaIni ? elFechaIni.value : '';
     const elFechaFin = document.getElementById('filtro-fecha-fin');
@@ -357,7 +338,7 @@ function aplicarFiltros() {
     const fAño = elAño ? elAño.value : '';
 
     const res = registrosGlobales.filter(r => {
-        const fClave = r.fechaClave.split('T')[0]; // Formato YYYY-MM-DD
+        const fClave = r.fechaClave.split('T')[0]; 
         const f = new Date(r.fechaClave);
         const areaDoc = (r.area_adscripcion || '').toLowerCase();
 
@@ -366,11 +347,11 @@ function aplicarFiltros() {
         if (fEst !== 'Todos' && r.estado !== fEst) return false;
         if (fTipo !== 'Todos' && r.tipoTramite !== fTipo) return false;
 
-        // Comprobación de Rango
+        //rango
         if (fFechaIni && fClave < fFechaIni) return false;
         if (fFechaFin && fClave > fFechaFin) return false;
 
-        // Comprobación de Mes y Año Histórico
+        //mes y año
         if (fMes && (f.getMonth() + 1).toString().padStart(2, '0') !== fMes) return false;
         if (fAño && f.getFullYear().toString() !== fAño) return false;
 
@@ -400,7 +381,7 @@ if (formPassRH) {
         } catch (error) { mostrarToast("Error de conexion", "error"); }
     });
 }
-
+//mini filtro
 function ordenarRapido(criterio) {
     if (!registrosGlobales.length) return;
     let copia = [...registrosGlobales];
@@ -459,10 +440,7 @@ function confirmarAccionRH(btn, id, estado, tipo) {
     btn.dataset.intervalo = intervalo;
 }
 
-// ==========================================
-// FUNCIONES DE EXPORTACIÓN Y MASIVAS
-// ==========================================
-
+//excel
 function exportarExcel() {
     if (!registrosGlobales.length) return mostrarToast("No hay datos para exportar", "info");
 
@@ -522,6 +500,17 @@ async function aprobarSeleccionMasiva() {
         }
     }
 
-    mostrarToast(`¡Proceso completado! ${exitosos} trámites aprobados.`);
+    mostrarToast(`Proceso completado! ${exitosos} tramites aprobados`);
     cargarDatosGenerales();
+}
+function toggleFiltrosMovil(show) {
+    const sidebar = document.querySelector('.sidebar');
+    const btnCerrar = document.getElementById('btn-cerrar-filtros');
+    if (show) {
+        sidebar.classList.add('active-movil');
+        btnCerrar.classList.add('mostrar');
+    } else {
+        sidebar.classList.remove('active-movil');
+        btnCerrar.classList.remove('mostrar');
+    }
 }

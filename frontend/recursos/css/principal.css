@@ -1,0 +1,75 @@
+.sidebar { width: 300px; box-shadow: none !important; }
+.content-area { background-color: white !important; overflow: hidden; }
+
+#calendario { height: 100%; width: 100%; }
+
+.corp-panel {
+    background: white !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 0px !important; 
+}
+
+
+.fc a, .fc-daygrid-day-number, .fc-col-header-cell-cushion {
+    color: var(--text-dark) !important;
+    text-decoration: none !important;
+    font-weight: 600;
+}
+.fc .fc-toolbar-title {
+    color: var(--utm-teal) !important;
+    font-size: 1.5rem !important;
+    text-transform: lowercase;
+}
+.fc .fc-button-primary {
+    background-color: var(--utm-teal) !important;
+    border: none !important;
+    text-transform: lowercase;
+    font-weight: bold;
+}
+.fc .fc-button-active { background-color: var(--utm-dark-teal) !important; }
+
+
+#btn-logout {
+    background: rgb(255, 255, 255) !important;
+    color: var(--utm-red) !important;
+    border: 2px solid var(--utm-red) !important;
+    padding: 5px 15px !important;
+}
+
+.dia-bloqueado { background-color: #d6d7d8 !important; cursor: not-allowed !important; opacity: 1; }
+.dia-bloqueado .fc-daygrid-day-number { color: #66686a; }
+
+.btn-aero { background: var(--utm-teal) !important; color: white !important; border-radius: 4px !important; border: none !important; font-weight: bold; padding: 10px 20px; }
+.btn-aero-blue { background: #007bff !important; color: white !important; border-radius: 4px !important; border: none !important; font-weight: bold; padding: 10px 20px; }
+
+
+.btn-choice {
+    padding: 20px; border-radius: 12px; transition: all 0.3s ease;
+    border: 2px solid transparent; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 10px; height: 120px;
+}
+#btn-elegir-pase { background-color: white; border-color: var(--utm-teal); color: var(--utm-teal); }
+#btn-elegir-pase:hover { background-color: var(--utm-teal); color: white; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 145, 134, 0.2); }
+#btn-elegir-permiso { background-color: white; border-color: #007bff; color: #007bff; }
+#btn-elegir-permiso:hover { background-color: #007bff; color: white; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 123, 255, 0.2); }
+.btn-choice i { font-size: 2rem; }
+
+
+#btn-cerrar-cal-movil { display: none; position: fixed; top: 10px; right: 15px; z-index: 2101; }
+
+
+@media (max-width: 768px) {
+    .main-workspace { flex-direction: column !important; height: calc(100vh - 60px) !important; overflow-y: auto !important; }
+    .sidebar { width: 100% !important; padding: 15px !important; border-bottom: 1px solid var(--border-color); flex-shrink: 0; }
+    
+    .content-area {
+        display: none; position: fixed; top: 0; left: 0; width: 100vw !important; height: 100vh !important;
+        z-index: 1040; background: white !important; padding: 60px 15px 15px 15px !important; 
+    }
+    .content-area.active-movil { display: block !important; }
+    
+    #calendario { height: calc(100vh - 80px) !important; }
+    .fc .fc-toolbar { flex-direction: column; gap: 10px; margin-bottom: 10px !important; }
+    .fc .fc-toolbar-title { font-size: 1.2rem !important; }
+    #btn-cerrar-cal-movil { display: block; }
+}

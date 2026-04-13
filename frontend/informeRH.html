@@ -1,296 +1,157 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recursos Humanos - Estadísticas</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>RH</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/35660cdf83.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="icon" type="image/png" sizes="32x32" href="/imagenes/blue/favicon-32x32.png">
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+        <script src="https://kit.fontawesome.com/35660cdf83.js"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="icon" type="image/png" sizes="32x32"
+            href="/imagenes/blue/favicon-32x32.png">
+        <link rel="stylesheet" href="recursos/css/estilos.css">
+        <link rel="stylesheet" href="recursos/css/rh.css">
+    </head>
+    <body>
 
-    <style>
-        :root {
-            --utm-teal: #009186;
-            --utm-dark-teal: #0648a3;
-            --utm-red: #d9534f;
-            --bg-gray: #f8f9fa;
-            --border-color: #dee2e6;
-        }
+        <div
+            class="top-navbar d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <img src="recursos/imagenes/isologo_UTM_white.svg" width="75"
+                    class="me-3" alt="logo">
+                <h5 class="m-0 fw-bold"></h5>
+            </div>
+            <div class="small opacity-75 fw-semibold"><i
+                    class="fa-solid fa-chart-line me-2"></i>Estadisticas</div>
+        </div>
 
-        html, body {
-            height: 100vh; margin: 0; overflow: hidden; 
-            background-color: var(--bg-gray);
-            font-family: 'Segoe UI', Roboto, sans-serif;
-        }
-
-        .top-navbar {
-            background-color: var(--utm-teal) !important;
-            height: 60px; color: white; display: flex; align-items: center;
-            padding: 0 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 1000;
-        }
-
-        .main-workspace {
-            display: flex; height: calc(100vh - 60px); width: 100%;
-        }
-
-        .sidebar {
-            width: 280px; background-color: white !important;
-            border-right: 1px solid var(--border-color); padding: 20px;
-            flex-shrink: 0; overflow-y: auto;
-        }
-
-        .content-area {
-            flex-grow: 1; background-color: var(--bg-gray) !important;
-            padding: 30px !important; overflow-y: auto;
-        }
-
-        .kpi-card {
-            border-radius: 12px; border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
-        }
-        .kpi-card:hover { transform: translateY(-3px); }
-        
-        .chart-container {
-            background: white; border-radius: 15px; padding: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #eef2f7;
-            height: 300px;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="top-navbar d-flex justify-content-between align-items-center">
-        <h4 class="m-0 fw-bold">
-            <img src="recursos/imagenes/isologo_UTM_white.svg" width="50" class="me-2" alt="logo">
-            Estadísticas y Análisis
-        </h4>
-        <div class="text-white fw-bold"><i class="fa-solid fa-chart-pie me-2"></i> Dashboard Ejecutivo</div>
-    </div>
-
-    <div class="main-workspace">
-        <div class="sidebar">
-            <a href="vistaRH.html" class="btn btn-outline-secondary w-100 mb-4 fw-bold shadow-sm py-2">
+        <div class="main-workspace">
+            <aside class="sidebar">
+                <a href="vistaRH.html" class="btn btn-light border w-100 mb-4 d-flex align-items-center justify-content-center shadow-sm py-3 fw-bold text-secondary">
                 <i class="fa-solid fa-arrow-left me-2"></i> Volver a Registros
             </a>
-            <div class="alert alert-info border-0 shadow-sm mt-3">
-                <h6 class="fw-bold"><i class="fa-solid fa-lightbulb text-warning me-2"></i>Insights</h6>
-                <p class="small mb-0 text-dark">Este tablero te muestra el volumen operativo de RH en tiempo real basado en el historial global del sistema.</p>
-            </div>
-            
-            <hr class="text-muted opacity-25 my-4">
-            
-            <h6 class="fw-bold text-muted mb-3">Filtrar Gráficos por Mes:</h6>
-            <input type="month" class="form-control mb-3" id="filtro-mes-graficos" onchange="recargarGraficos()">
-            <button class="btn btn-light border w-100 btn-sm" onclick="document.getElementById('filtro-mes-graficos').value=''; recargarGraficos();">Ver Todo el Histórico</button>
+
+                <div class="mb-4">
+                    <label class="kpi-label mb-2 d-block">Periodo de
+                        Análisis</label>
+                    <input type="month" class="form-control rounded-3 border-2"
+                        id="filtro-mes-graficos" onchange="recargarDashboard()">
+                    <button
+                        class="btn btn-link btn-sm text-decoration-none p-0 mt-2"
+                        onclick="document.getElementById('filtro-mes-graficos').value=''; recargarDashboard();">Ver
+                        histórico total</button>
+                </div>
+            </aside>
+
+            <main class="content-area">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="bento-card"
+                            style="border-top: 4px solid var(--utm-teal);">
+                            <div class="kpi-label">Tramites de hoy</div>
+                            <div class="kpi-value mt-2" id="stat-hoy">0</div>
+                            <div class="small text-muted mt-2"><i
+                                    class="fa-solid fa-bolt text-warning"></i>
+                                Solicitudes del día</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bento-card"
+                            style="border-top: 4px solid var(--utm-dark-teal);">
+                            <div class="kpi-label">Dias de Inasistencias (Permisos)</div>
+                            <div class="kpi-value mt-2" id="stat-dias">0</div>
+                            <div class="small text-muted mt-2"><i
+                                    class="fa-solid fa-calendar-check"></i>
+                                Acumulados</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bento-card"
+                            style="border-top: 4px solid #ed8936;">
+                            <div class="kpi-label">Volumen al mes</div>
+                            <div class="kpi-value mt-2" id="stat-total">0</div>
+                            <div class="small text-muted mt-2"><i
+                                    class="fa-solid fa-file-invoice"></i>
+                                Registros en periodo</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bento-card"
+                            style="border-top: 4px solid #48bb78;">
+                            <div class="kpi-label">Tasa Aprobación</div>
+                            <div class="kpi-value mt-2" id="stat-tasa">0%</div>
+                            <div class="small text-muted mt-2"><i
+                                    class="fa-solid fa-check-double text-success"></i>
+                                Aprobados</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-8">
+                        <div class="bento-card">
+                            <h6 class="fw-bold text-muted mb-4"><i
+                                    class="fa-solid fa-chart-line me-2"></i>Historial
+                                Operativo (Últimos movimientos)</h6>
+                            <div class="chart-container">
+                                <canvas id="chartTendencia"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="bento-card">
+                            <h6 class="fw-bold text-muted mb-4"><i
+                                    class="fa-solid fa-chart-pie me-2"></i>Tipos de Incidencias</h6>
+                            <div class="chart-container">
+                                <canvas id="chartTipos"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-7">
+                        <div class="bento-card">
+                            <h6 class="fw-bold text-muted mb-4"><i
+                                    class="fa-solid fa-building-user me-2"></i>Numero de tramites por 
+                                    Departamento</h6>
+                            <div class="chart-container" style="height: 300px;">
+                                <canvas id="chartAreas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="bento-card">
+                            <h6 class="fw-bold text-muted mb-3"><i
+                                    class="fa-solid fa-medal me-2"></i>
+                                Uso de Prestaciones</h6>
+                            <div class="table-responsive">
+                                <table
+                                    class="table table-hover table-custom m-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Docente</th>
+                                            <th class="text-center">Total</th>
+                                            <th>Frecuencia</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabla-top-docentes">
+                                        <tr><td colspan="3"
+                                                class="text-center py-4 text-muted small">Cargando
+                                                ranking...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
 
-        <div class="content-area">
-            
-            <div class="row g-3 mb-4">
-                <div class="col-md-3">
-                    <div class="card kpi-card" style="border-left: 5px solid var(--utm-teal);">
-                        <div class="card-body">
-                            <h6 class="text-muted fw-bold mb-1">Trámites Hoy</h6>
-                            <h2 class="fw-bold m-0 text-dark" id="stat-hoy">0</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card kpi-card" style="border-left: 5px solid #0648a3;">
-                        <div class="card-body">
-                            <h6 class="text-muted fw-bold mb-1">Total Histórico</h6>
-                            <h2 class="fw-bold m-0 text-dark" id="stat-total">0</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card kpi-card" style="border-left: 5px solid #ffc107;">
-                        <div class="card-body">
-                            <h6 class="text-muted fw-bold mb-1">Pendientes (Vo.Bo.)</h6>
-                            <h2 class="fw-bold m-0 text-dark" id="stat-pendientes">0</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card kpi-card" style="border-left: 5px solid #d9534f;">
-                        <div class="card-body">
-                            <h6 class="text-muted fw-bold mb-1">Rechazados</h6>
-                            <h2 class="fw-bold m-0 text-dark" id="stat-rechazados">0</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row g-4 mb-4">
-                <div class="col-md-4">
-                    <div class="chart-container">
-                        <h6 class="fw-bold text-muted mb-3 text-center">Pases vs Permisos</h6>
-                        <canvas id="chartTipos"></canvas>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="chart-container">
-                        <h6 class="fw-bold text-muted mb-3">Trámites por Área / Adscripción</h6>
-                        <canvas id="chartAreas"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="fw-bold m-0 text-danger"><i class="fa-solid fa-triangle-exclamation me-2"></i>Alerta de Colisiones (Mismo día y área)</h6>
-                    <span class="badge bg-danger rounded-pill" id="badge-colisiones">0</span>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
-                        <table class="table table-hover m-0">
-                            <thead class="table-light sticky-top">
-                                <tr>
-                                    <th class="ps-3">Fecha del Evento</th>
-                                    <th>Área Crítica</th>
-                                    <th>Docentes Involucrados</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-colisiones">
-                                <tr><td colspan="3" class="text-center py-4 text-muted">Cargando análisis...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <script>
-        const URL_BASE = 'http://localhost:3000/api';
-        const token = sessionStorage.getItem('token');
-        let dataGlobal = [];
-        let chart1, chart2;
-
-        if (!token) window.location.href = "login.html";
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                // Consumimos los mismos endpoints que tu sistema
-                const [resPases, resPermisos] = await Promise.all([
-                    fetch(`${URL_BASE}/pases/todos`, { headers: { 'x-token': token } }),
-                    fetch(`${URL_BASE}/permisos/todos`, { headers: { 'x-token': token } })
-                ]);
-
-                const dataP = await resPases.json();
-                const dataM = await resPermisos.json();
-
-                const pases = (dataP.data || []).map(p => ({ ...p, tipoTramite: 'Pase', fechaClave: p.fecha_uso }));
-                const permisos = (dataM.data || []).map(p => ({ ...p, tipoTramite: 'Permiso', fechaClave: p.fecha_inicio }));
-
-                dataGlobal = [...pases, ...permisos];
-                recargarGraficos();
-
-            } catch (error) {
-                console.error("Error al cargar datos estadísticos", error);
-            }
-        });
-
-        function recargarGraficos() {
-            const filtroMes = document.getElementById('filtro-mes-graficos').value; // Ej: "2026-04"
-            
-            // 1. Filtrar los datos si el usuario seleccionó un mes
-            let datos = dataGlobal;
-            if (filtroMes) {
-                datos = dataGlobal.filter(d => d.fechaClave && d.fechaClave.startsWith(filtroMes));
-            }
-
-            // 2. Calcular KPIs
-            const tzoffset = (new Date()).getTimezoneOffset() * 60000;
-            const hoyISO = (new Date(Date.now() - tzoffset)).toISOString().split('T')[0];
-            
-            document.getElementById('stat-hoy').textContent = datos.filter(d => d.fechaClave.split('T')[0] === hoyISO).length;
-            document.getElementById('stat-total').textContent = datos.length;
-            document.getElementById('stat-pendientes').textContent = datos.filter(d => d.estado === 'Vo.Bo.').length;
-            document.getElementById('stat-rechazados').textContent = datos.filter(d => d.estado === 'Rechazado').length;
-
-            // 3. Destruir gráficos anteriores si existen
-            if(chart1) chart1.destroy();
-            if(chart2) chart2.destroy();
-
-            // 4. Preparar datos para Gráfico de Dona (Tipos)
-            const countPases = datos.filter(d => d.tipoTramite === 'Pase').length;
-            const countPermisos = datos.filter(d => d.tipoTramite === 'Permiso').length;
-
-            chart1 = new Chart(document.getElementById('chartTipos'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Pases', 'Permisos'],
-                    datasets: [{ data: [countPases, countPermisos], backgroundColor: ['#009186', '#0648a3'] }]
-                },
-                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-            });
-
-            // 5. Preparar datos para Gráfico de Barras (Áreas)
-            const conteoAreas = {};
-            datos.forEach(d => {
-                const area = d.area_adscripcion || 'Sin Área Registrada';
-                conteoAreas[area] = (conteoAreas[area] || 0) + 1;
-            });
-            
-            // Ordenar de mayor a menor y tomar el Top 10
-            const areasOrdenadas = Object.keys(conteoAreas).sort((a,b) => conteoAreas[b] - conteoAreas[a]).slice(0, 10);
-            const valoresAreas = areasOrdenadas.map(a => conteoAreas[a]);
-
-            chart2 = new Chart(document.getElementById('chartAreas'), {
-                type: 'bar',
-                data: {
-                    labels: areasOrdenadas,
-                    datasets: [{ label: 'Trámites Solicitados', data: valoresAreas, backgroundColor: '#d9534f', borderRadius: 4 }]
-                },
-                options: { 
-                    maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
-                }
-            });
-
-            // 6. Analizar Colisiones (Misma Fecha + Misma Área)
-            const colisiones = {};
-            datos.forEach(d => {
-                if(d.estado === 'Rechazado' || d.estado === 'Cancelado') return; // Ignoramos los que no pasaron
-                const area = d.area_adscripcion;
-                if(!area || area === 'No Registrada') return;
-                
-                const fecha = d.fechaClave.split('T')[0];
-                const clave = `${fecha}|${area}`;
-                
-                if(!colisiones[clave]) colisiones[clave] = [];
-                colisiones[clave].push(d.nombre_completo);
-            });
-
-            const tbodyColisiones = document.getElementById('tabla-colisiones');
-            tbodyColisiones.innerHTML = '';
-            let choquesDetectados = 0;
-
-            for (const [clave, profes] of Object.entries(colisiones)) {
-                if (profes.length > 1) { // ¡Hay colisión! Más de 1 profe fuera
-                    choquesDetectados++;
-                    const [fecha, area] = clave.split('|');
-                    tbodyColisiones.innerHTML += `
-                        <tr>
-                            <td class="ps-3 fw-bold text-dark">${fecha}</td>
-                            <td><span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">${area}</span></td>
-                            <td class="small text-muted">${profes.join(', ')}</td>
-                        </tr>
-                    `;
-                }
-            }
-
-            document.getElementById('badge-colisiones').textContent = choquesDetectados;
-            if(choquesDetectados === 0) {
-                tbodyColisiones.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-success fw-bold"><i class="fa-solid fa-check-circle me-2"></i>Excelente, no hay colisiones detectadas en este periodo.</td></tr>';
-            }
-        }
-    </script>
-</body>
+        <script src="js/informeRH.js"></script>
+    </body>
 </html>

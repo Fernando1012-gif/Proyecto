@@ -1,8 +1,8 @@
-/* pdfsito.js - Motor de Trazabilidad UTM */
-
+//funcion pdf
 async function inicializarMotorPDF() {
     try {
-        const respuesta = await fetch('pdfsito.html'); // Asegúrate que el nombre sea exacto
+        //plantilla del pdf html
+        const respuesta = await fetch('pdfsito.html');
         const htmlMoldes = await respuesta.text();
         
         const contenedor = document.createElement('div');
@@ -13,11 +13,9 @@ async function inicializarMotorPDF() {
         
         document.body.appendChild(contenedor);
     } catch (error) {
-        console.error("Error al cargar html:", error);
+        console.error("error al cargar html:", error);
     }
 }
-
-// Función de ayuda para evitar el error de "null"
 const escribirTexto = (id, valor) => {
     const el = document.getElementById(id);
     if (el) el.textContent = valor;
@@ -25,11 +23,11 @@ const escribirTexto = (id, valor) => {
 
 async function pdfPase(datosPase, usuario) {
     const { jsPDF } = window.jspdf;
-    const u = usuario; // Usamos los datos del docente
+    const u = usuario;
     
     const hoy = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-    // Mapeo exacto a tu HTML
+    //formato exacto html
     escribirTexto('pdf-folio', datosPase.id.toString().padStart(4, '0'));
     escribirTexto('pdf-fecha-hoy', hoy);
     escribirTexto('pdf-dia-solicitud', datosPase.fecha_uso_h);
@@ -37,8 +35,7 @@ async function pdfPase(datosPase, usuario) {
     escribirTexto('pdf-hora-fin', datosPase.hora_fin.substring(0, 5));
     escribirTexto('pdf-nombre-personal', u.nombre_completo);
     escribirTexto('pdf-motivo-texto', datosPase.motivo || 'COMISIÓN / PERSONAL');
-    
-    // Firma Vo. Bo. (Si agregas el ID al HTML como te sugiero abajo)
+    //firma
     escribirTexto('val-firma-vo-bo', datosPase.revisado_por_nombre || "AUTORIZADO DIGITAL");
 
     const elemento = document.getElementById('molde-pase-salida');
@@ -54,12 +51,11 @@ async function pdfPermiso(datos, usuario) {
     const { jsPDF } = window.jspdf;
     const u = usuario;
 
-    // 1. Limpieza segura de cuadritos
+    //seleccion 
     ['check-economico', 'check-sin-goce', 'check-con-goce', 'check-cumple'].forEach(id => {
         escribirTexto(id, '');
     });
 
-    // 2. Lógica de checks
     const mesDiaPermiso = datos.fecha_inicio.substring(5, 10);
     const mesDiaCumple = u.fecha_nacimiento ? u.fecha_nacimiento.substring(5, 10) : 'XX-XX';
     
@@ -71,7 +67,7 @@ async function pdfPermiso(datos, usuario) {
         escribirTexto('check-con-goce', 'X');
     }
 
-    // 3. Datos del Docente y RH
+    //datos rh y docente
     escribirTexto('p-pdf-rector', CONFIG_SISTEMA.rector);
     escribirTexto('p-pdf-nombre-titulo', u.nombre_completo);
     escribirTexto('p-pdf-dias', datos.cantidad_dias.toString().padStart(2, '0'));
@@ -86,7 +82,6 @@ async function pdfPermiso(datos, usuario) {
     escribirTexto('rh-contrato', u.tipo_contrato);
     escribirTexto('rh-rfc', u.rfc);
 
-    // 4. Cuadro de Recepción (Sello digital)
     const recepInfo = document.getElementById('rh-recepcion-info');
     if (recepInfo && datos.fecha_revision) {
         const f = new Date(datos.fecha_revision);
@@ -95,7 +90,7 @@ async function pdfPermiso(datos, usuario) {
         recepInfo.innerHTML = `<span style="font-size: 6pt; font-weight: normal;">FECHA Y HORA DE RECEPCIÓN</span><br>${fFmt}<br>${hFmt}`;
     }
 
-    // 5. Autoridades
+    //directivos
     escribirTexto('p-pdf-jefe-rh', CONFIG_SISTEMA.jefe_rh);
     escribirTexto('p-pdf-delegada', CONFIG_SISTEMA.delegada_admin);
 

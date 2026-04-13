@@ -35,11 +35,12 @@ const rutasLogin = require('./rutas/rutaLogin');
 const rutasPermisos = require('./rutas/rutaPermiso');
 const rutasPases = require('./rutas/rutaPase'); 
 const db = require('./bd/base');
+const rutaRoot = require('./rutas/rutaRoot');
 //usamos las apis
 app.use('/api/login', rutasLogin);
 app.use('/api/permisos', rutasPermisos);
 app.use('/api/pases', rutasPases); 
-
+app.use('/api/root', rutaRoot);
 
 app.get('/api/dias/ver', async (req, res) => {
     try {
@@ -51,7 +52,7 @@ app.get('/api/dias/ver', async (req, res) => {
 });
 
 //puerto que usaremos
-const PORT = 3000;
+const PORT = process.env.PORT
 server.listen(PORT,'0.0.0.0', () => {
     console.log(`Servidor listo en http://localhost:${PORT}`);
 });

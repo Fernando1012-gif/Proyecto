@@ -9,104 +9,44 @@
     <script src="https://kit.fontawesome.com/35660cdf83.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
     <link rel="icon" type="image/png" sizes="32x32" href="/imagenes/blue/favicon-32x32.png">
-
-    <style>
-        :root {
-            --utm-teal: #009186;
-            --utm-dark-teal: #0648a3;
-            --utm-red: #d9534f;
-            --bg-gray: #f8f9fa;
-            --border-color: #dee2e6;
-            --text-dark: #333;
-        }
-
-        html, body {
-            height: 100vh;
-            margin: 0;
-            overflow: hidden; 
-            background-color: var(--bg-gray);
-            font-family: 'Segoe UI', Roboto, sans-serif;
-        }
-
-        .top-navbar {
-            background-color: var(--utm-teal) !important;
-            height: 60px;
-            color: white;
-            display: flex;
-            align-items: center;
-            padding: 0 25px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-
-        .main-workspace {
-            display: flex;
-            height: calc(100vh - 60px);
-            width: 100%;
-        }
-
-        .sidebar {
-            width: 320px;
-            background-color: white !important;
-            border-right: 1px solid var(--border-color);
-            padding: 20px;
-            flex-shrink: 0;
-            overflow-y: auto;
-        }
-
-        .content-area {
-            flex-grow: 1;
-            background-color: var(--bg-gray) !important;
-            padding: 40px !important;
-            overflow-y: auto;
-        }
-
-        .btn-aero {
-            background: var(--utm-teal) !important;
-            color: white !important;
-            border: none !important;
-            font-weight: bold;
-        }
-
-        .table-hover tbody tr { cursor: pointer; }
-
-        .btn-check:checked + .btn-outline-warning { background-color: #ffc107; color: #000; }
-        .btn-check:checked + .btn-outline-info { background-color: #ffffff; color: #000; }
-
-        .historial-panel {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-            border: 1px solid #eef2f7;
-        }
-        #v-det-motivo, 
-        #det-motivo, 
-        #det-rh-motivo {
-            word-wrap: break-word;       
-            overflow-wrap: break-word;    
-            white-space: pre-wrap;       
-            word-break: break-word;      
-        }
-    </style>
+    <link rel="stylesheet" href="recursos/css/estilos.css">
+    <link rel="stylesheet" href="recursos/css/rh.css">
 </head>
 <body>
 
-    <div class="top-navbar d-flex justify-content-between align-items-center">
-        <h4 class="m-0 fw-bold">
-            <img src="recursos/imagenes/isologo_UTM_white.svg" width="50" class="me-2" alt="logo">
-            Recursos Humanos
-        </h4>
+    <div class="top-navbar d-flex justify-content-between align-items-center px-3">
+        <div>
+            <img src="recursos/imagenes/isologo_UTM_white.svg" height="25" alt="logo">
+        </div>
 
-        <div class="d-flex align-items-center">
-            <a href="informeRH.html" class="btn btn-outline-light border-0 fw-bold me-4" style="background-color: rgba(255,255,255,0.1);">
-                <i class="fa-solid fa-chart-pie me-2"></i>Estadisticas
-            </a>
+        <div class="d-flex align-items-center gap-2">
+            
+            <div class="d-md-none d-flex gap-2 align-items-center">
+                <button class="btn text-white p-2" onclick="toggleFiltrosMovil(true)" title="Filtros">
+                    <i class="fa-solid fa-filter fa-lg"></i>
+                </button>
+                <button class="btn text-white p-2" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCalendario" title="Calendario">
+                    <i class="fa-solid fa-calendar-days fa-lg"></i>
+                </button>
+                <a href="informeRH.html" class="btn text-white p-2" title="Estadísticas">
+                    <i class="fa-solid fa-chart-pie fa-lg"></i>
+                </a>
+                <a href="vistaRHS.html" class="btn text-white p-2 position-relative" title="Por Autorizar">
+                    <i class="fa-solid fa-bell fa-lg"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="badge-nav-solicitudes-movil" style="font-size: 0.6rem;">0</span>
+                </a>
+            </div>
 
-            <div class="dropdown">
-                <button class="btn dropdown-toggle text-white fw-bold border-0 d-flex align-items-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" style="text-shadow: 0px 1px 2px rgba(0,0,0,0.5);">
-                    <i class="fa-solid fa-circle-user fa-2xl me-2"></i>
-                    <span id="saludo-rh">Cargando...</span>
+            <div class="d-none d-md-flex align-items-center me-3">
+                <a href="informeRH.html" class="btn btn-outline-light border-0 fw-bold" style="background-color: rgba(255,255,255,0.1);">
+                    <i class="fa-solid fa-chart-pie me-2"></i>Estadísticas
+                </a>
+            </div>
+
+            <div class="dropdown ms-2">
+                <button class="btn dropdown-toggle text-white fw-bold border-0 d-flex align-items-center p-0" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-circle-user fa-xl me-2"></i>
+                    <span id="saludo-rh" class="d-none d-sm-inline" style="font-size: 0.9rem;">Cargando...</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userMenu">
                     <li class="px-3 py-2 small text-muted border-bottom">Opciones de cuenta</li>
@@ -128,13 +68,9 @@
 
     <div class="main-workspace">
         <div class="sidebar">
-            <a href="vistaRHS.html" class="btn text-white w-100 mb-4 d-flex justify-content-between align-items-center shadow-sm py-3" style="background-color: var(--utm-red); border: none; border-radius: 8px;">
-                <span class="fw-bold fs-6"><i class="fa-solid fa-bell fa-shake me-2"></i> Por Autorizar</span>
-                <span class="badge bg-white text-danger rounded-pill fs-6 shadow-sm" id="badge-nav-solicitudes">0</span>
-            </a>
-            
-            <hr class="mb-4 text-muted opacity-25">
-
+            <button id="btn-cerrar-filtros" class="btn-cerrar-overlay" onclick="toggleFiltrosMovil(false)">
+                <i class="fa-solid fa-check"></i>
+            </button>
             <h5 class="fw-bold text-primary mb-3"><i class="fa-solid fa-filter me-2"></i>Filtros Avanzados</h5>
             <form id="form-filtros">
                 <div class="mb-3">
@@ -188,7 +124,7 @@
                         <input type="number" class="form-control form-control-sm" id="filtro-año" placeholder="Ej. 2026">
                     </div>
                 </div>
-                <button type="button" class="btn btn-aero w-100 mb-2 py-2 shadow-sm" id="btn-aplicar-filtros">
+                <button type="button" class="btn btn-aero w-100 mb-2 py-2 shadow-sm" id="btn-aplicar-filtros" onclick="toggleFiltrosMovil(false)">
                     <i class="fa-solid fa-magnifying-glass me-2"></i>Buscar
                 </button>
                 <button type="reset" class="btn btn-light w-100 border py-2" onclick="setTimeout(aplicarFiltros, 100)">Limpiar Filtros</button>
@@ -196,19 +132,13 @@
         </div>
 
         <div class="content-area">
-            
             <div class="historial-panel">
                 <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
                     <div>
-                        <h4 class="fw-bold m-0 text-dark"><i class="fa-solid fa-table-list me-2 text-primary"></i>Directorio de Trámites</h4>
-                        <p class="text-muted small m-0">Gestión y búsqueda de todo el historial de la UTM</p>
+                        <h5 class="fw-bold m-0 text-dark"><i class="fa-solid fa-table-list me-2 text-primary"></i>Historial</h5>
                     </div>
-
                     <div class="d-flex align-items-center gap-2">
-                        <button class="btn btn-success fw-bold shadow-sm px-3" onclick="exportarExcel()">
-                            <i class="fa-solid fa-file-excel me-2"></i>Exportar (CSV)
-                        </button>
-
+                        <button class="btn btn-success fw-bold shadow-sm px-3" onclick="exportarExcel()"><i class="fa-solid fa-file-excel me-2 d-none d-md-inline"></i>CSV</button>
                         <div class="btn-group border rounded shadow-sm bg-white">
                             <button class="btn btn-light px-3" onclick="ordenarRapido('reciente')" title="Más recientes"><i class="fa-solid fa-clock-rotate-left text-primary"></i></button>
                             <button class="btn btn-light px-3" onclick="ordenarRapido('nombre')" title="Orden Alfabético"><i class="fa-solid fa-font text-primary"></i></button>
@@ -217,7 +147,7 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle m-0">
+                    <table class="table table-hover align-middle m-0" style="font-size: 0.9rem;">
                         <thead class="table-light">
                             <tr>
                                 <th class="ps-3">ID</th>
@@ -228,20 +158,25 @@
                                 <th>Motivo</th>
                             </tr>
                         </thead>
-                        <tbody id="tabla-general">
-                            </tbody>
+                        <tbody id="tabla-general"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <button class="btn btn-aero position-fixed bottom-0 end-0 m-4 shadow-lg rounded-pill px-4 py-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCalendario">
-            <i class="fa-solid fa-calendar-days me-2"></i>Ver Calendario Global
-        </button>
+        <div id="contenedor-flotante" class="position-fixed m-4 d-flex gap-3 btn-grupo-flotante" style="z-index: 1050; bottom: 20px; right: 20px;">
+            <a href="vistaRHS.html" class="btn shadow-lg rounded-pill px-4 py-3 fw-bold d-flex align-items-center" style="background-color: var(--utm-red); color: white; border: none;">
+                <i class="fa-solid fa-bell fa-shake me-2"></i> Por Autorizar
+                <span class="badge bg-white text-danger rounded-pill ms-2 shadow-sm" id="badge-nav-solicitudes">0</span>
+            </a>
+            <button class="btn btn-aero shadow-lg rounded-pill px-4 py-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCalendario">
+                <i class="fa-solid fa-calendar-days me-2"></i>Ver Calendario Global
+            </button>
+        </div>
 
         <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasCalendario" style="width: 600px;">
             <div class="offcanvas-header border-bottom bg-light">
-                <h5 class="offcanvas-title fw-bold text-primary">Mapa de Inasistencias y Salidas</h5>
+                <h5 class="offcanvas-title fw-bold text-primary">Calendario Global</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
             </div>
             <div class="offcanvas-body">
@@ -305,6 +240,30 @@
                                 <i class="fa-solid fa-file-pdf me-1"></i> Descargar PDF
                             </button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalCambiarPass" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header bg-light">
+                        <h6 class="modal-title fw-bold"><i class="fa-solid fa-lock me-2"></i>Seguridad</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-cambiar-pass">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Contraseña Actual</label>
+                                <input type="password" class="form-control form-control-sm" id="pass-actual" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Nueva Contraseña</label>
+                                <input type="password" class="form-control form-control-sm" id="pass-nueva" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">Actualizar</button>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -58,7 +58,6 @@ const usersql = {
     //funcion para cancelar o aprobar el permiso en la db
     cancelarPermiso: async (estado, id, revisado_por) => {
         try {
-            // Seteamos el estado, el revisor y la hora actual del sistema
             const sql = 'UPDATE permisos_goce SET estado = ?, revisado_por = ?, fecha_revision = NOW() WHERE id = ?';
             const [result] = await db.query(sql, [estado, revisado_por, id]);
             return result.affectedRows > 0;
@@ -102,7 +101,26 @@ ORDER BY pg.fecha_solicitud DESC;`;
         WHERE p.id = ?`;
         const [rows] = await db.execute(sql, [permisoId]);
         return rows[0];
-    }
+    },
+    contarPermisosCuatrimestrales: async (usuario_id) => {
+        try {
+            const sql = `
+                SELECT COUNT(*) as total FROM permisos_goce 
+                WHERE usuario_id = ? 
+                AND estado IN ('Pendiente', 'Aprobado')
+                AND YEAR(fecha_inicio) = YEAR(CURRENT_DATE())
+                AND (
+                    (MONTH(CURRENT_DATE()) BETWEEN 1 AND 4 AND MONTH(fecha_inicio) BETWEEN 1 AND 4) OR
+                    (MONTH(CURRENT_DATE()) BETWEEN 5 AND 8 AND MONTH(fecha_inicio) BETWEEN 5 AND 8) OR
+                    (MONTH(CURRENT_DATE()) BETWEEN 9 AND 12 AND MONTH(fecha_inicio) BETWEEN 9 AND 12)
+                )`;
+            const [rows] = await db.execute(sql, [usuario_id]);
+            return rows[0].total || 0;
+        } catch (error) {
+            console.error("Error en contador cuatrimestral", error);
+            return 0;
+        }
+    },
 }
 //exporamos usersql para que el controlador pueda acceder al objeto de este archivo
 module.exports = usersql;
