@@ -1,7 +1,22 @@
 const db = require('../bd/base'); 
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const rootControlador = {
+    loginSysadmin: async (req, res) => {
+        try {
+            const { user, pass } = req.body;
+            if (user === process.env.ROOT_USER && pass === process.env.ROOT_PASS) {
+                const token = jwt.sign(
+                    { id: 'SYSADMIN', rol: 'Administrador' }, 
+                    process.env.JWT_SECRET, 
+                    { expiresIn: '4h' }
+                );
+                return res.json({ ok: true, token });
+            }
+            res.status(401).json({ ok: false, msg: 'INVALID_CREDENTIALS' });
+        } catch (e) { res.status(500).json({ ok: false }); }
+    },
     getUsuarios: async (req, res) => {
         try {
             const [data] = await db.query('SELECT id, nombre_completo, correo_institucional, rol, area_adscripcion FROM usuarios');
@@ -28,7 +43,6 @@ const rootControlador = {
             const b = req.body;
             let q = 'UPDATE usuarios SET nombre_completo=?, correo_institucional=?, rol=?, rfc=?, fecha_nacimiento=?, fecha_ingreso=?, categoria=?, area_adscripcion=?, tipo_contrato=? WHERE id=?';
             let params = [b.nombre_completo, b.correo_institucional, b.rol, b.rfc, b.fecha_nacimiento, b.fecha_ingreso, b.categoria, b.area_adscripcion, b.tipo_contrato, req.params.id];
-            
             if (b.contraseña) {
                 const salt = await bcrypt.genSalt(10);
                 const hash = await bcrypt.hash(b.contraseña, salt);
@@ -116,21 +130,7 @@ const rootControlador = {
             await db.query('DELETE FROM dias_festivos WHERE id = ?', [req.params.id]);
             res.json({ ok: true });
         } catch (e) { res.status(500).json({ ok: false, msg: e.message }); }
-    },
-    loginSysadmin: async (req, res) => {
-        try {
-            const { user, pass } = req.body;
-            if (user === process.env.ROOT_USER && pass === process.env.ROOT_PASS) {
-                const token = jwt.sign(
-                    { id: 'SYSADMIN', rol: 'ROOT' }, 
-                    process.env.JWT_SECRET, 
-                    { expiresIn: '2h' }
-                );
-                return res.json({ ok: true, token });
-            }
-            res.status(401).json({ ok: false, msg: 'INVALID_CREDENTIALS' });
-        } catch (e) { res.status(500).json({ ok: false }); }
-    },
+    }
 };
 
 module.exports = rootControlador;

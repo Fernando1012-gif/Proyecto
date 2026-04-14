@@ -7,7 +7,7 @@ const router = Router();
 router.post('/login', rootCtrl.loginSysadmin);
 
 const checkSysadmin = (req, res, next) => {
-    if (req.usuario.rol !== 'ROOT') {
+    if (req.usuario.rol !== 'Administrador') {
         return res.status(403).json({ ok: false, msg: 'SYS_DENIED' });
     }
     next();
