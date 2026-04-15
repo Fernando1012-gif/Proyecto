@@ -29,6 +29,7 @@ socket.on('actualizar-contadores', actualizarPresupuestoSalidas);
 
 if (!token || !usuarioStr) window.location.href = "login.html";
 const usuario = JSON.parse(usuarioStr);
+if (usuario.rol !== 'Docente') window.location.href = "login.html";
 
 function manejarSesionExpirada() {
     sessionStorage.clear();
@@ -59,6 +60,7 @@ function actualizarBadges(registros) {
 
 document.addEventListener('DOMContentLoaded', () => {
     modalInstancia = new bootstrap.Modal(document.getElementById('modalSolicitud'));
+    modalSemanaFABInstancia = new bootstrap.Modal(document.getElementById('modalSemanaFAB'));
     modalDetalleDocenteInstancia = new bootstrap.Modal(document.getElementById('modalDetalleDocente'));
     document.getElementById('saludo-profesor').textContent = usuario.nombre_completo || "Docente";
     modalConfirmacionInstancia = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
@@ -93,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (res.ok) {
                 //si todo sale bien cerramos
                 mostrarToast(res.msg);
-                e.target.reset(); 
+                e.target.reset();
                 modalPerfilInstancia.hide();
             } else {
                 mostrarToast(res.msg, "error");
@@ -105,8 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const hoy = new Date().toISOString().split('T')[0];
 
     //limite a fechas
-    const inputFechaPase = document.getElementById('fecha_uso'); 
-    const inputFechaInicio = document.getElementById('fecha_inicio'); 
+    const inputFechaPase = document.getElementById('fecha_uso');
+    const inputFechaInicio = document.getElementById('fecha_inicio');
 
     if (inputFechaPase) inputFechaPase.setAttribute('min', hoy);
     if (inputFechaInicio) inputFechaInicio.setAttribute('min', hoy);
@@ -218,9 +220,9 @@ function verDetallesSolicitud(data) {
     if (data.estado !== 'Pendiente' && data.revisado_por_nombre) {
         contRev.style.display = 'block';
         document.getElementById('v-det-revisado-por').textContent = data.revisado_por_nombre;
-        
+
         const f = new Date(data.fecha_revision);
-        document.getElementById('v-det-fecha-revision').textContent = 
+        document.getElementById('v-det-fecha-revision').textContent =
             `${f.toLocaleDateString()} a las ${f.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} hrs`;
     } else {
         contRev.style.display = 'none';
@@ -248,11 +250,21 @@ function verDetallesSolicitud(data) {
     if (btnPDF) {
         if (data.estado === 'Aprobado') {
             btnPDF.style.display = 'block';
-            btnPDF.onclick = () => {
-                if (data.tipoTramite === 'Pase') {
-                    pdfPase(data, usuario); 
-                } else {
-                    pdfPermiso(data, usuario);
+            btnPDF.onclick = async () => {
+                const textOrigin = btnPDF.innerHTML;
+                btnPDF.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Generando...';
+                btnPDF.disabled = true;
+                try {
+                    if (data.tipoTramite === 'Pase') {
+                        await pdfPase(data, usuario);
+                    } else {
+                        await pdfPermiso(data, usuario);
+                    }
+                } catch (e) {
+                    mostrarToast("Error construyendo PDF", "error");
+                } finally {
+                    btnPDF.innerHTML = textOrigin;
+                    btnPDF.disabled = false;
                 }
             };
         } else {
@@ -264,13 +276,13 @@ function verDetallesSolicitud(data) {
     document.getElementById('v-det-tipo-badge').className = `badge rounded-pill px-3 py-2 ${esPase ? 'bg-info text-dark' : 'bg-primary'}`;
     const badgeEstado = document.getElementById('v-det-estado-badge');
     badgeEstado.textContent = data.estado;
-    
-    const colorEstado = data.estado === 'Aprobado' ? 'bg-success' : 
-                   (data.estado === 'Vo.Bo.' ? 'bg-info text-white' : 
-                   (data.estado === 'Pendiente' ? 'bg-warning text-dark' : 'bg-danger'));
+
+    const colorEstado = data.estado === 'Aprobado' ? 'bg-success' :
+        (data.estado === 'Vo.Bo.' ? 'bg-info text-white' :
+            (data.estado === 'Pendiente' ? 'bg-warning text-dark' : 'bg-danger'));
 
     badgeEstado.className = `badge fs-6 ${colorEstado}`;
-    
+
     modalDetalleDocenteInstancia.show();
 }
 
@@ -296,10 +308,10 @@ async function cargarDatosYActualizarCalendario() {
             const eventosTramites = todosLosRegistrosGlobal.map(reg => ({
                 title: `${reg.tipoTramite}: ${reg.estado}`,
                 start: reg.fechaClave.split('T')[0],
-                backgroundColor: reg.estado === 'Aprobado' ? '#198754' : 
+                backgroundColor: reg.estado === 'Aprobado' ? '#198754' :
                     (reg.estado === 'Vo.Bo.' ? '#02c4ff' :
-                    (reg.estado === 'Pendiente' ? '#ffc107' : '#dc3545')),
-                    borderColor: 'transparent',
+                        (reg.estado === 'Pendiente' ? '#ffc107' : '#dc3545')),
+                borderColor: 'transparent',
                 extendedProps: { ...reg }
             }));
 
@@ -311,23 +323,26 @@ async function cargarDatosYActualizarCalendario() {
                 extendedProps: { esBloqueado: true, msg: f.descripcion }
             }));
 
-            const cumpleMesDia = usuario.fecha_nacimiento.substring(5, 10);
+            const cumpleMesDia = usuario?.fecha_nacimiento ? usuario.fecha_nacimiento.substring(5, 10) : null;
             const añoActual = new Date().getFullYear();
-            const eventoCumple = {
-                title: "Cumpleaños",
-                start: `${añoActual}-${cumpleMesDia}`,
-                backgroundColor: '#ffc107',
-                borderColor: '#ffc107',
-                allDay: true,
-                extendedProps: { esBloqueado: true, msg: "tu cumpleaños" }
-            };
 
             pintarHistorial(todosLosRegistrosGlobal);
             actualizarBadges(todosLosRegistrosGlobal);
             calendarioOficial.removeAllEventSources();
             calendarioOficial.addEventSource(eventosTramites);
             calendarioOficial.addEventSource(eventosFestivos);
-            calendarioOficial.addEventSource([eventoCumple]);
+
+            if (cumpleMesDia) {
+                const eventoCumple = {
+                    title: "Cumpleaños",
+                    start: `${añoActual}-${cumpleMesDia}`,
+                    backgroundColor: '#ffc107',
+                    borderColor: '#ffc107',
+                    allDay: true,
+                    extendedProps: { esBloqueado: true, msg: "tu cumpleaños" }
+                };
+                calendarioOficial.addEventSource([eventoCumple]);
+            }
         }
     } catch (e) { mostrarToast("Error de sincronizacion", "error"); }
 }
@@ -346,7 +361,7 @@ function pintarCalendario(eventos) {
             list: 'agenda'
         },
         //conf para celular
-        windowResize: function(arg) {
+        windowResize: function (arg) {
             if (window.innerWidth < 768) {
                 //si es vista celular:
                 calendarioOficial.setOption('headerToolbar', {
@@ -364,18 +379,18 @@ function pintarCalendario(eventos) {
             }
         },
 
-        
+
         dayCellClassNames: (arg) => {
             const fechaCelda = arg.date.toISOString().split('T')[0];
-            const cumpleMesDia = usuario.fecha_nacimiento.substring(5, 10);
-            
+            const cumpleMesDia = usuario?.fecha_nacimiento ? usuario.fecha_nacimiento.substring(5, 10) : null;
+
             //fines de semana
             if (arg.date.getDay() === 0 || arg.date.getDay() === 6) return ['bg-light'];
-            
+
             //festivo o cumple
             const esFestivo = festivosGlobales.some(f => f.fecha.split('T')[0] === fechaCelda);
-            const esCumple = fechaCelda.substring(5, 10) === cumpleMesDia;
-            
+            const esCumple = cumpleMesDia && (fechaCelda.substring(5, 10) === cumpleMesDia);
+
             //si el dia esta ocupado:
             const diaOcupado = verificarDias(fechaCelda);
 
@@ -383,16 +398,16 @@ function pintarCalendario(eventos) {
             if (esFestivo || esCumple || diaOcupado) {
                 return ['dia-bloqueado'];
             }
-            
+
             return [];
         },
 
-        
+
         dateClick: (info) => {
             const hoyCheck = new Date();
             hoyCheck.setHours(0, 0, 0, 0);
             const fechaClick = new Date(info.dateStr + 'T00:00:00');
-            
+
             //si es pasado bloqueamos
             if (fechaClick < hoyCheck) {
                 mostrarToast("No puedes solicitar dias pasados", "error");
@@ -400,9 +415,9 @@ function pintarCalendario(eventos) {
             }
             if (info.dayEl.classList.contains('dia-bloqueado') || info.date.getDay() === 0 || info.date.getDay() === 6) {
                 if (verificarDias(info.dateStr)) {
-                    mostrarToast("Ya tienes un trámite activo para este día", "error"); 
+                    mostrarToast("Ya tienes un trámite activo para este día", "error");
                 } else {
-                    const esCumple = info.dateStr.substring(5, 10) === usuario.fecha_nacimiento.substring(5, 10);
+                    const esCumple = usuario?.fecha_nacimiento && info.dateStr.substring(5, 10) === usuario.fecha_nacimiento.substring(5, 10);
                     mostrarToast(esCumple ? "Feliz cumpleaños!!!" : "No hay labores este dia", "info");
                 }
                 return;
@@ -439,10 +454,10 @@ function pintarHistorial(registros) {
         if (pA !== pB) return pA - pB;
         //id reciente
         return b.id - a.id;
-    
+
     }).slice(0, 59).forEach(reg => {
         const fechaParaMostrar = reg.fecha_uso_h || reg.fecha_inicio_h;
-        let borderClass = reg.estado === 'Aprobado' ? 'border-success' : (reg.estado === 'Vo.Bo.' ? 'border-info' : 
+        let borderClass = reg.estado === 'Aprobado' ? 'border-success' : (reg.estado === 'Vo.Bo.' ? 'border-info' :
             (reg.estado === 'Pendiente' ? 'border-warning' : 'border-danger'));
         const div = document.createElement('div');
         div.className = `card mb-2 shadow-sm border-0 border-start border-4 ${borderClass}`;
@@ -455,11 +470,10 @@ function pintarHistorial(registros) {
                     <span class="text-muted" style="font-size: 0.75rem;">${fechaParaMostrar}</span>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mt-1">
-                    <span class="badge ${
-                        reg.estado === 'Aprobado' ? 'bg-success' : 
-                        (reg.estado === 'Vo.Bo.' ? 'bg-info text-white' : 
-                        (reg.estado === 'Pendiente' ? 'bg-warning text-dark' : 'bg-danger'))
-                        }" style="font-size: 0.65rem;">${reg.estado}
+                    <span class="badge ${reg.estado === 'Aprobado' ? 'bg-success' :
+                (reg.estado === 'Vo.Bo.' ? 'bg-info text-white' :
+                    (reg.estado === 'Pendiente' ? 'bg-warning text-dark' : 'bg-danger'))
+            }" style="font-size: 0.65rem;">${reg.estado}
                     </span>
                     ${reg.estado === 'Pendiente' ? `
                         <div class="btn-group" onclick="event.stopPropagation()">
@@ -524,7 +538,7 @@ document.getElementById('form-pedir-pase').addEventListener('submit', (e) => {
     e.preventDefault();
     const fechaUso = document.getElementById('fecha_uso').value;
 
-    if (!editandoId && verificarDias(fechaUso)) { 
+    if (!editandoId && verificarDias(fechaUso)) {
         return mostrarToast("Ya tienes una solicitud activa para esa fecha", "error");
     }
     const hInicio = document.getElementById('hora_inicio').value;
@@ -553,6 +567,8 @@ document.getElementById('form-pedir-permiso').addEventListener('submit', (e) => 
         }
         temp.setDate(temp.getDate() + 1);
     }
+    const maxD = parseInt(document.getElementById('cantidad_dias').value) || 0;
+    if (maxD > 3 || maxD <= 0) return mostrarToast("Días de permiso excedidos o inválidos", "error");
     const dias = document.getElementById('cantidad_dias').value;
     const motivo = document.getElementById('motivo').value;
     datosPendientes = { tipo_permiso: tipo, fecha_inicio: fechaI, fecha_fin: fechaF, cantidad_dias: dias, motivo, id: editandoId };
@@ -587,10 +603,17 @@ function actualizarLimitesHoraFin() {
     const hFi = document.getElementById('hora_fin');
     if (!hIn || !hFi || !hIn.value) return;
     const hInNum = parseInt(hIn.value.split(':')[0]);
+
+    let isCurrentDisabled = false;
     Array.from(hFi.options).forEach(opt => {
         const hFiNum = parseInt(opt.value.split(':')[0]);
         opt.disabled = (hFiNum <= hInNum || hFiNum > hInNum + 3);
+        if (opt.value === hFi.value && opt.disabled) isCurrentDisabled = true;
     });
+
+    if (isCurrentDisabled) {
+        hFi.value = (hInNum + 1 < 10 ? '0' : '') + (hInNum + 1) + ':00';
+    }
 }
 
 function actualizarLimitesFechaFin() {
@@ -612,7 +635,7 @@ function actualizarLimitesFechaFin() {
     const d = String(fMax.getDate()).padStart(2, '0');
     iF.max = `${y}-${m}-${d}`;
 
-    if (iF.value > iF.max) iF.value = iI.value;
+    if (iF.value > iF.max || iF.value < iF.min) iF.value = iI.value;
 }
 
 function abrirPerfil(conSeguridad) {
@@ -695,18 +718,89 @@ function renderizarBarra(tipo, usados) {
 document.addEventListener('DOMContentLoaded', () => {
     actualizarPresupuestoSalidas();
 });
-function toggleCalendarioMovil(show) {
-    const area = document.querySelector('.content-area');
-    if (show) {
-        area.classList.add('active-movil');
-        //calendario ajustado
+//version movil
+function cambiarTabApp(index) {
+    const sidebar = document.querySelector('.sidebar');
+    const content = document.querySelector('.content-area');
+    const tabHome = document.getElementById('tab-home');
+    const tabCal = document.getElementById('tab-cal');
+
+    if (index === 0) {
+        sidebar.classList.remove('hidden-tab');
+        content.classList.remove('active-tab');
+        if (tabHome) tabHome.classList.add('active');
+        if (tabCal) tabCal.classList.remove('active');
+    } else if (index === 1) {
+        sidebar.classList.add('hidden-tab');
+        content.classList.add('active-tab');
+        if (tabHome) tabHome.classList.remove('active');
+        if (tabCal) tabCal.classList.add('active');
+
         if (calendarioOficial) {
             setTimeout(() => {
-                calendarioOficial.setOption('height', '100%');
                 calendarioOficial.updateSize();
             }, 50);
         }
-    } else {
-        area.classList.remove('active-movil');
     }
+}
+
+//semana actual
+function abrirModalSemanaRAPIDO() {
+    const contenedor = document.getElementById('contenedor-dias-semana');
+    contenedor.innerHTML = '';
+
+    const hoyReal = new Date();
+    //ajustar 7 dias de la semana
+    const diaSemana = hoyReal.getDay() === 0 ? 7 : hoyReal.getDay();
+    const hoyCheck = new Date();
+    hoyCheck.setHours(0, 0, 0, 0);
+
+    const nombresDias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+
+    for (let i = 1; i <= 5; i++) {
+        const diaTarget = new Date(hoyReal.getFullYear(), hoyReal.getMonth(), hoyReal.getDate());
+        diaTarget.setDate(hoyReal.getDate() - diaSemana + i);
+
+
+        const y = diaTarget.getFullYear();
+        const m = String(diaTarget.getMonth() + 1).padStart(2, '0');
+        const d = String(diaTarget.getDate()).padStart(2, '0');
+        const fechaStr = `${y}-${m}-${d}`;
+
+        const esPasado = diaTarget < hoyCheck;
+        const ocupado = verificarDias(fechaStr);
+        const esFestivo = festivosGlobales.some(f => f.fecha.split('T')[0] === fechaStr);
+        const esCumple = usuario?.fecha_nacimiento && fechaStr.substring(5, 10) === usuario.fecha_nacimiento.substring(5, 10);
+
+        const esBloqueado = esPasado || ocupado || esFestivo || esCumple;
+
+        let labelEstado = '';
+        if (esPasado) labelEstado = 'Pasado';
+        else if (esFestivo) labelEstado = 'Festivo';
+        else if (esCumple) labelEstado = 'Cumpleaños';
+        else if (ocupado) labelEstado = 'Ocupado';
+
+        const btn = document.createElement('button');
+        btn.className = `btn w-100 fw-bold d-flex justify-content-between align-items-center mb-1 ${esBloqueado ? 'btn-light border text-muted' : 'btn-outline-primary'}`;
+        btn.style.borderRadius = "14px";
+        btn.innerHTML = `<span class="fs-6">${nombresDias[i - 1]} ${diaTarget.getDate()} ${labelEstado ? `<span class="badge bg-secondary ms-2 opacity-50" style="font-size:0.6rem">${labelEstado}</span>` : ''}</span> <i class="fa-solid ${esBloqueado ? 'fa-ban text-danger opacity-50' : 'fa-chevron-right'}"></i>`;
+
+        if (!esBloqueado) {
+            btn.onclick = () => {
+                modalSemanaFABInstancia.hide();
+
+                volverPaso1();
+                document.getElementById('fecha_uso').value = fechaStr;
+                document.getElementById('fecha_inicio').value = fechaStr;
+                actualizarLimitesFechaFin();
+                document.getElementById('fecha_fin').value = fechaStr;
+                calcularDiasPermiso();
+                setTimeout(() => modalInstancia.show(), 350);
+            };
+        }
+
+        contenedor.appendChild(btn);
+    }
+
+    modalSemanaFABInstancia.show();
 }

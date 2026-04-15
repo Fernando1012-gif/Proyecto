@@ -25,16 +25,6 @@
                 <button class="btn text-white p-2" onclick="toggleFiltrosMovil(true)" title="Filtros">
                     <i class="fa-solid fa-filter fa-lg"></i>
                 </button>
-                <button class="btn text-white p-2" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCalendario" title="Calendario">
-                    <i class="fa-solid fa-calendar-days fa-lg"></i>
-                </button>
-                <a href="informeRH.html" class="btn text-white p-2" title="Estadísticas">
-                    <i class="fa-solid fa-chart-pie fa-lg"></i>
-                </a>
-                <a href="vistaRHS.html" class="btn text-white p-2 position-relative" title="Por Autorizar">
-                    <i class="fa-solid fa-bell fa-lg"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="badge-nav-solicitudes-movil" style="font-size: 0.6rem;">0</span>
-                </a>
             </div>
 
             <div class="d-none d-md-flex align-items-center me-3">
@@ -67,23 +57,24 @@
     </div>
 
     <div class="main-workspace">
-        <div class="sidebar">
-            <button id="btn-cerrar-filtros" class="btn-cerrar-overlay" onclick="toggleFiltrosMovil(false)">
-                <i class="fa-solid fa-check"></i>
-            </button>
-            <h5 class="fw-bold text-primary mb-3"><i class="fa-solid fa-filter me-2"></i>Filtros Avanzados</h5>
+        <div class="sidebar position-relative">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-primary m-0"><i class="fa-solid fa-filter me-2"></i>Filtros</h5>
+                <button type="button" class="btn-close d-md-none" onclick="toggleFiltrosMovil(false)"></button>
+            </div>
+            
             <form id="form-filtros">
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Docente</label>
-                    <input type="text" class="form-control form-control-sm" id="filtro-docente" placeholder="Buscar por nombre...">
+                    <input type="text" class="form-control form-control-sm border-0 bg-light" id="filtro-docente" placeholder="Buscar por nombre..." oninput="aplicarFiltros()">
                 </div>
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Área / Departamento</label>
-                    <input type="text" class="form-control form-control-sm" id="filtro-area" placeholder="Ej. Enfermería, Sistemas...">
+                    <input type="text" class="form-control form-control-sm border-0 bg-light" id="filtro-area" placeholder="Ej. Enfermería..." oninput="aplicarFiltros()">
                 </div>
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Tipo de Trámite</label>
-                    <select class="form-select form-select-sm" id="filtro-tipo">
+                    <select class="form-select form-select-sm border-0 bg-light" id="filtro-tipo" onchange="aplicarFiltros()">
                         <option value="Todos">Todos</option>
                         <option value="Pase">Pases de Salida</option>
                         <option value="Permiso">Permisos</option>
@@ -91,7 +82,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Estado</label>
-                    <select class="form-select form-select-sm" id="filtro-estado">
+                    <select class="form-select form-select-sm border-0 bg-light" id="filtro-estado" onchange="aplicarFiltros()">
                         <option value="Todos">Todos</option>
                         <option value="Aprobado">Aprobados</option>
                         <option value="Vo.Bo.">Con Vo.Bo.</option>
@@ -102,14 +93,14 @@
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Rango de Fechas</label>
                     <div class="d-flex gap-2">
-                        <input type="date" class="form-control form-control-sm" id="filtro-fecha-inicio" title="Desde">
-                        <input type="date" class="form-control form-control-sm" id="filtro-fecha-fin" title="Hasta">
+                        <input type="date" class="form-control form-control-sm border-0 bg-light" id="filtro-fecha-inicio" title="Desde" onchange="aplicarFiltros()">
+                        <input type="date" class="form-control form-control-sm border-0 bg-light" id="filtro-fecha-fin" title="Hasta" onchange="aplicarFiltros()">
                     </div>
                 </div>
                 <div class="row g-2 mb-3">
                     <div class="col-6">
                         <label class="form-label small fw-bold">Mes Histórico</label>
-                        <select class="form-select form-select-sm" id="filtro-mes">
+                        <select class="form-select form-select-sm border-0 bg-light" id="filtro-mes" onchange="aplicarFiltros()">
                             <option value>Todos</option>
                             <option value="01">Enero</option><option value="02">Febrero</option>
                             <option value="03">Marzo</option><option value="04">Abril</option>
@@ -121,13 +112,14 @@
                     </div>
                     <div class="col-6">
                         <label class="form-label small fw-bold">Año</label>
-                        <input type="number" class="form-control form-control-sm" id="filtro-año" placeholder="Ej. 2026">
+                        <input type="number" class="form-control form-control-sm border-0 bg-light" id="filtro-año" placeholder="Ej. 2026" onchange="aplicarFiltros()">
                     </div>
                 </div>
-                <button type="button" class="btn btn-aero w-100 mb-2 py-2 shadow-sm" id="btn-aplicar-filtros" onclick="toggleFiltrosMovil(false)">
-                    <i class="fa-solid fa-magnifying-glass me-2"></i>Buscar
+                
+                <button type="button" class="btn btn-aero w-100 mb-2 py-2 shadow-sm d-md-none" id="btn-aplicar-filtros" onclick="toggleFiltrosMovil(false)">
+                    <i class="fa-solid fa-magnifying-glass me-2"></i>Ver Resultados
                 </button>
-                <button type="reset" class="btn btn-light w-100 border py-2" onclick="setTimeout(aplicarFiltros, 100)">Limpiar Filtros</button>
+                <button type="reset" class="btn btn-light w-100 border py-2" onclick="setTimeout(aplicarFiltros, 100); toggleFiltrosMovil(false);">Limpiar Filtros</button>
             </form>
         </div>
 
@@ -158,7 +150,11 @@
                                 <th>Motivo</th>
                             </tr>
                         </thead>
-                        <tbody id="tabla-general"></tbody>
+                        <tbody id="tabla-general">
+                            <tr><td colspan="6" class="p-3 border-0"><div class="skeleton-box" style="width:100%; height:1.2rem; margin-bottom:5px;"></div><div class="skeleton-box" style="width:60%; height:0.8rem;"></div></td></tr>
+                            <tr><td colspan="6" class="p-3 border-0"><div class="skeleton-box" style="width:90%; height:1.2rem; margin-bottom:5px;"></div><div class="skeleton-box" style="width:40%; height:0.8rem;"></div></td></tr>
+                            <tr><td colspan="6" class="p-3 border-0"><div class="skeleton-box" style="width:95%; height:1.2rem; margin-bottom:5px;"></div><div class="skeleton-box" style="width:50%; height:0.8rem;"></div></td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -276,6 +272,27 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
         <script src="js/admins.js"></script>
         <script src="js/pdfsito.js"></script>
+        
+        <!-- Bottom Tab Nav-->
+        <nav class="bottom-tab-nav d-md-none">
+            <a href="vistaRH.html" class="tab-item active">
+                <i class="fa-solid fa-table-list"></i>
+                <span>Historial</span>
+            </a>
+            <a href="vistaRHS.html" class="tab-item position-relative">
+                <i class="fa-solid fa-inbox"></i>
+                <span>Autorizar</span>
+                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" id="badge-nav-solicitudes-nav">0</span>
+            </a>
+            <a href="informeRH.html" class="tab-item">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Métricas</span>
+            </a>
+            <button class="tab-item" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCalendario">
+                <i class="fa-regular fa-calendar" style="color: var(--utm-teal);"></i>
+                <span style="color: var(--utm-teal);">Fechas</span>
+            </button>
+        </nav>
     </div>
 </body>
 </html>

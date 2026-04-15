@@ -68,7 +68,7 @@ async function pdfPermiso(datos, usuario) {
     }
 
     //datos rh y docente
-    escribirTexto('p-pdf-rector', CONFIG_SISTEMA.rector);
+    escribirTexto('p-pdf-rector', window.CONFIG_SISTEMA?.rector || 'Rector General');
     escribirTexto('p-pdf-nombre-titulo', u.nombre_completo);
     escribirTexto('p-pdf-dias', datos.cantidad_dias.toString().padStart(2, '0'));
     escribirTexto('p-pdf-rango-fechas', `${datos.fecha_inicio_h} al ${datos.fecha_fin_h}`);
@@ -78,7 +78,7 @@ async function pdfPermiso(datos, usuario) {
     escribirTexto('rh-fecha-ingreso', u.fecha_ingreso ? u.fecha_ingreso.split('T')[0] : 'S/N');
     escribirTexto('rh-area', u.area_adscripcion);
     escribirTexto('rh-categoria', u.categoria);
-    escribirTexto('rh-cuatrimestre', CONFIG_SISTEMA.cuatrimestre_actual);
+    escribirTexto('rh-cuatrimestre', window.CONFIG_SISTEMA?.cuatrimestre_actual || 'Actual');
     escribirTexto('rh-contrato', u.tipo_contrato);
     escribirTexto('rh-rfc', u.rfc);
 
@@ -91,8 +91,8 @@ async function pdfPermiso(datos, usuario) {
     }
 
     //directivos
-    escribirTexto('p-pdf-jefe-rh', CONFIG_SISTEMA.jefe_rh);
-    escribirTexto('p-pdf-delegada', CONFIG_SISTEMA.delegada_admin);
+    escribirTexto('p-pdf-jefe-rh', window.CONFIG_SISTEMA?.jefe_rh || 'Jefatura RH');
+    escribirTexto('p-pdf-delegada', window.CONFIG_SISTEMA?.delegada_admin || 'Delegación Admin');
 
     const elemento = document.getElementById('molde-permiso-inasistencia');
     const canvas = await html2canvas(elemento, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });

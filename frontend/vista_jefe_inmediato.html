@@ -20,16 +20,6 @@
         </div>
 
         <div class="d-flex align-items-center gap-3">
-            
-            <div class="d-md-none d-flex gap-2">
-                <button class="btn text-white p-2" onclick="toggleVistaMovil('historial', true)" title="Historial">
-                    <i class="fa-solid fa-clock-rotate-left fa-lg"></i>
-                </button>
-                <button class="btn text-white p-2" onclick="toggleVistaMovil('calendario', true)" title="Calendario">
-                    <i class="fa-solid fa-calendar-days fa-lg"></i>
-                </button>
-            </div>
-
             <div class="dropdown">
                 <button class="btn dropdown-toggle text-white fw-bold border-0 d-flex align-items-center p-0" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-circle-user fa-xl me-2"></i>
@@ -58,13 +48,14 @@
             <h5 class="fw-bold" style="color: var(--utm-teal); border-bottom: 2px solid #eee; padding-bottom: 10px;">
                 <i class="fa-solid fa-list-check me-2"></i>Pendientes
             </h5>
-            <div class="scroll-interno" id="lista-pendientes"></div>
+            <div class="scroll-interno" id="lista-pendientes">
+                <div class="card mb-2 border-0"><div class="card-body p-3"><div class="skeleton-box" style="width: 70%; height: 1.2rem; margin-bottom: 8px;"></div><div class="skeleton-box" style="width: 40%; height: 0.8rem;"></div><div class="mt-2 text-end"><div class="skeleton-box" style="width: 30%; height: 1.2rem; border-radius: 5px;"></div></div></div></div>
+                <div class="card mb-2 border-0"><div class="card-body p-3"><div class="skeleton-box" style="width: 80%; height: 1.2rem; margin-bottom: 8px;"></div><div class="skeleton-box" style="width: 50%; height: 0.8rem;"></div><div class="mt-2 text-end"><div class="skeleton-box" style="width: 30%; height: 1.2rem; border-radius: 5px;"></div></div></div></div>
+            </div>
         </div>
 
         <div class="content-area">
-            <button id="btn-cerrar-vista-movil" class="btn-cerrar-overlay" onclick="toggleVistaMovil('', false)">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+
 
             <div class="mini-filter-bar shadow-sm">
                 <input type="text" id="mini-docente" class="form-control form-control-sm w-25" placeholder="Buscar docente..." onkeyup="ejecutarMiniFiltro()">
@@ -217,5 +208,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="js/admins.js"></script>
     <script src="js/pdfsito.js"></script>
+
+    <!-- Bottom Tab Nav (Solo Móvil) -->
+    <nav class="bottom-tab-nav d-md-none">
+        <button class="tab-item active" id="tab-home" onclick="cambiarTabApp(0)">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Revisión</span>
+        </button>
+        <button class="tab-item" id="tab-hist" onclick="cambiarTabApp(1)">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Métricas</span>
+        </button>
+        <button class="tab-item" id="tab-cal" onclick="cambiarTabApp(2)">
+            <i class="fa-regular fa-calendar"></i>
+            <span>Calendario</span>
+        </button>
+        <button class="tab-item" onclick="document.getElementById('btn-logout').click()">
+            <i class="fa-solid fa-power-off" style="color: var(--utm-red);"></i>
+            <span style="color: var(--utm-red);">Salir</span>
+        </button>
+    </nav>
 </body>
 </html>

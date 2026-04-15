@@ -28,6 +28,7 @@ const usuarioStr = sessionStorage.getItem('usuario');
 
 if (!token || !usuarioStr) window.location.href = "login.html";
 const usuario = JSON.parse(usuarioStr);
+if (usuario.rol !== 'Administrador') window.location.href = "login.html";
 
 //funcion si la sesion expiro
 function manejarSesionExpirada() {
@@ -72,7 +73,7 @@ function inicializarCalendario() {
         locale: 'es',
         height: '100%',
         headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,listWeek' },
-        windowResize: function(arg) {
+        windowResize: function (arg) {
             if (window.innerWidth < 768) {
                 calendarioJefe.setOption('headerToolbar', {
                     left: 'prev,next',
@@ -113,16 +114,24 @@ async function cargarTodasLasSolicitudes() {
         const permisos = (dataPermisos.data || []).map(p => ({ ...p, tipoTramite: 'Permiso' }));
 
         solicitudesGlobales = [...pases, ...permisos];
-        ejecutarMiniFiltro(); 
+        ejecutarMiniFiltro();
 
     } catch (error) {
         console.error("Error en la carga:", error);
         mostrarToast("Error al conectar al servidor", "error");
     }
-}1
+} 1
 
 //filtro para ordenar historial
+let debounceTimerJefe = null;
 function ejecutarMiniFiltro() {
+    clearTimeout(debounceTimerJefe);
+    debounceTimerJefe = setTimeout(() => {
+        procesarMiniFiltro();
+    }, 250);
+}
+
+function procesarMiniFiltro() {
     const buscador = document.getElementById('mini-docente').value.toLowerCase().trim();
     const tipo = document.querySelector('input[name="btn-tipo"]:checked').value;
     const soloPendientes = document.getElementById('check-solo-pendientes').checked;
@@ -146,8 +155,7 @@ function actualizarPantallaJefe(datos) {
 
     listaPendientes.innerHTML = '';
     tablaEstadisticas.innerHTML = '';
-    
-    // 1. Iniciamos los eventos con los festivos de la base de datos
+
     let eventos = (window.festivosGlobalesJefe || []).map(f => ({
         title: ` ${f.descripcion}`,
         start: f.fecha.split('T')[0],
@@ -188,7 +196,7 @@ function actualizarPantallaJefe(datos) {
             cumpleaniosAgregados.add(sol.id_usuario);
         }
 
-       
+
         if (sol.estado === 'Pendiente') {
             contadorPendientes++;
             listaPendientes.innerHTML += `
@@ -211,11 +219,10 @@ function actualizarPantallaJefe(datos) {
                 <td>${sol.tipoTramite}</td>
                 <td>${fechaMostrar}</td>
                 <td>
-                <span class="badge ${
-                    sol.estado === 'Aprobado' ? 'bg-success' : 
-                    (sol.estado === 'Vo.Bo.' ? 'bg-info text-white' : 
+                <span class="badge ${sol.estado === 'Aprobado' ? 'bg-success' :
+                (sol.estado === 'Vo.Bo.' ? 'bg-info text-white' :
                     (sol.estado === 'Pendiente' ? 'bg-warning text-dark' : 'bg-danger'))
-                    }">${sol.estado}
+            }">${sol.estado}
                 </span>
                 </td>
             </tr>`;
@@ -269,28 +276,35 @@ function verDetallesModal(data) {
         document.getElementById('det-dias').textContent = `${data.cantidad_dias} día(s) hábil(es)`;
     }
 
-    //logica pdf
     const btnPDF = document.getElementById('btn-descargar-pdf');
     if (btnPDF) {
         if (data.estado === 'Aprobado') {
             btnPDF.style.display = 'block';
-            btnPDF.onclick = () => {
-                console.log("Datos completos que van al PDF:", data);
-                const docenteInfo = {
-                    nombre_completo: data.nombre_completo,
-                    rfc: data.rfc,
-                    area_adscripcion: data.area_adscripcion,
-                    fecha_ingreso: data.fecha_ingreso,
-                    categoria: data.categoria,
-                    tipo_contrato: data.tipo_contrato,
-                    fecha_nacimiento: data.fecha_nacimiento
-                };
-                console.log("Datos completos que van al PDF:", data);
+            btnPDF.onclick = async () => {
+                const textOrigin = btnPDF.innerHTML;
+                btnPDF.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Generando...';
+                btnPDF.disabled = true;
 
-                if (esPase) {
-                    pdfPase(data, docenteInfo);
-                } else {
-                    pdfPermiso(data, docenteInfo);
+                try {
+                    const docenteInfo = {
+                        nombre_completo: data.nombre_completo,
+                        rfc: data.rfc,
+                        area_adscripcion: data.area_adscripcion,
+                        fecha_ingreso: data.fecha_ingreso,
+                        categoria: data.categoria,
+                        tipo_contrato: data.tipo_contrato,
+                        fecha_nacimiento: data.fecha_nacimiento
+                    };
+                    if (esPase) {
+                        await pdfPase(data, docenteInfo);
+                    } else {
+                        await pdfPermiso(data, docenteInfo);
+                    }
+                } catch (e) {
+                    mostrarToast("Error construyendo PDF", "error");
+                } finally {
+                    btnPDF.innerHTML = textOrigin;
+                    btnPDF.disabled = false;
                 }
             };
         } else {
@@ -378,40 +392,34 @@ function confirmarAccion(btn, id, tipo, estado) {
 
     btn.dataset.intervalo = intervalo;
 }
+//version movil
+function cambiarTabApp(index) {
+    const sidebar = document.querySelector('.sidebar');
+    const content = document.querySelector('.content-area');
 
-function toggleVistaMovil(vista, show) {
-    const area = document.querySelector('.content-area');
-    const historial = document.querySelector('.panel-estadisticas');
-    const filtros = document.querySelector('.mini-filter-bar');
-    const calendario = document.querySelector('.panel-calendario');
-    const btnCerrar = document.getElementById('btn-cerrar-vista-movil');
-    
-    if (show) {
-        area.classList.add('active-movil');
-        btnCerrar.classList.add('mostrar');
-        
-        if (vista === 'historial') {
-            filtros.style.display = 'flex';
-            historial.style.display = 'flex';
-            calendario.style.display = 'none';
-        } else if (vista === 'calendario') {
-            filtros.style.display = 'none';
-            historial.style.display = 'none';
-            calendario.style.display = 'block';
-            
-            if (calendarioJefe) {
-                setTimeout(() => {
-                    calendarioJefe.setOption('height', '100%');
-                    calendarioJefe.updateSize();
-                }, 100);
-            }
+    document.querySelectorAll('.bottom-tab-nav .tab-item').forEach(el => el.classList.remove('active'));
+
+    if (index === 0) {
+        sidebar.classList.remove('hidden-tab');
+        content.classList.remove('active-tab');
+        document.getElementById('tab-home').classList.add('active');
+    } else if (index === 1) {
+        sidebar.classList.add('hidden-tab');
+        content.classList.add('active-tab');
+        content.classList.remove('mode-calendario');
+        content.classList.add('mode-historial');
+        document.getElementById('tab-hist').classList.add('active');
+    } else if (index === 2) {
+        sidebar.classList.add('hidden-tab');
+        content.classList.add('active-tab');
+        content.classList.remove('mode-historial');
+        content.classList.add('mode-calendario');
+        document.getElementById('tab-cal').classList.add('active');
+
+        if (calendarioJefe) {
+            setTimeout(() => {
+                calendarioJefe.updateSize();
+            }, 50);
         }
-    } else {
-        area.classList.remove('active-movil');
-        btnCerrar.classList.remove('mostrar');
-        //limpieza de los estilos en línea para que en pc vuelva a la normalidad
-        filtros.style.display = '';
-        historial.style.display = '';
-        calendario.style.display = '';
     }
 }

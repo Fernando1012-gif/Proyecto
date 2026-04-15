@@ -13,10 +13,13 @@
 </head>
 <body>
 
-    <div class="top-navbar d-flex justify-content-between align-items-center">
-        <h4 class="m-0 fw-bold">
-            <img src="recursos/imagenes/isologo_UTM_white.svg" width="70" class="me-2" alt="logo">
-        </h4>
+    <div class="top-navbar d-flex justify-content-between align-items-center px-3">
+        <div class="d-flex align-items-center">
+            <img src="recursos/imagenes/isologo_UTM_white.svg" height="25" class="me-3" alt="logo">
+            <a href="vistaRH.html" class="btn btn-outline-light d-none d-md-inline border-0 fw-bold" style="background-color: rgba(255,255,255,0.1);">
+                <i class="fa-solid fa-arrow-left me-2"></i>Volver a Historial
+            </a>
+        </div>
 
         <div class="dropdown">
             <button class="btn dropdown-toggle text-white fw-bold border-0 d-flex align-items-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
@@ -31,10 +34,6 @@
 
     <div class="main-workspace">
         <div class="sidebar">
-            <a href="vistaRH.html" class="btn btn-light border w-100 mb-4 d-flex align-items-center justify-content-center shadow-sm py-3 fw-bold text-secondary">
-                <i class="fa-solid fa-arrow-left me-2"></i> Volver a Registros
-            </a>
-            
             <div class="alert alert-info border-0 shadow-sm mt-3">
                 <h6 class="fw-bold"><i class="fa-solid fa-circle-info me-2"></i>Instrucciones</h6>
                 <p class="small mb-0 text-dark">Revisa los tramites por aprobar. Estos obtendran la firma final y completa aprobacion. </p>
@@ -137,6 +136,27 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
         <script src="js/admins.js"></script>
         <script src="js/pdfsito.js"></script>
+        
+        <!-- Bottom Tab Nav (Solo Móvil) -->
+        <nav class="bottom-tab-nav d-md-none">
+            <a href="vistaRH.html" class="tab-item">
+                <i class="fa-solid fa-table-list"></i>
+                <span>Historial</span>
+            </a>
+            <a href="vistaRHS.html" class="tab-item active position-relative">
+                <i class="fa-solid fa-inbox"></i>
+                <span>Autorizar</span>
+                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" id="badge-nav-solicitudes-nav">0</span>
+            </a>
+            <a href="informeRH.html" class="tab-item">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Métricas</span>
+            </a>
+            <button class="tab-item" onclick="document.getElementById('btn-logout').click()">
+                <i class="fa-solid fa-power-off" style="color: var(--utm-red);"></i>
+                <span style="color: var(--utm-red);">Salir</span>
+            </button>
+        </nav>
     </div>
 </body>
 </html>

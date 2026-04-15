@@ -16,6 +16,7 @@ socket.on('permiso-actualizado', () => { cargarDatosGenerales(); });
 
 if (!token || !usuarioStr) window.location.href = "login.html";
 const usuario = JSON.parse(usuarioStr);
+if (usuario.rol !== 'RRHH') window.location.href = "login.html";
 
 function manejarSesionExpirada() {
     sessionStorage.clear();
@@ -23,7 +24,7 @@ function manejarSesionExpirada() {
 }
 
 document.body.insertAdjacentHTML('beforeend', `
-    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999; margin-bottom: 85px;">
         <div id="toastRH" class="toast" role="alert"><div class="toast-header text-white" id="toast-header-rh"><strong class="me-auto">RRHH</strong></div>
         <div class="toast-body fw-bold" id="toast-msg-rh"></div></div>
     </div>`);
@@ -296,9 +297,15 @@ function verDetallesRRHH(data) {
     if (btnPDF) {
         if (data.estado === 'Aprobado') {
             btnPDF.style.display = 'block';
-            btnPDF.onclick = () => {
-                if (esPase) pdfPase(data, data);
-                else pdfPermiso(data, data);
+            btnPDF.onclick = async () => {
+                const textOrigin = btnPDF.innerHTML;
+                btnPDF.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Generando...';
+                btnPDF.disabled = true;
+                try {
+                    if (esPase) await pdfPase(data, data);
+                    else await pdfPermiso(data, data);
+                } catch(e) { console.error(e); mostrarToast("Error PDF", "error"); }
+                finally { btnPDF.innerHTML = textOrigin; btnPDF.disabled = false; }
             };
         } else {
             btnPDF.style.display = 'none';
@@ -315,7 +322,14 @@ function verDetallesRRHH(data) {
     modalDetalleRH.show();
 }
 //filtros historial
+let debounceTimerRH = null;
 function aplicarFiltros() {
+    clearTimeout(debounceTimerRH);
+    debounceTimerRH = setTimeout(() => {
+        procesarFiltrosRH();
+    }, 250);
+}
+function procesarFiltrosRH() {
     const elDoc = document.getElementById('filtro-docente');
     const fDoc = elDoc ? elDoc.value.toLowerCase() : '';
     const elArea = document.getElementById('filtro-area');
@@ -501,16 +515,15 @@ async function aprobarSeleccionMasiva() {
     }
 
     mostrarToast(`Proceso completado! ${exitosos} tramites aprobados`);
-    cargarDatosGenerales();
 }
+
 function toggleFiltrosMovil(show) {
     const sidebar = document.querySelector('.sidebar');
-    const btnCerrar = document.getElementById('btn-cerrar-filtros');
-    if (show) {
-        sidebar.classList.add('active-movil');
-        btnCerrar.classList.add('mostrar');
-    } else {
-        sidebar.classList.remove('active-movil');
-        btnCerrar.classList.remove('mostrar');
+    if (sidebar) {
+        if (show) {
+            sidebar.classList.add('active-movil');
+        } else {
+            sidebar.classList.remove('active-movil');
+        }
     }
 }
