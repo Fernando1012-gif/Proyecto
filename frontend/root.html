@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UTM SYSADMIN CONSOLE</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>admin</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+        <style>
         body { font-family: "Courier New", Courier, monospace; background-color: #d4d0c8; font-size: 13px; margin: 0; overflow: hidden; }
         .navbar { background-color: #000080; color: white; border-bottom: 2px solid #ffffff; border-top: 2px solid #ffffff; }
         .sidebar { background-color: #ece9d8; border-right: 2px solid #808080; border-left: 2px solid #ffffff; height: calc(100vh - 40px); overflow-y: auto; padding-top: 5px; }
@@ -30,94 +32,128 @@
         .modal-title { font-size: 14px; font-weight: bold; }
         .modal-footer { padding: 5px; border-top: 1px solid #808080; }
     </style>
-</head>
-<body>
-    <nav class="navbar px-3 py-1">
-        <span class="mb-0 fw-bold fs-6">192.168.0.1 - UTM MAIN CONTROLLER</span>
-        <button class="btn btn-danger btn-xs" id="btn-logout">TERMINATE SESSION</button>
-    </nav>
-    
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-2 sidebar p-2">
-                <div class="list-group list-group-flush" id="menu-lateral">
-                    <button class="list-group-item list-group-item-action nav-link active" data-target="sys-dashboard">> SYSTEM STATUS</button>
-                    <button class="list-group-item list-group-item-action nav-link" data-target="sys-usuarios">> USER TABLE</button>
-                    <button class="list-group-item list-group-item-action nav-link" data-target="sys-pases">> PASES RAW</button>
-                    <button class="list-group-item list-group-item-action nav-link" data-target="sys-permisos">> PERMISOS RAW</button>
-                    <button class="list-group-item list-group-item-action nav-link" data-target="sys-festivos">> SYS CALENDAR</button>
-                </div>
-            </div>
-            
-            <div class="col-10 content">
-                <div id="sys-dashboard" class="section-panel active">
-                    <h6>ROUTING SUMMARY</h6>
-                    <div class="row text-center mt-3">
-                        <div class="col-3"><div class="border p-2 bg-light"><h2><strong id="c-users">0</strong></h2>TOTAL USERS</div></div>
-                        <div class="col-3"><div class="border p-2 bg-light"><h2><strong id="c-pases">0</strong></h2>TOTAL PASES</div></div>
-                        <div class="col-3"><div class="border p-2 bg-light"><h2><strong id="c-permisos">0</strong></h2>TOTAL PERMISOS</div></div>
-                        <div class="col-3"><div class="border p-2 bg-light"><h2><strong id="c-db">OK</strong></h2>DB STATUS</div></div>
+    </head>
+    <body>
+        <nav class="navbar px-3 py-1">
+            <span class="mb-0 fw-bold fs-6">root</span>
+            <button class="btn btn-danger btn-xs" id="btn-logout">cerrar
+                sesion</button>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-2 sidebar p-2">
+                    <div class="list-group list-group-flush" id="menu-lateral">
+                        <button
+                            class="list-group-item list-group-item-action nav-link active"
+                            data-target="sys-dashboard">estado del
+                            sistema</button>
+                        <button
+                            class="list-group-item list-group-item-action nav-link"
+                            data-target="sys-usuarios">>tabla de
+                            usuario</button>
+                        <button
+                            class="list-group-item list-group-item-action nav-link"
+                            data-target="sys-pases">> PASES</button>
+                        <button
+                            class="list-group-item list-group-item-action nav-link"
+                            data-target="sys-permisos">> PERMISOS</button>
+                        <button
+                            class="list-group-item list-group-item-action nav-link"
+                            data-target="sys-festivos">>CALENDARIO</button>
                     </div>
                 </div>
 
-                <div id="sys-usuarios" class="section-panel">
-                    <div class="d-flex justify-content-between mb-2">
-                        <h6 class="m-0">TABLE: usuarios</h6>
-                        <button class="btn btn-primary btn-xs" onclick="abrirModalUsuario()">[+] INSERT RECORD</button>
+                <div class="col-10 content">
+                    <div id="sys-dashboard" class="section-panel active">
+                        <h6>control</h6>
+                        <div class="row text-center mt-3">
+                            <div class="col-3"><div
+                                    class="border p-2 bg-light"><h2><strong
+                                            id="c-users">0</strong></h2>total
+                                    usuarios</div></div>
+                            <div class="col-3"><div
+                                    class="border p-2 bg-light"><h2><strong
+                                            id="c-pases">0</strong></h2>total
+                                    pases</div></div>
+                            <div class="col-3"><div
+                                    class="border p-2 bg-light"><h2><strong
+                                            id="c-permisos">0</strong></h2>total
+                                    permisos</div></div>
+                            <div class="col-3"><div
+                                    class="border p-2 bg-light"><h2><strong
+                                            id="c-db">OK</strong></h2>base de
+                                    datos</div></div>
+                        </div>
                     </div>
-                    <table class="table table-sm table-striped">
-                        <thead><tr><th>id</th><th>nombre_completo</th><th>correo_institucional</th><th>rol</th><th>area_adscripcion</th><th>SYS_ACTIONS</th></tr></thead>
-                        <tbody id="tb-usuarios"></tbody>
-                    </table>
-                </div>
 
-                <div id="sys-pases" class="section-panel">
-                    <h6 class="mb-2">TABLE: pases_salida (OVERRIDE ENABLED)</h6>
-                    <table class="table table-sm table-striped">
-                        <thead><tr><th>id</th><th>uid</th><th>fecha_uso</th><th>h_ini</th><th>h_fin</th><th>estado</th><th>motivo</th><th>SYS_ACTIONS</th></tr></thead>
-                        <tbody id="tb-pases"></tbody>
-                    </table>
-                </div>
-
-                <div id="sys-permisos" class="section-panel">
-                    <h6 class="mb-2">TABLE: permisos_goce (OVERRIDE ENABLED)</h6>
-                    <table class="table table-sm table-striped">
-                        <thead><tr><th>id</th><th>uid</th><th>tipo</th><th>f_ini</th><th>f_fin</th><th>dias</th><th>estado</th><th>SYS_ACTIONS</th></tr></thead>
-                        <tbody id="tb-permisos"></tbody>
-                    </table>
-                </div>
-
-                <div id="sys-festivos" class="section-panel">
-                    <div class="d-flex justify-content-between mb-2">
-                        <h6 class="m-0">TABLE: dias_festivos</h6>
-                        <button class="btn btn-primary btn-xs" onclick="abrirModalFestivo()">[+] INSERT RECORD</button>
+                    <div id="sys-usuarios" class="section-panel">
+                        <div class="d-flex justify-content-between mb-2">
+                            <h6 class="m-0">TABLA: usuarios</h6>
+                            <button class="btn btn-primary btn-xs"
+                                onclick="abrirModalUsuario()">insertar
+                                datos</button>
+                        </div>
+                        <table class="table table-sm table-striped">
+                            <thead><tr><th>id</th><th>nombre_completo</th><th>correo_institucional</th><th>rol</th><th>area_adscripcion</th><th>acciones</th></tr></thead>
+                            <tbody id="tb-usuarios"></tbody>
+                        </table>
                     </div>
-                    <table class="table table-sm table-striped">
-                        <thead><tr><th>id</th><th>fecha</th><th>descripcion</th><th>SYS_ACTIONS</th></tr></thead>
-                        <tbody id="tb-festivos"></tbody>
-                    </table>
+
+                    <div id="sys-pases" class="section-panel">
+                        <h6 class="mb-2">TABLA: pases_salida</h6>
+                        <table class="table table-sm table-striped">
+                            <thead><tr><th>id</th><th>uid</th><th>fecha_uso</th><th>h_ini</th><th>h_fin</th><th>estado</th><th>motivo</th><th>acciones</th></tr></thead>
+                            <tbody id="tb-pases"></tbody>
+                        </table>
+                    </div>
+
+                    <div id="sys-permisos" class="section-panel">
+                        <h6 class="mb-2">TABLA: permisos_goce</h6>
+                        <table class="table table-sm table-striped">
+                            <thead><tr><th>id</th><th>uid</th><th>tipo</th><th>f_ini</th><th>f_fin</th><th>dias</th><th>estado</th><th>acciones</th></tr></thead>
+                            <tbody id="tb-permisos"></tbody>
+                        </table>
+                    </div>
+
+                    <div id="sys-festivos" class="section-panel">
+                        <div class="d-flex justify-content-between mb-2">
+                            <h6 class="m-0">TABLA: dias_festivos</h6>
+                            <button class="btn btn-primary btn-xs"
+                                onclick="abrirModalFestivo()">Insertar
+                                datos</button>
+                        </div>
+                        <table class="table table-sm table-striped">
+                            <thead><tr><th>id</th><th>fecha</th><th>descripcion</th><th>acciones</th></tr></thead>
+                            <tbody id="tb-festivos"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="modal" id="modalUniversal" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-        <div class="modal-dialog modal-lg rounded-0">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="modal-title" id="mu-title">EXECUTE QUERY</span>
-                    <button type="button" class="btn-close btn-close-white" onclick="cerrarModal()" style="font-size: 10px;"></button>
-                </div>
-                <div class="modal-body" id="mu-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger btn-xs" onclick="cerrarModal()">ABORT</button>
-                    <button type="button" class="btn btn-success btn-xs" id="mu-btn-save">COMMIT</button>
+        <div class="modal" id="modalUniversal" tabindex="-1"
+            style="background: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-lg rounded-0">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="modal-title" id="mu-title">ejecutar</span>
+                        <button type="button" class="btn-close btn-close-white"
+                            onclick="cerrarModal()"
+                            style="font-size: 10px;"></button>
+                    </div>
+                    <div class="modal-body" id="mu-body"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-xs"
+                            onclick="cerrarModal()">cancelar</button>
+                        <button type="button" class="btn btn-success btn-xs"
+                            id="mu-btn-save">subir</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
+        <script>
         const API = '/api/root';
         const tkn = sessionStorage.getItem('sys_tkn');
 
@@ -189,10 +225,10 @@
                         </td>
                         <td>${u.area_adscripcion || 'NULL'}</td>
                         <td>
-                            <button class="btn btn-warning btn-xs" onclick="updateRolUsuario(${u.id})">UPD_ROL</button>
-                            <button class="btn btn-primary btn-xs" onclick="abrirModalUsuario(${u.id})">EDIT_ALL</button>
-                            <button class="btn btn-danger btn-xs" onclick="resetPass(${u.id})">RST_PWD</button>
-                            <button class="btn btn-danger btn-xs" style="background:#000;" onclick="eliminarUsuario(${u.id})">DROP</button>
+                            <button class="btn btn-warning btn-xs" onclick="updateRolUsuario(${u.id})">rol</button>
+                            <button class="btn btn-primary btn-xs" onclick="abrirModalUsuario(${u.id})">editar todo</button>
+                            <button class="btn btn-danger btn-xs" onclick="resetPass(${u.id})">id</button>
+                            <button class="btn btn-danger btn-xs" style="background:#000;" onclick="eliminarUsuario(${u.id})">borrar</button>
                         </td>
                     </tr>`;
                 });
@@ -222,8 +258,8 @@
                         </td>
                         <td><input type="text" class="form-control form-control-sm" value="${p.motivo}" id="mp_${p.id}"></td>
                         <td>
-                            <button class="btn btn-success btn-xs" onclick="updatePase(${p.id})">FORCE_UPD</button>
-                            <button class="btn btn-danger btn-xs" style="background:#000;" onclick="deletePase(${p.id})">DROP</button>
+                            <button class="btn btn-success btn-xs" onclick="updatePase(${p.id})">actualizar</button>
+                            <button class="btn btn-danger btn-xs" style="background:#000;" onclick="deletePase(${p.id})">borrar</button>
                         </td>
                     </tr>`;
                 });
@@ -259,8 +295,8 @@
                             </select>
                         </td>
                         <td>
-                            <button class="btn btn-success btn-xs" onclick="updatePermiso(${p.id})">FORCE_UPD</button>
-                            <button class="btn btn-danger btn-xs" style="background:#000;" onclick="deletePermiso(${p.id})">DROP</button>
+                            <button class="btn btn-success btn-xs" onclick="updatePermiso(${p.id})">actualizar</button>
+                            <button class="btn btn-danger btn-xs" style="background:#000;" onclick="deletePermiso(${p.id})">borrar</button>
                         </td>
                     </tr>`;
                 });
@@ -268,37 +304,90 @@
         };
 
         const abrirModalUsuario = async (id = null) => {
-            document.getElementById('mu-title').innerText = id ? `UPDATE usuarios SET... WHERE id=${id}` : 'INSERT INTO usuarios...';
-            let u = {};
-            if(id) {
-                const res = await fReq(`/usuarios/${id}`);
-                if(res.ok) u = res.data;
-            }
-            document.getElementById('mu-body').innerHTML = `
-                <div class="row g-2">
-                    <input type="hidden" id="nu-id" value="${u.id || ''}">
-                    <div class="col-6"><label>nombre_completo</label><input type="text" id="nu-nom" class="form-control form-control-sm" value="${u.nombre_completo || ''}"></div>
-                    <div class="col-6"><label>correo_institucional</label><input type="email" id="nu-cor" class="form-control form-control-sm" value="${u.correo_institucional || ''}"></div>
-                    <div class="col-6"><label>contraseña</label><input type="text" id="nu-pass" class="form-control form-control-sm" placeholder="${id ? 'NULL = NO CHANGE' : 'REQUIRED'}"></div>
-                    <div class="col-6"><label>rol</label>
-                        <select id="nu-rol" class="form-select form-select-sm">
-                            <option value="Docente" ${u.rol==='Docente'?'selected':''}>Docente</option>
-                            <option value="Jefe" ${u.rol==='Jefe'?'selected':''}>Jefe</option>
-                            <option value="RRHH" ${u.rol==='RRHH'?'selected':''}>RRHH</option>
-                            <option value="Administrador" ${u.rol==='Administrador'?'selected':''}>Administrador</option>
-                        </select>
-                    </div>
-                    <div class="col-4"><label>rfc</label><input type="text" id="nu-rfc" class="form-control form-control-sm" value="${u.rfc || ''}"></div>
-                    <div class="col-4"><label>fecha_nacimiento</label><input type="date" id="nu-nac" class="form-control form-control-sm" value="${u.fecha_nacimiento ? u.fecha_nacimiento.split('T')[0] : ''}"></div>
-                    <div class="col-4"><label>fecha_ingreso</label><input type="date" id="nu-ing" class="form-control form-control-sm" value="${u.fecha_ingreso ? u.fecha_ingreso.split('T')[0] : ''}"></div>
-                    <div class="col-6"><label>categoria</label><input type="text" id="nu-cat" class="form-control form-control-sm" value="${u.categoria || ''}"></div>
-                    <div class="col-6"><label>area_adscripcion</label><input type="text" id="nu-area" class="form-control form-control-sm" value="${u.area_adscripcion || ''}"></div>
-                    <div class="col-12"><label>tipo_contrato</label><input type="text" id="nu-cont" class="form-control form-control-sm" value="${u.tipo_contrato || ''}"></div>
-                </div>`;
-            document.getElementById('mu-btn-save').onclick = guardarUsuario;
-            document.getElementById('modalUniversal').style.display = 'block';
-        };
+    document.getElementById('mu-title').innerText = id ? `UPDATE usuarios SET... WHERE id=${id}` : 'INSERT INTO usuarios...';
+    let u = {};
+    if(id) {
+        const res = await fReq(`/usuarios/${id}`);
+        if(res.ok) u = res.data;
+    }
+    
+    document.getElementById('mu-body').innerHTML = `
+        <div class="row g-2">
+            <input type="hidden" id="nu-id" value="${u.id || ''}">
+            
+            <div class="col-6">
+                <label>Nombre Completo</label>
+                <input type="text" id="nu-nom" class="form-control form-control-sm" value="${u.nombre_completo || ''}">
+            </div>
+            
+            <div class="col-6">
+                <label>Correo Institucional</label>
+                <input type="email" id="nu-cor" class="form-control form-control-sm" value="${u.correo_institucional || ''}">
+            </div>
+            
+            <div class="col-6">
+                <label>Contraseña</label>
+                <input type="text" id="nu-pass" class="form-control form-control-sm" placeholder="${id ? 'Sin cambios' : 'REQUERIDA'}">
+            </div>
 
+            <div class="col-6">
+                <label>Rol</label>
+                <select id="nu-rol" class="form-select form-select-sm">
+                    <option value="Docente" ${u.rol==='Docente'?'selected':''}>Docente</option>
+                    <option value="Administrador" ${u.rol==='Administrador'?'selected':''}>Administrador</option>
+                    <option value="RRHH" ${u.rol==='RRHH'?'selected':''}>RRHH</option>
+                </select>
+            </div>
+
+            <div class="col-4">
+                <label>RFC</label>
+                <input type="text" id="nu-rfc" class="form-control form-control-sm" maxlength="13" value="${u.rfc || ''}">
+            </div>
+
+            <div class="col-4">
+                <label>F. Nacimiento</label>
+                <input type="date" id="nu-nac" class="form-control form-control-sm" value="${u.fecha_nacimiento ? u.fecha_nacimiento.split('T')[0] : ''}">
+            </div>
+
+            <div class="col-4">
+                <label>F. Ingreso</label>
+                <input type="date" id="nu-ing" class="form-control form-control-sm" value="${u.fecha_ingreso ? u.fecha_ingreso.split('T')[0] : ''}">
+            </div>
+
+            <div class="col-6">
+                <label>Categoría</label>
+                <select id="nu-cat" class="form-select form-select-sm">
+                    <option value="Profesor de Asignatura" ${u.categoria==='Profesor de Asignatura'?'selected':''}>Profesor de Asignatura</option>
+                    <option value="Profesor de Tiempo Completo" ${u.categoria==='Profesor de Tiempo Completo'?'selected':''}>Profesor de Tiempo Completo</option>
+                    <option value="Técnico Académico" ${u.categoria==='Técnico Académico'?'selected':''}>Técnico Académico</option>
+                    <option value="Administrativo" ${u.categoria==='Administrativo'?'selected':''}>Administrativo</option>
+                </select>
+            </div>
+
+            <div class="col-6">
+                <label>Área de Adscripción</label>
+                <select id="nu-area" class="form-select form-select-sm">
+                    <option value="Tecnologías de la Información" ${u.area_adscripcion==='Tecnologías de la Información'?'selected':''}>Tecnologías de la Información</option>
+                    <option value="Gastronomía" ${u.area_adscripcion==='Gastronomía'?'selected':''}>Gastronomía</option>
+                    <option value="Enfermería" ${u.area_adscripcion==='Enfermería'?'selected':''}>Enfermería</option>
+                    <option value="Energías Renovables" ${u.area_adscripcion==='Energías Renovables'?'selected':''}>Energías Renovables</option>
+                    <option value="Mantenimiento Industrial" ${u.area_adscripcion==='Mantenimiento Industrial'?'selected':''}>Mantenimiento Industrial</option>
+                    <option value="Contabilidad" ${u.area_adscripcion==='Contabilidad'?'selected':''}>Contabilidad</option>
+                </select>
+            </div>
+
+            <div class="col-12">
+                <label>Tipo de Contrato</label>
+                <select id="nu-cont" class="form-select form-select-sm">
+                    <option value="Determinado" ${u.tipo_contrato==='Determinado'?'selected':''}>Determinado</option>
+                    <option value="Indeterminado" ${u.tipo_contrato==='Indeterminado'?'selected':''}>Indeterminado</option>
+                </select>
+            </div>
+        </div>`;
+    
+    document.getElementById('mu-btn-save').onclick = guardarUsuario;
+    document.getElementById('modalUniversal').style.display = 'block';
+};
         const guardarUsuario = async () => {
             const id = document.getElementById('nu-id').value;
             const payload = {
@@ -332,7 +421,7 @@
         }
 
         async function eliminarUsuario(id) {
-            if(confirm('WARN: DROP USER RECORD?')) {
+            if(confirm('borrar usuario?')) {
                 const res = await fReq(`/usuarios/${id}`, 'DELETE');
                 if(res.ok) cargarUsuarios();
             }
@@ -351,7 +440,7 @@
         }
 
         async function deletePase(id) {
-            if(confirm('WARN: DROP PASE RECORD?')) {
+            if(confirm('borrar pase?')) {
                 const res = await fReq(`/pases/${id}`, 'DELETE');
                 if(res.ok) cargarPases();
             }
@@ -370,7 +459,7 @@
         }
 
         async function deletePermiso(id) {
-            if(confirm('WARN: DROP PERMISO RECORD?')) {
+            if(confirm('borrar permoso?')) {
                 const res = await fReq(`/permisos/${id}`, 'DELETE');
                 if(res.ok) cargarPermisos();
             }
@@ -383,7 +472,7 @@
             if(res && res.data) {
                 res.data.forEach(d => {
                     tb.innerHTML += `<tr><td>${d.id}</td><td>${d.fecha.split('T')[0]}</td><td>${d.descripcion}</td>
-                    <td><button class="btn btn-danger btn-xs" style="background:#000;" onclick="deleteFestivo(${d.id})">DROP</button></td></tr>`;
+                    <td><button class="btn btn-danger btn-xs" style="background:#000;" onclick="deleteFestivo(${d.id})">borrar</button></td></tr>`;
                 });
             }
         };
@@ -403,7 +492,7 @@
         };
 
         async function deleteFestivo(id) {
-            if(confirm('WARN: DROP FESTIVO?')) {
+            if(confirm('borrar festivo?')) {
                 const res = await fReq(`/dias/${id}`, 'DELETE');
                 if(res.ok) cargarFestivos();
             }
@@ -412,5 +501,5 @@
         const cerrarModal = () => { document.getElementById('modalUniversal').style.display = 'none'; };
         window.onload = () => cargarDashboard();
     </script>
-</body>
+    </body>
 </html>
