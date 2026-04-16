@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api/login/login'; 
+const API_URL = '/api/login/login';
 
 const formulario = document.getElementById("loginform");
 const correoInput = document.getElementById("correo");
@@ -39,12 +39,11 @@ formulario.addEventListener("submit", async (e) => {
     }
 
     try {
-        // Cambiar texto del botón para feedback visual
         const btnSubmit = formulario.querySelector('.submit-btn');
         const textoOriginal = btnSubmit.textContent;
         btnSubmit.textContent = "Verificando...";
         btnSubmit.disabled = true;
-
+        //mandamos datos a la api
         const response = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -57,12 +56,12 @@ formulario.addEventListener("submit", async (e) => {
         btnSubmit.disabled = false;
 
         if (data.ok) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('usuario', JSON.stringify(data.usuario));
+            sessionStorage.setItem('token', data.token);
+            sessionStorage.setItem('usuario', JSON.stringify(data.usuario));
 
             const rol = data.usuario.rol;
             
-            // Redirección corporativa
+            //redirecciona de acuerdo al rol del usuario
             if (rol === "Administrador") {
                 window.location.href = "vista_jefe_inmediato.html";
             } else if (rol === "Docente") {
@@ -70,19 +69,19 @@ formulario.addEventListener("submit", async (e) => {
             } else if (rol === "RRHH") {
                 window.location.href = "vistaRH.html";
             } else {
-                errorGlobal.textContent = "Acceso correcto, pero vista no asignada para tu rol.";
+                errorGlobal.textContent = "Acceso denegado.";
                 errorGlobal.style.display = "block";
             }
         } else {
-            errorGlobal.textContent = data.msg || data.mensaje || "Credenciales incorrectas";
+            errorGlobal.textContent = data.msg || data.mensaje || "Datos de sesion incorrectos";
             errorGlobal.style.display = "block";
         }
     } catch (error) {
         console.error("Error fatal en el fetch:", error);
-        errorGlobal.textContent = "Error de red. Asegúrate de que el servidor Node esté encendido.";
+        errorGlobal.textContent = "error de red";
         errorGlobal.style.display = "block";
         
-        // Restaurar botón en caso de error
+        //limpiar bton en caso de error
         const btnSubmit = formulario.querySelector('.submit-btn');
         btnSubmit.textContent = "Login";
         btnSubmit.disabled = false;

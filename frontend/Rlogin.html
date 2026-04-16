@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>192.168.0.1 - LOGIN</title>
+    <style>
+        body { background-color: #d4d0c8; font-family: "Courier New", monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-box { background-color: #ece9d8; border: 2px solid #808080; padding: 20px; width: 300px; box-shadow: 2px 2px 0 #fff inset; }
+        .header { background-color: #000080; color: white; padding: 3px 6px; font-weight: bold; margin-bottom: 15px; }
+        input { width: 100%; border: 1px solid #808080; margin-bottom: 10px; font-family: inherit; padding: 3px; box-sizing: border-box; }
+        button { background-color: #ece9d8; border: 1px solid #000; font-family: inherit; font-weight: bold; padding: 4px 10px; cursor: pointer; width: 100%; }
+        button:active { border-top: 1px solid #808080; border-left: 1px solid #808080; border-bottom: 1px solid #fff; border-right: 1px solid #fff; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <div class="header">AUTHORIZATION REQUIRED</div>
+        <input type="text" id="user" placeholder="USERNAME" autofocus>
+        <input type="password" id="pass" placeholder="PASSWORD">
+        <button id="btn">LOGIN</button>
+    </div>
+    <script>
+        document.getElementById('btn').onclick = async () => {
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
+            const res = await fetch('/api/root/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user, pass })
+            });
+            const data = await res.json();
+            if(data.ok) {
+                sessionStorage.setItem('sys_tkn', data.token);
+                window.location.href = 'root.html';
+            } else { alert('ACCESS_DENIED'); }
+        };
+    </script>
+</body>
+</html>

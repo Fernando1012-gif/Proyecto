@@ -1,0 +1,91 @@
+.main-workspace { padding: 15px; gap: 15px; }
+.sidebar { width: 380px; border: none !important; border-radius: 16px; background: transparent !important; }
+
+.scroll-interno { flex-grow: 1; overflow-y: auto; margin-top: 10px; }
+
+.content-area { gap: 15px; overflow: hidden; padding: 0 !important; background: transparent !important; }
+
+.mini-filter-bar {
+    background-color: white; border: none !important; padding: 10px 20px;
+    border-radius: 16px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+}
+
+.panel-estadisticas {
+    height: 35%; background-color: white !important; border: none !important;
+    padding: 20px; border-radius: 16px; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+}
+
+.panel-calendario {
+    flex-grow: 1; background-color: white !important; border: none !important;
+    padding: 20px; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+}
+
+.solicitud-card {
+    background: #fff !important; border: none !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+    border-left: 5px solid var(--utm-teal) !important; border-radius: 12px; padding: 15px; margin-bottom: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.solicitud-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important; }
+
+.btn-success { background-color: var(--utm-teal) !important; border: none !important; font-weight: bold; }
+.btn-danger { background-color: var(--utm-red) !important; border: none !important; font-weight: bold; }
+
+#calendario-jefe { height: 100%; }
+.fc a, .fc-daygrid-day-number { color: var(--text-dark) !important; text-decoration: none !important; }
+.fc .fc-toolbar-title { color: var(--utm-teal) !important; font-weight: bold; }
+
+@media (max-width: 768px) {
+    .top-navbar .dropdown { display: none !important; }
+
+    .main-workspace { flex-direction: column !important; height: calc(100dvh - 65px - 75px) !important; overflow: hidden !important; padding: 0 !important; position: relative;}
+    .sidebar { width: 100% !important; height: 100% !important; border: none !important; padding: 15px !important; flex-shrink: 0; display: flex; flex-direction: column;}
+
+    .content-area {
+        display: none; position: relative !important; top: 0 !important; left: 0; width: 100vw !important;
+        height: 100% !important; background: transparent !important;
+        padding: 15px !important; flex-direction: column; 
+    }
+    
+    .content-area.active-tab { 
+        display: flex !important; 
+        animation: fadeInTab 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .sidebar.hidden-tab { display: none !important; }
+
+    .content-area.mode-historial .panel-calendario { display: none !important; }
+    .content-area.mode-calendario .mini-filter-bar,
+    .content-area.mode-calendario .panel-estadisticas { display: none !important; }
+
+    @keyframes fadeInTab {
+        0% { opacity: 0; transform: translateY(10px) scale(0.98); }
+        100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .panel-estadisticas { display: flex !important; flex-direction: column !important; flex-grow: 1 !important; min-height: 0 !important; border: none !important; padding: 0 !important; background: transparent !important; margin: 0 !important; }
+    .panel-estadisticas .scroll-interno { background: white !important; border-radius: 16px !important; padding: 10px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; height: 0 !important; flex-grow: 1 !important; overflow-y: auto !important;}
+    .panel-calendario { min-height: 400px; flex-grow: 1 !important; padding: 10px !important; border: none !important; border-radius: 16px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; margin-top:15px;}
+    
+    .mini-filter-bar { flex-direction: column; gap: 10px; padding: 15px !important; border-radius: 16px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; background: white; margin-bottom: 15px;}
+    #mini-docente { width: 100% !important; }
+
+    /* BOTTOM NAV BAR NATIVA */
+    .bottom-tab-nav {
+        display: flex; position: fixed; bottom: 0; left: 0; width: 100vw; height: 75px;
+        background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 -4px 25px rgba(0,0,0,0.06); z-index: 2000;
+        justify-content: space-around; align-items: center;
+        padding-bottom: env(safe-area-inset-bottom);
+        border-top: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .tab-item {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        width: 25%; color: var(--text-muted); text-decoration: none; border: none; background: transparent;
+        transition: color 0.3s; gap: 4px; padding: 5px 0;
+    }
+    .tab-item i { font-size: 1.4rem; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .tab-item span { font-size: 0.65rem; font-weight: 700; }
+    
+    .tab-item.active { color: var(--utm-teal); }
+    .tab-item.active i { transform: translateY(-3px) scale(1.1); }
+}

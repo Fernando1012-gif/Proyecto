@@ -26,8 +26,7 @@ const usersql = {
     buscarId: async (id) => {
         try {
             //consulta para obtener datos de sql condicionando por id
-            const sql = `select id,nombre_completo, correo_institucional, rol, 
-            fecha_nacimiento, contraseña from usuarios where id = ? `;
+            const sql = `select * from usuarios where id = ? `;
             //ejecutar la consulta inyectando id
             const [datos] = await db.execute(sql, [id]);
             //regresa los datos de la primera fila
